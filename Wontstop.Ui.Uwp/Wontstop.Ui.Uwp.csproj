@@ -94,13 +94,29 @@
     <None Include="Wontstop.Ui.Uwp_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ViewModelLocator.cs" />
+    <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="Views\ActivitiesPage.xaml.cs">
+      <DependentUpon>ActivitiesPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainPage.xaml.cs">
+    <Compile Include="Views\FeedsPage.xaml.cs">
+      <DependentUpon>FeedsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\HamburgerMenuItem.cs" />
+    <Compile Include="Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Views\RunKeeperSessionView.xaml.cs">
+      <DependentUpon>RunKeeperSessionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\RunKeeperSessionViewModel.cs" />
+    <Compile Include="Views\SettingsPage.xaml.cs">
+      <DependentUpon>SettingsPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -108,6 +124,7 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="FodyWeavers.xml" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -122,11 +139,38 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="MainPage.xaml">
+    <Page Include="Views\ActivitiesPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FeedsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\RunKeeperSessionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Mvvm.WinRT\Mvvm.WinRT.csproj">
+      <Project>{bb95914d-a53b-4e7f-900d-d73bfa5ea6d0}</Project>
+      <Name>Mvvm.WinRT</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RunKeeper.HealthGraph\RunKeeper.WinRT.HealthGraph.csproj">
+      <Project>{29b26e1b-ed15-4a53-9e69-33cd43cfd4d0}</Project>
+      <Name>RunKeeper.WinRT.HealthGraph</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

@@ -1,0 +1,62 @@
+﻿<!--Copyright (c) Costin Morariu. All rights reserved.
+Licensed under the MIT license. See LICENSE file in the project root for full license information.-->
+    
+<Page
+    x:Class="Wontstop.Ui.Uwp.Views.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:views="using:Wontstop.Ui.Uwp.Views"
+    xmlns:stateTriggers="using:WindowsStateTriggers"
+    mc:Ignorable="d"
+    DataContext="{Binding SettingsViewModel, Source={StaticResource ViewModelLocator}}">
+
+    <interactivity:Interaction.Behaviors>
+        <core:EventTriggerBehavior EventName="Loaded">
+            <core:InvokeCommandAction Command="{Binding LoadCommand}"/>
+        </core:EventTriggerBehavior>
+        <core:EventTriggerBehavior EventName="Unloaded">
+            <core:InvokeCommandAction Command="{Binding UnloadCommand}"/>
+        </core:EventTriggerBehavior>
+    </interactivity:Interaction.Behaviors>
+   
+    <Grid x:Name="PagePanel"
+        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup >
+                <VisualState x:Name="BusyState">
+                    <VisualState.StateTriggers>
+                        <stateTriggers:EqualsStateTrigger Value="{Binding Busy}" EqualTo="True"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="BusyProgress.Visibility" Value="Visible"/>
+                        <Setter Target="RunKeeperSessionView.Opacity" Value="0.5"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <TextBlock x:Name="TitleTextBlock"
+            Margin="12"
+            Text="Settings"
+            Style="{ThemeResource TitleTextBlockStyle}"/>
+        
+        <views:RunKeeperSessionView x:Name="RunKeeperSessionView"
+            Grid.Row="1"/>
+        
+        <ProgressRing x:Name="BusyProgress"
+            Grid.Row="0" Grid.RowSpan="2"
+            IsActive="True"
+            Width="48" Height="48"
+            Visibility="Collapsed"/>
+    </Grid>
+</Page>

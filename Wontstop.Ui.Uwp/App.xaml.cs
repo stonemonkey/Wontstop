@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
@@ -21,9 +22,9 @@ namespace Wontstop.Ui.Uwp
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
 #if DEBUG
-            if (System.Diagnostics.Debugger.IsAttached)
+            if (Debugger.IsAttached)
             {
-                this.DebugSettings.EnableFrameRateCounter = true;
+                DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
             var rootFrame = Window.Current.Content as Frame;
@@ -44,10 +45,21 @@ namespace Wontstop.Ui.Uwp
             {
                 if (rootFrame.Content == null)
                 {
-                    rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                    InitLocator();
+                    rootFrame.Navigate(typeof(Views.MainPage), e.Arguments);
                 }
                 Window.Current.Activate();
             }
+        }
+
+        private void InitLocator()
+        {
+            // force locator to initialize otherwise using directly ServiceLocator may 
+            // throw if no DataContext binding to ViewModelLocator is done before
+            object locator;
+            Debug.Assert(
+                Resources.TryGetValue("ViewModelLocator", out locator),
+                "Unable to find ViewModelLocator in App.xaml resources!");
         }
 
         void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
