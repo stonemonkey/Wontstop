@@ -41,7 +41,6 @@ namespace RunKeeper.WinRT.HealthGraph.Authorization
             _callbackUri = WebAuthenticationBroker.GetCurrentApplicationCallbackUri();
         }
 
-        private const string AuthorizeEndpoint = "https://runkeeper.com/apps/authorize";
         /// <summary>
         /// Starts the authorization process.
         /// </summary>
@@ -52,7 +51,7 @@ namespace RunKeeper.WinRT.HealthGraph.Authorization
         /// is denied.</exception>
         public async Task<T> AuthorizeAsync<T>() where T : class
         {
-            var facebookUrl = AuthorizeEndpoint +
+            var facebookUrl = Urls.AppAuthorizeUrl +
                 $"?client_id={Uri.EscapeDataString(_clientId)}" +
                 $"&redirect_uri={Uri.EscapeDataString(_callbackUri.ToString())}" +
                 "&response_type=code";
@@ -103,7 +102,6 @@ namespace RunKeeper.WinRT.HealthGraph.Authorization
             return parameters.GetUrlParameterValue(key);
         }
 
-        private const string TokenEndpoint = "https://runkeeper.com/apps/token";
         private async Task<T> RequestToken<T>(string code) where T : class
         {
             if (string.IsNullOrWhiteSpace(code))
@@ -119,7 +117,7 @@ namespace RunKeeper.WinRT.HealthGraph.Authorization
 
             using (var client = new HttpClient())
             { 
-                var request = new HttpRequestMessage(HttpMethod.Post, new Uri(TokenEndpoint))
+                var request = new HttpRequestMessage(HttpMethod.Post, new Uri(Urls.AppTokenUrl))
                 {
                     Content = new StringContent(body, Encoding.UTF8, "application/x-www-form-urlencoded"),
                 };
@@ -133,7 +131,6 @@ namespace RunKeeper.WinRT.HealthGraph.Authorization
             }
         }
 
-        private const string DeauthorizeEndpoint = "https://runkeeper.com/apps/de-authorize";
         /// <summary>
         /// Removes authorization.
         /// </summary>
@@ -151,7 +148,7 @@ namespace RunKeeper.WinRT.HealthGraph.Authorization
 
             using (var client = new HttpClient())
             {
-                var request = new HttpRequestMessage(HttpMethod.Post, new Uri(DeauthorizeEndpoint))
+                var request = new HttpRequestMessage(HttpMethod.Post, new Uri(Urls.AppDeauthorizeUrl))
                 {
                     Content = new StringContent(body, Encoding.UTF8, "application/x-www-form-urlencoded"),
                 };

@@ -10,41 +10,37 @@ namespace RunKeeper.WinRT.HealthGraph.Authorization
     /// </summary>
     public class AuthorizationSession
     {
-        private readonly string _sessionKey;
         private readonly IAuthorizationProvider _authorizationProvider;
 
         /// <summary>
         /// Creates session authorization instance.
         /// </summary>
-        /// <param name="sessionKey">Key used to save localy session data</param>
         /// <param name="authorizationProvider">The provider used to authorize the session</param>
         /// <exception cref="ArgumentOutOfRangeException">Null or empty sessionKey</exception>
         /// <exception cref="ArgumentNullException">Null authorizationProvider</exception>
-        public AuthorizationSession(string sessionKey, IAuthorizationProvider authorizationProvider)
+        public AuthorizationSession(IAuthorizationProvider authorizationProvider)
         {
-            if (string.IsNullOrWhiteSpace(sessionKey))
-            {
-                throw new ArgumentOutOfRangeException(nameof(sessionKey));
-            }
             if (authorizationProvider == null)
             {
                 throw new ArgumentNullException(nameof(authorizationProvider));
             }
 
-            _sessionKey = sessionKey;
             _authorizationProvider = authorizationProvider;
         }
 
         /// <summary>
-        /// Retrives session access token obtained while initializing the session.
+        /// Retrives session access token obtained after a successfull authorization operation. 
+        /// The token unique identifies the association of your application to the user's Health 
+        /// Graph/Runkeeper account.
         /// </summary>
         /// <returns>Access token</returns>
-        /// <exception cref="InvalidOperationException">When session was not previously initialized</exception>
+        /// <exception cref="InvalidOperationException">If session was not previously authorized
+        /// </exception>
         public string GetAccessToken()
         {
             if (!ExistLocal())
             {
-                throw new InvalidOperationException("Uninitialized session!");
+                throw new InvalidOperationException("Unauthorized session!");
             }
 
             var localSession = ReadLocal();
@@ -53,20 +49,21 @@ namespace RunKeeper.WinRT.HealthGraph.Authorization
         }
 
         /// <summary>
-        /// Retrives wheather session initialization was successfully performed and localy stored.
+        /// Retrives wheather session authorization was successfully performed and localy stored.
         /// </summary>
         /// <returns>True if the session was successfully authorized, otherwise false.</returns>
-        public bool IsInitialized()
+        public bool IsAuthorized()
         {
             return ExistLocal();
         }
 
         /// <summary>
-        /// Performes authorization against RunKeeper SSO.
+        /// Performes authorization against RunKeeper Single Sign On service.
         /// </summary>
-        /// <param name="forceReconnect">If true forces reauthorization on an already initialized session.</param>
+        /// <param name="forceReconnect">If true forces reauthorization on an existent authorized  
+        /// session.</param>
         /// <returns>Awaitable task</returns>
-        public async Task InitializeAsync(bool forceReconnect = false)
+        public async Task AuthorizeAsync(bool forceReconnect = false)
         {
             if (ExistLocal() && !forceReconnect)
             {
@@ -81,7 +78,7 @@ namespace RunKeeper.WinRT.HealthGraph.Authorization
         /// Deauthorize existent RunKeeper session.
         /// </summary>
         /// <returns>Awaitable task</returns>
-        public async Task UninitializeAsync()
+        public async Task UnauthorizeAsync()
         {
             if (!ExistLocal())
             {
@@ -96,26 +93,28 @@ namespace RunKeeper.WinRT.HealthGraph.Authorization
 
         #region Local storage
 
+        private const string SessionKey = "runKeeperSession";
+
         private SessionDto ReadLocal()
         {
-            var json = ApplicationData.Current.LocalSettings.Values[_sessionKey] as string;
+            var json = ApplicationData.Current.LocalSettings.Values[SessionKey] as string;
             return JsonConvert.DeserializeObject<SessionDto>(json);
         }
 
         private void SaveLocal(SessionDto session)
         {
             var json = JsonConvert.SerializeObject(session);
-            ApplicationData.Current.LocalSettings.Values[_sessionKey] = json;
+            ApplicationData.Current.LocalSettings.Values[SessionKey] = json;
         }
 
         private void DeleteLocal()
         {
-            ApplicationData.Current.LocalSettings.Values.Remove(_sessionKey);
+            ApplicationData.Current.LocalSettings.Values.Remove(SessionKey);
         }
 
         public bool ExistLocal()
         {
-            return ApplicationData.Current.LocalSettings.Values.ContainsKey(_sessionKey);
+            return ApplicationData.Current.LocalSettings.Values.ContainsKey(SessionKey);
         }
 
         #endregion

@@ -12,7 +12,8 @@ namespace Wontstop.Ui.Uwp.ViewModels
     public class SettingsViewModel : IHandle<BusyMessage>
     {
         /// <summary>
-        /// Busy indicator flag, true = on, false = off
+        /// Specifies if a background operation is executed in the background (async) therefore 
+        /// Busy indicator should be shown to the user.
         /// </summary>
         public bool Busy { get; private set; }
 
@@ -29,7 +30,11 @@ namespace Wontstop.Ui.Uwp.ViewModels
         /// </summary>
         public RelayCommand LoadCommand => _loadComand ??
             (_loadComand = new RelayCommand(async () => await LoadAsync()));
-
+        
+        /// <summary>
+        /// LoadCommand handler
+        /// </summary>
+        /// <returns>Awaitable task</returns>
         protected virtual Task LoadAsync()
         {
             _eventAggregator.Subscribe(this);
@@ -43,7 +48,11 @@ namespace Wontstop.Ui.Uwp.ViewModels
         /// </summary>
         public RelayCommand UnloadCommand => _unloadComand ??
             (_unloadComand = new RelayCommand(async () => await UnloadAsync()));
-
+        
+        /// <summary>
+        /// UnloadCommand handler
+        /// </summary>
+        /// <returns>Awaitable task</returns>
         protected virtual Task UnloadAsync()
         {
             _eventAggregator.Unsubscribe(this);
@@ -52,7 +61,7 @@ namespace Wontstop.Ui.Uwp.ViewModels
         }
 
         /// <summary>
-        /// Toggles busy indicator flag based on messages coming from child view models. 
+        /// Toggles busy indicator flag based on messages coming from other view models.
         /// </summary>
         /// <param name="message"></param>
         public void Handle(BusyMessage message)
