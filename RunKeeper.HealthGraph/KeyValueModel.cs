@@ -3,9 +3,17 @@ using System.Threading.Tasks;
 
 namespace RunKeeper.WinRT.HealthGraph
 {
+    /// <summary>
+    /// Represents a model exposing data organized internally as key-value collection.
+    /// </summary>
     public class KeyValueModel : ReadOnlyKeyValueModel
     {
-        protected void SetValue(string key, string value)
+        /// <summary>
+        /// Saves the key-value pair.
+        /// </summary>
+        /// <param name="key">The key identifier</param>
+        /// <param name="value">The value associated with the key</param>
+        public void SetValue(string key, string value)
         {
             if (string.IsNullOrWhiteSpace(key))
             {
@@ -20,11 +28,6 @@ namespace RunKeeper.WinRT.HealthGraph
             {
                 Data[key] = value;
             }
-        }
-
-        public Task SaveAsync()
-        {
-            throw new NotImplementedException();
         }
     }
 }
