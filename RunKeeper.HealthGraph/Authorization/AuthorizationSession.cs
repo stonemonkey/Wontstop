@@ -2,14 +2,23 @@
 using System.Threading.Tasks;
 using Windows.Storage;
 using Newtonsoft.Json;
+using PropertyChanged;
+using RunKeeper.WinRT.HealthGraph.Infrastructure;
 
 namespace RunKeeper.WinRT.HealthGraph.Authorization
 {
     /// <summary>
     /// Represents the session with RunKeeper. A session is needed in order to access HealthGraph. 
     /// </summary>
+    [ImplementPropertyChanged]
     public class AuthorizationSession
     {
+        /// <summary>
+        /// Specifies wheather session authorization was successfully performed and localy stored.
+        /// </summary>
+        /// <returns>True if the session was successfully authorized, otherwise false.</returns>
+        public bool IsAuthorized { get; private set; }
+
         private readonly IAuthorizationProvider _authorizationProvider;
 
         /// <summary>
@@ -26,6 +35,7 @@ namespace RunKeeper.WinRT.HealthGraph.Authorization
             }
 
             _authorizationProvider = authorizationProvider;
+            IsAuthorized = ExistLocal();
         }
 
         /// <summary>
@@ -49,15 +59,6 @@ namespace RunKeeper.WinRT.HealthGraph.Authorization
         }
 
         /// <summary>
-        /// Retrives wheather session authorization was successfully performed and localy stored.
-        /// </summary>
-        /// <returns>True if the session was successfully authorized, otherwise false.</returns>
-        public bool IsAuthorized()
-        {
-            return ExistLocal();
-        }
-
-        /// <summary>
         /// Performes authorization against RunKeeper Single Sign On service.
         /// </summary>
         /// <param name="forceReconnect">If true forces reauthorization on an existent authorized  
@@ -71,7 +72,12 @@ namespace RunKeeper.WinRT.HealthGraph.Authorization
             }
 
             var session = await _authorizationProvider.AuthorizeAsync<SessionDto>();
-            SaveLocal(session);
+            if (session != null)
+            {
+                SaveLocal(session);
+            }
+
+            IsAuthorized = ExistLocal();
         }
 
         /// <summary>
@@ -86,9 +92,14 @@ namespace RunKeeper.WinRT.HealthGraph.Authorization
             }
 
             var session = ReadLocal();
-            await _authorizationProvider.DeauthorizeAsync(session.AccessToken);
+            if (session != null)
+            {
+                await _authorizationProvider.DeauthorizeAsync(session.AccessToken);
+            }
 
             DeleteLocal();
+
+            IsAuthorized = ExistLocal();
         }
 
         #region Local storage

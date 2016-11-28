@@ -3,6 +3,8 @@
 
 using Mvvm.WinRT;
 using Mvvm.WinRT.Messages;
+using RunKeeper.WinRT.HealthGraph.Infrastructure;
+using RunKeeper.WinRT.HealthGraph.User;
 using SimpleInjector;
 using Wontstop.Ui.Uwp.ViewModels;
 using RunKeeperAuth = RunKeeper.WinRT.HealthGraph.Authorization;
@@ -41,7 +43,7 @@ namespace Wontstop.Ui.Uwp
         protected virtual void CreateContainer()
         {
             Container = new Container();
-            Container.Options.AllowOverridingRegistrations = true;
+            Container.Options.AllowOverridingRegistrations = false;
         }
 
         /// <summary>
@@ -59,19 +61,27 @@ namespace Wontstop.Ui.Uwp
         {
             Container.RegisterSingleton<IEventAggregator, EventAggregator>();
 
-            Container.Register(() => new RunKeeperSessionViewModel(
-                Get<IEventAggregator>(), CreateRunKeeperAuthorizationProvider()));
-        }
+            Container.RegisterSingleton(
+                typeof(UserResources),
+                () => new UserResources(
+                    Container.GetInstance<LocalStorageRepository>(), 
+                    Container.GetInstance<HttpRepository>()));
 
-        private static RunKeeperAuth.AuthorizationProvider CreateRunKeeperAuthorizationProvider()
-        {
-            const string clientId = "7e5cddd793d54e25a0c09a97eaa44279";
-            const string clientSecret = "f1bb5680f13a4058be439860dd8cfbfa";
+            Container.RegisterSingleton(
+                typeof(UserProfile),
+                () => new UserProfile(
+                    Container.GetInstance<LocalStorageRepository>(), 
+                    Container.GetInstance<HttpRepository>()));
 
-            return new RunKeeperAuth.AuthorizationProvider(clientId, clientSecret);
+            Container.RegisterSingleton(
+                typeof(IAuthorizationProvider),
+                () => new RunKeeperAuth.AuthorizationProvider(
+                        "85588e575f7e46b0a2b8b982e00162c6", "10f5ff51664c42989f1c8e7eb6d310ac"));
+
+            Container.RegisterSingleton<RunKeeperAuth.AuthorizationSession>();
         }
 
         public static SettingsViewModel SettingsViewModel => Get<SettingsViewModel>();
-        public static RunKeeperSessionViewModel RunKeeperSessionViewModel => Get<RunKeeperSessionViewModel>();
+        public static ActivitiesViewModel ActivitiesViewModel => Get<ActivitiesViewModel>();
     }
 }

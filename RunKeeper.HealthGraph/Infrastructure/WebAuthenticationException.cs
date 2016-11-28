@@ -1,7 +1,7 @@
 ﻿using System;
 using Windows.Security.Authentication.Web;
 
-namespace RunKeeper.WinRT.HealthGraph
+namespace RunKeeper.WinRT.HealthGraph.Infrastructure
 {
     /// <summary>
     /// Exception for custom WebAuthenticationBroker errors

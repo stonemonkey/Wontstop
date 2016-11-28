@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RunKeeper.WinRT.HealthGraph
+namespace RunKeeper.WinRT.HealthGraph.Infrastructure
 {
     public static class HttpStringExtensions
     {

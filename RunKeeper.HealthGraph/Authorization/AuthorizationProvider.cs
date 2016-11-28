@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Security.Authentication.Web;
 using Newtonsoft.Json;
+using RunKeeper.WinRT.HealthGraph.Infrastructure;
 
 namespace RunKeeper.WinRT.HealthGraph.Authorization
 {
@@ -51,12 +52,12 @@ namespace RunKeeper.WinRT.HealthGraph.Authorization
         /// is denied.</exception>
         public async Task<T> AuthorizeAsync<T>() where T : class
         {
-            var facebookUrl = Urls.AppAuthorizeUrl +
+            var url = Urls.AppAuthorizeUrl +
                 $"?client_id={Uri.EscapeDataString(_clientId)}" +
                 $"&redirect_uri={Uri.EscapeDataString(_callbackUri.ToString())}" +
                 "&response_type=code";
 
-            var startUri = new Uri(facebookUrl);
+            var startUri = new Uri(url);
             var endUri = _callbackUri;
             try
             {
@@ -68,8 +69,8 @@ namespace RunKeeper.WinRT.HealthGraph.Authorization
             }
             catch (FileNotFoundException)
             {
-                // [cosmo 2015/6/10] this is silly but WebAuthenticationBroker throws FileNotFound in airplain mode
-                return null;
+                // [cosmo 2015/6/10] this is silly, WebAuthenticationBroker throws FileNotFound in airplain mode
+                throw new WebAuthenticationException(null);
             }
         }
 

@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace RunKeeper.WinRT.HealthGraph
+namespace RunKeeper.WinRT.HealthGraph.Infrastructure
 {
     /// <summary>
     /// Authorization provider abstraction used to perform authorization against external services

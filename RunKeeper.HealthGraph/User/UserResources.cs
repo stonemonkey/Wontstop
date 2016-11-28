@@ -1,38 +1,40 @@
-﻿namespace RunKeeper.WinRT.HealthGraph.User
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using RunKeeper.WinRT.HealthGraph.Infrastructure;
+
+namespace RunKeeper.WinRT.HealthGraph.User
 {
-    /// <summary>
-    /// RunKeeper user available resources (API URLs)
-    /// </summary>
-    public class UserResources : ReadOnlyKeyValueModel
+    public class UserResources
     {
-        /// <summary>
-        /// Retrives user id for the active session.
-        /// </summary>
-        /// <returns>The id</returns>
-        public string Id => GetValue("userID");
+        public string Id => _data.GetValue("userID");
+        public string Profile =>  _data.GetValue("profile");
+        public string Settings => _data.GetValue("settings");
+        public string Activities => _data.GetValue("fitness_activities");
 
-        /// <summary>
-        /// Retrives user profile API url for the active session.
-        /// </summary>
-        /// <returns>The url</returns>
-        public string ProfileUrl =>  GetUrl("profile");
+        private readonly IModelRepository _localRepository;
+        private readonly IModelRepository _serverRepository;
 
-        /// <summary>
-        /// Retrives user settings API url for the active session.
-        /// </summary>
-        /// <returns>The url</returns>
-        public string SettingsUrl => GetUrl("settings");
+        private const string Resource = "/user";
 
-        /// <summary>
-        /// Retrives user activities API url for the active session.
-        /// </summary>
-        /// <returns>The url</returns>
-        public string ActivitiesUrl => GetUrl("fitness_activities");
-        
-        private string GetUrl(string key)
+        public UserResources(
+            IModelRepository localRepository, 
+            IModelRepository serverRepository)
         {
-            var value = GetValue(key);
-            return value == null ? null : $"{Urls.ApiUrl}{value}";
+            _localRepository = localRepository;
+            _serverRepository = serverRepository;
+        }
+
+        private IDictionary<string, string> _data;
+
+        public async Task LoadAsync()
+        {
+            _data = await Resource.FatchCachedAsync(_localRepository, _serverRepository);
+        }
+
+        public async Task ClearAsync()
+        {
+            _data.Clear();
+            await _localRepository.DeleteAsync(Resource);
         }
     }
 }

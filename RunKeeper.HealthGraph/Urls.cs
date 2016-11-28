@@ -7,7 +7,6 @@
     {
         // Fixed URLs
         public static string ApiUrl = "https://api.runkeeper.com";
-        public static string UserResourcesUrl = $"{ApiUrl}/user";
 
         // Obtained RunKeeper portal when registering the application
         public static string AppAuthorizeUrl = "https://runkeeper.com/apps/authorize";

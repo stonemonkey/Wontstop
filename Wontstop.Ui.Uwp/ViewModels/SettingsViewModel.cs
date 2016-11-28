@@ -1,13 +1,15 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using Mvvm.WinRT.Commands;
 using Mvvm.WinRT.Messages;
 using PropertyChanged;
+using RunKeeper.WinRT.HealthGraph.Authorization;
+using RunKeeper.WinRT.HealthGraph.Infrastructure;
+using RunKeeper.WinRT.HealthGraph.User;
 
 namespace Wontstop.Ui.Uwp.ViewModels
 {
-    /// <summary>
-    /// Application settings view model
-    /// </summary>
     [ImplementPropertyChanged]
     public class SettingsViewModel : IHandle<BusyMessage>
     {
@@ -15,58 +17,128 @@ namespace Wontstop.Ui.Uwp.ViewModels
         /// Specifies if a background operation is executed in the background (async) therefore 
         /// Busy indicator should be shown to the user.
         /// </summary>
-        public bool Busy { get; private set; }
+        public bool Busy { get; set; }
+        
+        public UserProfile Profile { get; }
 
+        public AuthorizationSession Session { get; }
+
+        private readonly UserResources _userResources;
         private readonly IEventAggregator _eventAggregator;
 
-        public SettingsViewModel(IEventAggregator eventAggregator)
+        public SettingsViewModel(
+            IEventAggregator eventAggregator,
+            UserProfile userProfile,
+            UserResources userResources,
+            AuthorizationSession authorizationSession)
         {
             _eventAggregator = eventAggregator;
+            Profile = userProfile;
+            _userResources = userResources;
+            Session = authorizationSession;
         }
 
         private RelayCommand _loadComand;
-        /// <summary>
-        /// Performs async load operations after the view is loaded.
-        /// </summary>
         public RelayCommand LoadCommand => _loadComand ??
-            (_loadComand = new RelayCommand(async () => await LoadAsync()));
-        
-        /// <summary>
-        /// LoadCommand handler
-        /// </summary>
-        /// <returns>Awaitable task</returns>
-        protected virtual Task LoadAsync()
-        {
-            _eventAggregator.Subscribe(this);
+            (_loadComand = new RelayCommand(async () => 
+                await LoadAsync()));
 
-            return Task.FromResult(true);
+        protected async Task LoadAsync()
+        {
+            if (!Session.IsAuthorized)
+            {
+                return;
+            }
+
+            Busy = true;
+
+            try
+            {
+                await LoadProfileAsync();
+            }
+            catch (Exception exception)
+            {
+                _eventAggregator.PublishOnCurrentThread(exception);
+            }
+            finally
+            {
+                Busy = false;
+            }
         }
 
         private RelayCommand _unloadComand;
-        /// <summary>
-        /// Performs async save operations after view is uloaded.
-        /// </summary>
         public RelayCommand UnloadCommand => _unloadComand ??
             (_unloadComand = new RelayCommand(async () => await UnloadAsync()));
         
-        /// <summary>
-        /// UnloadCommand handler
-        /// </summary>
-        /// <returns>Awaitable task</returns>
         protected virtual Task UnloadAsync()
         {
-            _eventAggregator.Unsubscribe(this);
-
             return Task.FromResult(true);
         }
 
-        /// <summary>
-        /// Toggles busy indicator flag based on messages coming from other view models.
-        /// </summary>
-        /// <param name="message"></param>
+        private RelayCommand _connectComand;
+        public RelayCommand ConnectCommand => _connectComand ??
+            (_connectComand = new RelayCommand(async () => await ConnectAsync()));
+
+        protected virtual async Task ConnectAsync()
+        {
+            Busy = true;
+
+            try
+            {
+                await Session.AuthorizeAsync();
+                await LoadProfileAsync();
+            }
+            catch (WebAuthenticationException)
+            {
+                // user canceled authorization or authorization failed because of network connection
+                // we eat it since user has already informed about the error in the SSO page 
+            }
+            catch (Exception exception)
+            {
+                _eventAggregator.PublishOnCurrentThread(exception);
+            }
+            finally
+            {
+                Busy = false;
+            }
+        }
+
+        private async Task LoadProfileAsync()
+        {
+            await _userResources.LoadAsync();
+            Profile.SetResource(_userResources.Profile);
+            await Profile.LoadAsync();
+        }
+
+        private RelayCommand _disconnectComand;
+        public RelayCommand DisconnectCommand => _disconnectComand ??
+            (_disconnectComand = new RelayCommand(async () => await DisconnectAsync()));
+
+        protected virtual async Task DisconnectAsync()
+        {
+            Busy = true;
+
+            try
+            {
+                await Session.UnauthorizeAsync();
+
+                await _userResources.ClearAsync();
+                await Profile.ClearAsync();
+            }
+            catch (Exception exception)
+            {
+                _eventAggregator.PublishOnCurrentThread(exception);
+            }
+            finally
+            {
+                Busy = false;
+            }
+        }
+
         public void Handle(BusyMessage message)
         {
             Busy = message.Show;
+            Debug.WriteLine($"BUSY {Busy}");
         }
     }
 }

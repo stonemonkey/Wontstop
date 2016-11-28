@@ -7,13 +7,52 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" Loaded="OnLoaded">
-
+    xmlns:stateTriggers="using:WindowsStateTriggers"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    mc:Ignorable="d" Loaded="OnLoaded"
+    DataContext="{Binding ActivitiesViewModel, Source={StaticResource ViewModelLocator}}">
+    
+    <interactivity:Interaction.Behaviors>
+        <core:EventTriggerBehavior EventName="Loaded">
+            <core:InvokeCommandAction Command="{Binding LoadCommand}"/>
+        </core:EventTriggerBehavior>
+    </interactivity:Interaction.Behaviors>
+    
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <TextBlock 
-            VerticalAlignment="Center" 
-            HorizontalAlignment="Center"
-            Text="ActivitiesPage is under construction"
-            />
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup >
+                <VisualState x:Name="BusyState">
+                    <VisualState.StateTriggers>
+                        <stateTriggers:EqualsStateTrigger Value="{Binding Busy}" EqualTo="True"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="BusyProgress.Visibility" Value="Visible"/>
+                        <Setter Target="RunKeeperActivitiesView.Opacity" Value="0.5"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock x:Name="TitleTextBlock"
+            Margin="12"
+            Text="Activities"
+            Style="{ThemeResource TitleTextBlockStyle}"/>
+
+        <Grid x:Name="ActivitiesPanel"
+            Grid.Row="1">
+
+        </Grid>
+
+        <ProgressRing x:Name="BusyProgress"
+            Grid.Row="0" Grid.RowSpan="2"
+            IsActive="True"
+            Width="48" Height="48"
+            Visibility="Collapsed"/>
     </Grid>
 </Page>

@@ -9,11 +9,55 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
-    xmlns:views="using:Wontstop.Ui.Uwp.Views"
+    xmlns:local="using:RunKeeper.WinRT.HealthGraph.User"
     xmlns:stateTriggers="using:WindowsStateTriggers"
     mc:Ignorable="d"
     DataContext="{Binding SettingsViewModel, Source={StaticResource ViewModelLocator}}">
 
+    <Page.Resources>
+        <DataTemplate x:Key="UserProfileTemplate" x:DataType="local:UserProfile">
+            <Grid x:Name="ViewPanel" 
+                Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid x:Name="ProfileImagePanel"
+                    Margin="12"
+                    Background="Gray"
+                    Grid.Row="0" Grid.RowSpan="2" Grid.Column="0">
+                    <Image x:Name="ProfileImage"
+                        Width="100" Height="100"
+                        Source="{Binding Picture}"/>
+                </Grid>
+                <StackPanel x:Name="NamePanel"
+                    VerticalAlignment="Center"
+                    Grid.Row="0" Grid.Column="1">
+                    <TextBlock 
+                        Text="Name:"
+                        Style="{ThemeResource BodyTextBlockStyle}"/>
+                    <TextBlock x:Name="NameTextBlock"
+                        Text="{Binding Name}"
+                        Style="{ThemeResource BodyTextBlockStyle}"/>
+                </StackPanel>
+                <StackPanel x:Name="LocationPanel"
+                    VerticalAlignment="Center"
+                    Grid.Row="1" Grid.Column="1">
+                    <TextBlock 
+                        Text="Location:"
+                        Style="{ThemeResource BodyTextBlockStyle}"/>
+                    <TextBlock x:Name="LocationTextBlock"
+                        Text="{Binding Location}"
+                        Style="{ThemeResource BodyTextBlockStyle}"/>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+    
     <interactivity:Interaction.Behaviors>
         <core:EventTriggerBehavior EventName="Loaded">
             <core:InvokeCommandAction Command="{Binding LoadCommand}"/>
@@ -33,14 +77,16 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         <stateTriggers:EqualsStateTrigger Value="{Binding Busy}" EqualTo="True"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
+                        <Setter Target="ProfileView.Opacity" Value="0.5"/>
                         <Setter Target="BusyProgress.Visibility" Value="Visible"/>
-                        <Setter Target="RunKeeperSessionView.Opacity" Value="0.5"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -50,13 +96,35 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             Text="Settings"
             Style="{ThemeResource TitleTextBlockStyle}"/>
         
-        <views:RunKeeperSessionView x:Name="RunKeeperSessionView"
-            Grid.Row="1"/>
+        <ContentControl x:Name="ProfileContent"
+            Grid.Row="1"
+            Content="{Binding Profile}"
+            ContentTemplate="{StaticResource UserProfileTemplate}"
+            Visibility="{Binding Session.IsAuthorized, Converter={StaticResource BoolToVisibilityConverter}}">
+        </ContentControl>
+
+        <Grid x:Name="SessionPanel"
+            Grid.Row="2">
+            <Button x:Name="RunKeeperConnectButton" 
+                Margin="8"
+                VerticalAlignment="Top"
+                Content="Connect to RunKeeper"
+                Command="{Binding ConnectCommand}"
+                Visibility="{Binding Session.IsAuthorized, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}"
+                />
+            <Button x:Name="RunKeeperDisconnectButton" 
+                Margin="8"
+                VerticalAlignment="Top"
+                Content="Disconnect from RunKeeper"
+                Command="{Binding DisconnectCommand}"
+                Visibility="{Binding Session.IsAuthorized, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=False}"
+                />
+        </Grid>
         
         <ProgressRing x:Name="BusyProgress"
             Grid.Row="0" Grid.RowSpan="2"
             IsActive="True"
             Width="48" Height="48"
-            Visibility="Collapsed"/>
+            Visibility="{Binding Busy, Converter={StaticResource BoolToVisibilityConverter}}"/>
     </Grid>
 </Page>
