@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) Costin Morariu. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Mvvm.WinRT.Commands;
@@ -13,10 +16,6 @@ namespace Wontstop.Ui.Uwp.ViewModels
     [ImplementPropertyChanged]
     public class SettingsViewModel : IHandle<BusyMessage>
     {
-        /// <summary>
-        /// Specifies if a background operation is executed in the background (async) therefore 
-        /// Busy indicator should be shown to the user.
-        /// </summary>
         public bool Busy { get; set; }
         
         public UserProfile Profile { get; }

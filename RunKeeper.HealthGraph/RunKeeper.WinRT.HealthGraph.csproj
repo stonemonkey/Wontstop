@@ -38,6 +38,8 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Activities\ActivityHistoryItemDto.cs" />
+    <Compile Include="Activities\ActivityHistoryPageDto.cs" />
     <Compile Include="Authorization\AuthorizationProvider.cs" />
     <Compile Include="Authorization\AuthorizationSession.cs" />
     <Compile Include="Infrastructure\DictionaryExtensions.cs" />
@@ -50,6 +52,7 @@
     <Compile Include="Infrastructure\HttpRepository.cs" />
     <Compile Include="Infrastructure\IModelRepository.cs" />
     <Compile Include="Urls.cs" />
+    <Compile Include="Activities\History.cs" />
     <Compile Include="User\UserProfile.cs" />
     <Compile Include="User\UserResources.cs" />
     <Compile Include="Infrastructure\WebAuthenticationException.cs" />

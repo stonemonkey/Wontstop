@@ -1,53 +1,52 @@
-﻿using System;
+﻿// Copyright (c) Costin Morariu. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System;
 using System.Threading.Tasks;
 using Mvvm.WinRT.Commands;
 using Mvvm.WinRT.Messages;
 using PropertyChanged;
+using RunKeeper.WinRT.HealthGraph.Activities;
 using RunKeeper.WinRT.HealthGraph.Authorization;
+using RunKeeper.WinRT.HealthGraph.User;
 
 namespace Wontstop.Ui.Uwp.ViewModels
 {
-    /// <summary>
-    /// Activities view model
-    /// </summary>
     [ImplementPropertyChanged]
     public class ActivitiesViewModel : IHandle<BusyMessage>
     {
-        /// <summary>
-        /// Specifies if a background operation is executed in the background (async) therefore 
-        /// Busy indicator should be shown to the user.
-        /// </summary>
         public bool Busy { get; private set; }
 
+        public History History { get; }
+
+        public AuthorizationSession Session { get; }
+
+        private readonly UserResources _userResources;
         private readonly IEventAggregator _eventAggregator;
-        private readonly AuthorizationSession _authorizationSession;
 
         public ActivitiesViewModel(
             IEventAggregator eventAggregator, 
+            History history,
+            UserResources userResources,
             AuthorizationSession authorizationSession)
         {
             _eventAggregator = eventAggregator;
-            _authorizationSession = authorizationSession;
+            History = history;
+            Session = authorizationSession;
+            _userResources = userResources;
         }
 
         private RelayCommand _loadComand;
-        /// <summary>
-        /// Performs async load operations after the view is loaded.
-        /// </summary>
         public RelayCommand LoadCommand => _loadComand ??
             (_loadComand = new RelayCommand(async () => await LoadAsync()));
         
-        /// <summary>
-        /// LoadCommand handler
-        /// </summary>
-        /// <returns>Awaitable task</returns>
         protected virtual async Task LoadAsync()
         {
             Busy = true;
 
             try
             {
-                await LoadActivitiesDataAsync();
+                await LoadHistoryAsync();
             }
             catch (Exception exception)
             {
@@ -59,31 +58,22 @@ namespace Wontstop.Ui.Uwp.ViewModels
             }
         }
 
-        private Task LoadActivitiesDataAsync()
+        private async Task LoadHistoryAsync()
         {
-            return Task.FromResult(true);
+            await _userResources.LoadAsync();
+            History.SetResource(_userResources.Activities);
+            await History.LoadAsync();
         }
 
         private RelayCommand _unloadComand;
-        /// <summary>
-        /// Performs async save operations after view is uloaded.
-        /// </summary>
         public RelayCommand UnloadCommand => _unloadComand ??
             (_unloadComand = new RelayCommand(async () => await UnloadAsync()));
         
-        /// <summary>
-        /// UnloadCommand handler
-        /// </summary>
-        /// <returns>Awaitable task</returns>
         protected virtual Task UnloadAsync()
         {
             return Task.FromResult(true);
         }
 
-        /// <summary>
-        /// Toggles busy indicator flag based on messages coming from other view models.
-        /// </summary>
-        /// <param name="message"></param>
         public void Handle(BusyMessage message)
         {
             Busy = message.Show;

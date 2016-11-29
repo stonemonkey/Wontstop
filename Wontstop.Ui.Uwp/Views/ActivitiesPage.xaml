@@ -10,8 +10,55 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:stateTriggers="using:WindowsStateTriggers"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:local="using:RunKeeper.WinRT.HealthGraph.Activities"
     mc:Ignorable="d" Loaded="OnLoaded"
     DataContext="{Binding ActivitiesViewModel, Source={StaticResource ViewModelLocator}}">
+    
+    <Page.Resources>
+        <CollectionViewSource x:Key="HistoryCollectionViewSource" 
+            Source="{Binding History.Items}"
+            IsSourceGrouped="True"/>
+
+        <DataTemplate x:Key="EmptyDataTemplate">
+            <Grid/>
+        </DataTemplate>
+
+        <DataTemplate x:Key="HistoryGroupHeaderDataTemplate">
+            <TextBlock
+                Text="{Binding Key}"
+                Style="{StaticResource SubtitleTextBlockStyle}"/>
+        </DataTemplate>
+        
+        <DataTemplate x:Key="HistoryCollapsedGroupHeaderDataTemplate">
+            <TextBlock
+                Text="{Binding Group.Key}"
+                Style="{StaticResource SubtitleTextBlockStyle}"/>
+        </DataTemplate>
+        
+        <DataTemplate x:Key="HistoryItemTemplate" x:DataType="local:ActivityHistoryItemDto">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock x:Name="ActivityTimeTextBlock"
+                    Margin="0,0,0,2" 
+                    VerticalAlignment="Bottom"
+                    Style="{StaticResource BodyTextBlockStyle}"
+                    Text="{Binding StartTime, Converter={StaticResource DateTimeToStringConverter}}"/>
+                <TextBlock x:Name="ActivityTypeTextBlock"
+                    Margin="8,0,0,0" 
+                    VerticalAlignment="Bottom"
+                    Text="{Binding Type}"
+                    Style="{StaticResource SubtitleTextBlockStyle}"/>
+                <TextBlock x:Name="ActivityDistanceTextBlock"
+                    Margin="8,0,0,2"
+                    VerticalAlignment="Bottom"
+                    Style="{StaticResource BodyTextBlockStyle}"
+                    Text="{Binding TotalDistance, Converter={StaticResource DoubleToStringConverter}}"/>
+                <TextBlock x:Name="ActivityDistanceUnitTextBlock"
+                    Margin="4,0,0,2" Text="Km"
+                    VerticalAlignment="Bottom"
+                    Style="{StaticResource BodyTextBlockStyle}"/>
+            </StackPanel>
+        </DataTemplate>
+    </Page.Resources>
     
     <interactivity:Interaction.Behaviors>
         <core:EventTriggerBehavior EventName="Loaded">
@@ -19,16 +66,18 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
         </core:EventTriggerBehavior>
     </interactivity:Interaction.Behaviors>
     
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid x:Name="PagePanel"
+        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        
         <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup >
+            <VisualStateGroup>
                 <VisualState x:Name="BusyState">
                     <VisualState.StateTriggers>
                         <stateTriggers:EqualsStateTrigger Value="{Binding Busy}" EqualTo="True"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
+                        <Setter Target="PagePanel.Opacity" Value="0.5"/>
                         <Setter Target="BusyProgress.Visibility" Value="Visible"/>
-                        <Setter Target="RunKeeperActivitiesView.Opacity" Value="0.5"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
@@ -41,13 +90,30 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
 
         <TextBlock x:Name="TitleTextBlock"
             Margin="12"
-            Text="Activities"
+            Text="History"
             Style="{ThemeResource TitleTextBlockStyle}"/>
 
-        <Grid x:Name="ActivitiesPanel"
+        <SemanticZoom x:Name="ActivitiesSemanticZoom"
             Grid.Row="1">
-
-        </Grid>
+            <SemanticZoom.ZoomedInView>
+                <ListView x:Name="ActivitiesList" 
+                    ItemTemplate="{StaticResource HistoryItemTemplate}"
+                    ItemsSource="{Binding Source={StaticResource HistoryCollectionViewSource}}">
+                    <ListView.GroupStyle>
+                        <GroupStyle HidesIfEmpty="True" 
+                            HeaderTemplate="{StaticResource HistoryGroupHeaderDataTemplate}">
+                        </GroupStyle>
+                    </ListView.GroupStyle>
+                </ListView>
+            </SemanticZoom.ZoomedInView>
+            <SemanticZoom.ZoomedOutView>
+                <ListView x:Name="GroupedActivitiesList"
+                    HeaderTemplate="{StaticResource EmptyDataTemplate}"
+                    ItemTemplate="{StaticResource HistoryCollapsedGroupHeaderDataTemplate}"
+                    ItemsSource="{Binding Source={StaticResource HistoryCollectionViewSource}, Path=CollectionGroups}">
+                </ListView>
+            </SemanticZoom.ZoomedOutView>
+        </SemanticZoom>
 
         <ProgressRing x:Name="BusyProgress"
             Grid.Row="0" Grid.RowSpan="2"

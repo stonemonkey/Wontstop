@@ -7,6 +7,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Wontstop.Ui.Uwp"
     xmlns:converters="using:Microsoft.Toolkit.Uwp.UI.Converters"
+    xmlns:localConverters="using:Wontstop.Ui.Uwp.Converters"
     RequestedTheme="Light">
     
     <Application.Resources>
@@ -14,6 +15,8 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
         
         <!--converters-->
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <localConverters:DateTimeToStringConverter x:Key="DateTimeToStringConverter"/>
+        <localConverters:DoubleMetersToStringKiloMetersConverter x:Key="DoubleToStringConverter"/>
 
     </Application.Resources>
 </Application>

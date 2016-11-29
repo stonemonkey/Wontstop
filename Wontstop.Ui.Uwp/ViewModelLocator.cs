@@ -3,6 +3,7 @@
 
 using Mvvm.WinRT;
 using Mvvm.WinRT.Messages;
+using RunKeeper.WinRT.HealthGraph.Activities;
 using RunKeeper.WinRT.HealthGraph.Infrastructure;
 using RunKeeper.WinRT.HealthGraph.User;
 using SimpleInjector;
@@ -61,15 +62,20 @@ namespace Wontstop.Ui.Uwp
         {
             Container.RegisterSingleton<IEventAggregator, EventAggregator>();
 
-            Container.RegisterSingleton(
-                typeof(UserResources),
-                () => new UserResources(
+            Container.Register(
+                typeof(History),
+                () => new History(
+                    Container.GetInstance<HttpRepository>()));
+
+            Container.Register(
+                typeof(UserProfile),
+                () => new UserProfile(
                     Container.GetInstance<LocalStorageRepository>(), 
                     Container.GetInstance<HttpRepository>()));
 
             Container.RegisterSingleton(
-                typeof(UserProfile),
-                () => new UserProfile(
+                typeof(UserResources),
+                () => new UserResources(
                     Container.GetInstance<LocalStorageRepository>(), 
                     Container.GetInstance<HttpRepository>()));
 
@@ -81,7 +87,7 @@ namespace Wontstop.Ui.Uwp
             Container.RegisterSingleton<RunKeeperAuth.AuthorizationSession>();
         }
 
-        public static SettingsViewModel SettingsViewModel => Get<SettingsViewModel>();
         public static ActivitiesViewModel ActivitiesViewModel => Get<ActivitiesViewModel>();
+        public static SettingsViewModel SettingsViewModel => Get<SettingsViewModel>();
     }
 }

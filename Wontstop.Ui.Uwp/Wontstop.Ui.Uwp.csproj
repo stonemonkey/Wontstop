@@ -94,6 +94,8 @@
     <None Include="Wontstop.Ui.Uwp_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converters\DateTimeToStringConverter.cs" />
+    <Compile Include="Converters\DoubleMetersToStringKiloMetersConverter.cs" />
     <Compile Include="ViewModelLocator.cs" />
     <Compile Include="ViewModels\ActivitiesViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />

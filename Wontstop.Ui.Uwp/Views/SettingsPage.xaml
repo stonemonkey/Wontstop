@@ -51,6 +51,9 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         Text="Location:"
                         Style="{ThemeResource BodyTextBlockStyle}"/>
                     <TextBlock x:Name="LocationTextBlock"
+                        MaxLines="1"
+                        TextWrapping="NoWrap"
+                        TextTrimming="CharacterEllipsis"                               
                         Text="{Binding Location}"
                         Style="{ThemeResource BodyTextBlockStyle}"/>
                 </StackPanel>
@@ -71,13 +74,13 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
         Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
         <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup >
+            <VisualStateGroup>
                 <VisualState x:Name="BusyState">
                     <VisualState.StateTriggers>
                         <stateTriggers:EqualsStateTrigger Value="{Binding Busy}" EqualTo="True"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="ProfileView.Opacity" Value="0.5"/>
+                        <Setter Target="PagePanel.Opacity" Value="0.5"/>
                         <Setter Target="BusyProgress.Visibility" Value="Visible"/>
                     </VisualState.Setters>
                 </VisualState>
@@ -122,9 +125,9 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
         </Grid>
         
         <ProgressRing x:Name="BusyProgress"
-            Grid.Row="0" Grid.RowSpan="2"
+            Grid.Row="0" Grid.RowSpan="4"
             IsActive="True"
             Width="48" Height="48"
-            Visibility="{Binding Busy, Converter={StaticResource BoolToVisibilityConverter}}"/>
+            Visibility="Collapsed"/>
     </Grid>
 </Page>
