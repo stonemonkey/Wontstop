@@ -33,7 +33,7 @@ namespace RunKeeper.WinRT.HealthGraph.Activities
         public DateTime StartTime { get; set; }
 
         [JsonProperty("total_calories")]
-        public int TotalCalories { get; set; }
+        public float TotalCalories { get; set; }
 
         [JsonProperty("total_distance")]
         public double TotalDistance { get; set; }

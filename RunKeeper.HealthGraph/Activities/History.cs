@@ -31,9 +31,16 @@ namespace RunKeeper.WinRT.HealthGraph.Activities
 
         public async Task LoadAsync()
         {
-            var historyPage = await _serverRepository.ReadAsyc<ActivityHistoryPageDto>(_resource);
-            Items = historyPage.Items
-                .GroupBy(x => GetMonthGroupNameFor(x.StartTime))
+            var nextPagePath = _resource;
+            var history = new List<ActivityHistoryItemDto>();
+            do
+            {
+                var page = await _serverRepository.ReadAsyc<ActivityHistoryPageDto>(nextPagePath);
+                history.AddRange(page.Items);
+                nextPagePath = page.NextPageUrl;
+            } while (nextPagePath != null);
+
+            Items = history.GroupBy(x => GetMonthGroupNameFor(x.StartTime))
                 .ToList();
         }
 

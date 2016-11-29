@@ -82,7 +82,7 @@ namespace Wontstop.Ui.Uwp
             Container.RegisterSingleton(
                 typeof(IAuthorizationProvider),
                 () => new RunKeeperAuth.AuthorizationProvider(
-                        "85588e575f7e46b0a2b8b982e00162c6", "10f5ff51664c42989f1c8e7eb6d310ac"));
+                        "<clientId>", "<clientSecret>"));
 
             Container.RegisterSingleton<RunKeeperAuth.AuthorizationSession>();
         }
