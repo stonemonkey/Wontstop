@@ -11,7 +11,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:local="using:RunKeeper.WinRT.HealthGraph.Activities"
-    mc:Ignorable="d" Loaded="OnLoaded"
+    mc:Ignorable="d"
     DataContext="{Binding ActivitiesViewModel, Source={StaticResource ViewModelLocator}}">
     
     <Page.Resources>
@@ -97,6 +97,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             Grid.Row="1">
             <SemanticZoom.ZoomedInView>
                 <ListView x:Name="ActivitiesList" 
+                    IsItemClickEnabled="True"
                     ItemTemplate="{StaticResource HistoryItemTemplate}"
                     ItemsSource="{Binding Source={StaticResource HistoryCollectionViewSource}}">
                     <ListView.GroupStyle>
@@ -104,6 +105,12 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                             HeaderTemplate="{StaticResource HistoryGroupHeaderDataTemplate}">
                         </GroupStyle>
                     </ListView.GroupStyle>
+                    <interactivity:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="ItemClick">
+                            <core:InvokeCommandAction Command="{Binding ItemClickCommand}"
+                                CommandParameter="{Binding ElementName=ActivitiesList, Path=SelectedItem}"/>
+                        </core:EventTriggerBehavior>
+                    </interactivity:Interaction.Behaviors>
                 </ListView>
             </SemanticZoom.ZoomedInView>
             <SemanticZoom.ZoomedOutView>

@@ -1,6 +1,8 @@
 // Copyright (c) Costin Morariu. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Mvvm.WinRT;
 using Mvvm.WinRT.Messages;
 using RunKeeper.WinRT.HealthGraph.Activities;
@@ -62,6 +64,12 @@ namespace Wontstop.Ui.Uwp
         {
             Container.RegisterSingleton<IEventAggregator, EventAggregator>();
 
+            Container.RegisterSingleton(
+                typeof(INavigationService),
+                () => new NavigationService(
+                    (Frame) Window.Current.Content,
+                    Container.GetInstance<IEventAggregator>()));
+
             Container.Register(
                 typeof(History),
                 () => new History(
@@ -82,12 +90,13 @@ namespace Wontstop.Ui.Uwp
             Container.RegisterSingleton(
                 typeof(IAuthorizationProvider),
                 () => new RunKeeperAuth.AuthorizationProvider(
-                        "<clientId>", "<clientSecret>"));
+                        "<clientId>", "<clientSecret> "));
 
             Container.RegisterSingleton<RunKeeperAuth.AuthorizationSession>();
         }
 
         public static ActivitiesViewModel ActivitiesViewModel => Get<ActivitiesViewModel>();
+        public static ActivityViewModel ActivityViewModel => Get<ActivityViewModel>();
         public static SettingsViewModel SettingsViewModel => Get<SettingsViewModel>();
     }
 }

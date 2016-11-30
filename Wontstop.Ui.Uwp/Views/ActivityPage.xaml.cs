@@ -5,9 +5,9 @@ using Windows.UI.Xaml.Controls;
 
 namespace Wontstop.Ui.Uwp.Views
 {
-    public sealed partial class ActivitiesPage : Page
+    public sealed partial class ActivityPage : Page
     {
-        public ActivitiesPage()
+        public ActivityPage()
         {
             InitializeComponent();
         }

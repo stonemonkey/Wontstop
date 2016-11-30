@@ -3,42 +3,32 @@
 
 using System;
 using System.Threading.Tasks;
-using Mvvm.WinRT;
 using Mvvm.WinRT.Commands;
 using Mvvm.WinRT.Messages;
 using PropertyChanged;
-using RunKeeper.WinRT.HealthGraph.Activities;
 using RunKeeper.WinRT.HealthGraph.Authorization;
 using RunKeeper.WinRT.HealthGraph.User;
-using Wontstop.Ui.Uwp.Views;
 
 namespace Wontstop.Ui.Uwp.ViewModels
 {
     [ImplementPropertyChanged]
-    public class ActivitiesViewModel : IHandle<BusyMessage>
+    public class ActivityViewModel : IHandle<BusyMessage>
     {
         public bool Busy { get; private set; }
-
-        public History History { get; }
 
         public AuthorizationSession Session { get; }
 
         private readonly UserResources _userResources;
 
         private readonly IEventAggregator _eventAggregator;
-        private readonly INavigationService _navigationService;
 
-        public ActivitiesViewModel(
+        public ActivityViewModel(
             IEventAggregator eventAggregator,
-            INavigationService navigationService, 
-            History history,
             UserResources userResources,
             AuthorizationSession authorizationSession)
         {
             _eventAggregator = eventAggregator;
-            _navigationService = navigationService;
 
-            History = history;
             _userResources = userResources;
             Session = authorizationSession;
         }
@@ -53,7 +43,7 @@ namespace Wontstop.Ui.Uwp.ViewModels
 
             try
             {
-                await LoadHistoryAsync();
+                await LoadActivityAsync();
             }
             catch (Exception exception)
             {
@@ -65,20 +55,9 @@ namespace Wontstop.Ui.Uwp.ViewModels
             }
         }
 
-        private async Task LoadHistoryAsync()
+        private async Task LoadActivityAsync()
         {
             await _userResources.LoadAsync();
-            History.SetResource(_userResources.Activities);
-            await History.LoadAsync();
-        }
-
-        private RelayCommand<ActivityHistoryItemDto> _itemClickComand;
-        public RelayCommand<ActivityHistoryItemDto> ItemClickCommand => _itemClickComand ??
-            (_itemClickComand = new RelayCommand<ActivityHistoryItemDto>(ItemClick));
-
-        protected virtual void ItemClick(ActivityHistoryItemDto item)
-        {
-            _navigationService.Navigate(typeof(ActivityPage));
         }
 
         public void Handle(BusyMessage message)

@@ -45,7 +45,6 @@ namespace Mvvm.WinRT.Commands
 
                 if (target != null)
                 {
-                    // Keep a reference to the target to control the WeakAction's lifetime.
                     Reference = new WeakReference(target);
                 }
 
@@ -163,7 +162,6 @@ namespace Mvvm.WinRT.Commands
 
                 if (target != null)
                 {
-                    // Keep a reference to the target to control the WeakAction's lifetime.
                     Reference = new WeakReference(target);
                 }
 
@@ -171,6 +169,8 @@ namespace Mvvm.WinRT.Commands
             }
 
             Method = action.GetMethodInfo();
+
+            ActionReference = new WeakReference(action.Target);
 
             Reference = new WeakReference(target);
         }
