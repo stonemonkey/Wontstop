@@ -41,7 +41,7 @@ namespace Wontstop.Ui.Uwp
         protected Container Container;
 
         /// <summary>
-        /// Creates and configures internal ServiceLocator container.
+        /// Creates and configures internal container.
         /// </summary>
         protected virtual void CreateContainer()
         {

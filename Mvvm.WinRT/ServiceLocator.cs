@@ -11,7 +11,7 @@ namespace Mvvm.WinRT
     public class ServiceLocator
     {
         /// <summary>
-        /// Function responsable for instance location. Encapsulates a get instance operation on a 
+        /// Function responsible for instance location. Encapsulates a get instance operation on a 
         /// concrete IoC container.
         /// </summary>
         public static Func<Type, object> GetInstance { private get; set; }

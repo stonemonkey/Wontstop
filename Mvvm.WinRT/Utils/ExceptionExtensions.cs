@@ -7,8 +7,16 @@ using Windows.UI.Popups;
 
 namespace Mvvm.WinRT.Utils
 {
+    /// <summary>
+    /// Helper methods for directing exceptions towards the UI
+    /// </summary>
     public static class ExceptionExtensions
     {
+        /// <summary>
+        /// Shows error dialog message from current exception
+        /// </summary>
+        /// <param name="exception">Current exception</param>
+        /// <returns>Awaitable task</returns>
         public static async Task ShowErrorAsync(this Exception exception)
         {
             var dialog = new MessageDialog(

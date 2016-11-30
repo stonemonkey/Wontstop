@@ -1,4 +1,7 @@
-﻿namespace Mvvm.WinRT.Messages
+﻿// Copyright (c) Costin Morariu. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+namespace Mvvm.WinRT.Messages
 {
     /// <summary>
     /// Message send from view models to signal show/hide busy on UI.
