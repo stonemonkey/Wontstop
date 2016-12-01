@@ -95,6 +95,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converters\DateTimeToStringConverter.cs" />
+    <Compile Include="Converters\DoubleDurationToStringTimeConverter.cs" />
     <Compile Include="Converters\DoubleMetersToStringKiloMetersConverter.cs" />
     <Compile Include="ViewModelLocator.cs" />
     <Compile Include="ViewModels\ActivityViewModel.cs" />

@@ -3,34 +3,40 @@
 
 using System;
 using System.Threading.Tasks;
+using Windows.UI.Xaml.Navigation;
+using Mvvm.WinRT;
 using Mvvm.WinRT.Commands;
 using Mvvm.WinRT.Messages;
 using PropertyChanged;
-using RunKeeper.WinRT.HealthGraph.Authorization;
-using RunKeeper.WinRT.HealthGraph.User;
+using RunKeeper.WinRT.HealthGraph.Activities;
 
 namespace Wontstop.Ui.Uwp.ViewModels
 {
     [ImplementPropertyChanged]
-    public class ActivityViewModel : IHandle<BusyMessage>
+    public class ActivityViewModel : IActivable, IHandle<BusyMessage>
     {
         public bool Busy { get; private set; }
 
-        public AuthorizationSession Session { get; }
-
-        private readonly UserResources _userResources;
+        public Activity Activity { get; }
 
         private readonly IEventAggregator _eventAggregator;
 
         public ActivityViewModel(
             IEventAggregator eventAggregator,
-            UserResources userResources,
-            AuthorizationSession authorizationSession)
+            Activity activity)
         {
             _eventAggregator = eventAggregator;
+            Activity = activity;
+        }
 
-            _userResources = userResources;
-            Session = authorizationSession;
+        public void Activate(object parameter)
+        {
+            var navigationEventArgs = (NavigationEventArgs) parameter;
+            var resource = navigationEventArgs?.Parameter?.ToString();
+            if (resource != null)
+            {
+                Activity.SetResource(resource);
+            }
         }
 
         private RelayCommand _loadComand;
@@ -57,7 +63,7 @@ namespace Wontstop.Ui.Uwp.ViewModels
 
         private async Task LoadActivityAsync()
         {
-            await _userResources.LoadAsync();
+            await Activity.LoadAsync();
         }
 
         public void Handle(BusyMessage message)

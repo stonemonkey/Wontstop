@@ -38,8 +38,13 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Activities\Activity.cs" />
+    <Compile Include="Activities\ActivityDto.cs" />
     <Compile Include="Activities\ActivityHistoryItemDto.cs" />
     <Compile Include="Activities\ActivityHistoryPageDto.cs" />
+    <Compile Include="Activities\DistanceItemDto.cs" />
+    <Compile Include="Activities\HeartRateItemDto.cs" />
+    <Compile Include="Activities\TrackItemDto.cs" />
     <Compile Include="Authorization\AuthorizationProvider.cs" />
     <Compile Include="Authorization\AuthorizationSession.cs" />
     <Compile Include="Infrastructure\DictionaryExtensions.cs" />

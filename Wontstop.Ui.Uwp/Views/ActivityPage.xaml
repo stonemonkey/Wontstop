@@ -34,6 +34,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     <VisualState.Setters>
                         <Setter Target="PagePanel.Opacity" Value="0.5"/>
                         <Setter Target="BusyProgress.Visibility" Value="Visible"/>
+                        <Setter Target="ContentPanel.Visibility" Value="Collapsed"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
@@ -49,10 +50,60 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             Text="Activity"
             Style="{ThemeResource TitleTextBlockStyle}"/>
 
-        <GridView x:Name="ContentPanel"
+        <Grid x:Name="ContentPanel"
             Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-        </GridView>
+            <StackPanel Grid.Row="0"
+                Margin="16,0,16,0">
+                <TextBlock x:Name="ActivityTypeTextBlock"
+                    VerticalAlignment="Bottom"
+                    Text="{Binding Activity.Type}"
+                    Style="{StaticResource SubtitleTextBlockStyle}"/>
+                <TextBlock x:Name="ActivityTimeTextBlock"
+                    VerticalAlignment="Bottom"
+                    Style="{StaticResource BodyTextBlockStyle}"
+                    Text="{Binding Activity.StartTime}"/>
+            </StackPanel>
+            <StackPanel Grid.Row="1"
+                Margin="16,8,16,0"
+                Orientation="Horizontal"
+                VerticalAlignment="Top">
+                <StackPanel>
+                    <TextBlock x:Name="ActivityDistanceUnitTextBlock"
+                        Text="Km"
+                        VerticalAlignment="Bottom"
+                        Style="{StaticResource BodyTextBlockStyle}"/>
+                    <TextBlock x:Name="ActivityDistanceTextBlock"
+                        VerticalAlignment="Bottom"
+                        Style="{StaticResource SubtitleTextBlockStyle}"
+                        Text="{Binding Activity.TotalDistance, Converter={StaticResource DoubleMetersToStringKiloMetersConverter}}"/>
+                </StackPanel>
+                <StackPanel Margin="8,0,0,0">
+                    <TextBlock x:Name="ActivityDurationTitleTextBlock"
+                        Text="Duration"
+                        VerticalAlignment="Bottom"
+                        Style="{StaticResource BodyTextBlockStyle}"/>
+                    <TextBlock x:Name="ActivityDurationTextBlock"
+                        VerticalAlignment="Bottom"
+                        Style="{StaticResource SubtitleTextBlockStyle}"
+                        Text="{Binding Activity.Duration, Converter={StaticResource DoubleDurationToStringTimeConverter}}"/>
+                </StackPanel>
+                <StackPanel Margin="8,0,0,0">
+                    <TextBlock x:Name="ActivityHeartRateTitleTextBlock"
+                        Text="Heart rate"
+                        VerticalAlignment="Bottom"
+                        Style="{StaticResource BodyTextBlockStyle}"/>
+                    <TextBlock x:Name="ActivityHeartRateTextBlock"
+                        VerticalAlignment="Bottom"
+                        Style="{StaticResource SubtitleTextBlockStyle}"
+                        Text="{Binding Activity.AverageHeartRate}"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
 
         <ProgressRing x:Name="BusyProgress"
             Grid.Row="0" Grid.RowSpan="2"

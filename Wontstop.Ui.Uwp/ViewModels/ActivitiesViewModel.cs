@@ -8,7 +8,6 @@ using Mvvm.WinRT.Commands;
 using Mvvm.WinRT.Messages;
 using PropertyChanged;
 using RunKeeper.WinRT.HealthGraph.Activities;
-using RunKeeper.WinRT.HealthGraph.Authorization;
 using RunKeeper.WinRT.HealthGraph.User;
 using Wontstop.Ui.Uwp.Views;
 
@@ -21,8 +20,6 @@ namespace Wontstop.Ui.Uwp.ViewModels
 
         public History History { get; }
 
-        public AuthorizationSession Session { get; }
-
         private readonly UserResources _userResources;
 
         private readonly IEventAggregator _eventAggregator;
@@ -30,17 +27,15 @@ namespace Wontstop.Ui.Uwp.ViewModels
 
         public ActivitiesViewModel(
             IEventAggregator eventAggregator,
-            INavigationService navigationService, 
+            INavigationService navigationService,
             History history,
-            UserResources userResources,
-            AuthorizationSession authorizationSession)
+            UserResources userResources)
         {
             _eventAggregator = eventAggregator;
             _navigationService = navigationService;
 
             History = history;
             _userResources = userResources;
-            Session = authorizationSession;
         }
 
         private RelayCommand _loadComand;
@@ -78,7 +73,7 @@ namespace Wontstop.Ui.Uwp.ViewModels
 
         protected virtual void ItemClick(ActivityHistoryItemDto item)
         {
-            _navigationService.Navigate(typeof(ActivityPage));
+            _navigationService.Navigate(typeof(ActivityPage), item.ResourcePath);
         }
 
         public void Handle(BusyMessage message)

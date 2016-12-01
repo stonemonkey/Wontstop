@@ -16,7 +16,8 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
         <!--converters-->
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <localConverters:DateTimeToStringConverter x:Key="DateTimeToStringConverter"/>
-        <localConverters:DoubleMetersToStringKiloMetersConverter x:Key="DoubleToStringConverter"/>
+        <localConverters:DoubleDurationToStringTimeConverter x:Key="DoubleDurationToStringTimeConverter"/>
+        <localConverters:DoubleMetersToStringKiloMetersConverter x:Key="DoubleMetersToStringKiloMetersConverter"/>
 
     </Application.Resources>
 </Application>

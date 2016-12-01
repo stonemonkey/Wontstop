@@ -71,6 +71,11 @@ namespace Wontstop.Ui.Uwp
                     Container.GetInstance<IEventAggregator>()));
 
             Container.Register(
+                typeof(Activity),
+                () => new Activity(
+                    Container.GetInstance<HttpRepository>()));
+
+            Container.Register(
                 typeof(History),
                 () => new History(
                     Container.GetInstance<HttpRepository>()));
@@ -90,7 +95,7 @@ namespace Wontstop.Ui.Uwp
             Container.RegisterSingleton(
                 typeof(IAuthorizationProvider),
                 () => new RunKeeperAuth.AuthorizationProvider(
-                        "<clientId>", "<clientSecret> "));
+                        "85588e575f7e46b0a2b8b982e00162c6", "10f5ff51664c42989f1c8e7eb6d310ac"));
 
             Container.RegisterSingleton<RunKeeperAuth.AuthorizationSession>();
         }

@@ -51,7 +51,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     Margin="8,0,0,2"
                     VerticalAlignment="Bottom"
                     Style="{StaticResource BodyTextBlockStyle}"
-                    Text="{Binding TotalDistance, Converter={StaticResource DoubleToStringConverter}}"/>
+                    Text="{Binding TotalDistance, Converter={StaticResource DoubleMetersToStringKiloMetersConverter}}"/>
                 <TextBlock x:Name="ActivityDistanceUnitTextBlock"
                     Margin="4,0,0,2" Text="Km"
                     VerticalAlignment="Bottom"
