@@ -2,9 +2,11 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!--<x:String x:Key="RunKeeperClientId">your_id</x:String>
-    <x:String x:Key="RunKeeperClientSecret">your_token</x:String>
+    <!-- Uncomment the following lines and fill with your application specific values
+    <x:String x:Key="RunKeeperClientId">your_runkeeper_app_id</x:String>
+    <x:String x:Key="RunKeeperClientSecret">your_runkeeper_app_token</x:String>
 
-    <x:String x:Key="BingMapServiceTocken">your_token</x:String>-->
+    <x:String x:Key="BingMapServiceTocken">your_bing_map_service_token</x:String>
+    -->
 
 </ResourceDictionary>
