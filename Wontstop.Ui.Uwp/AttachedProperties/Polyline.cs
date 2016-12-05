@@ -9,6 +9,7 @@ using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls.Maps;
 using RunKeeper.WinRT.HealthGraph.Activities;
+using Windows.Foundation;
 
 namespace Wontstop.Ui.Uwp.AttachedProperties
 {
@@ -37,7 +38,7 @@ namespace Wontstop.Ui.Uwp.AttachedProperties
             if (mapControl == null)
             {
                 throw new InvalidOperationException(
-                    "Polyline.Track property can only be attached to a MapControl!");
+                    "Polyline.Path property can only be attached to a MapControl!");
             }
 
             mapControl.MapElements.Clear();
@@ -45,8 +46,38 @@ namespace Wontstop.Ui.Uwp.AttachedProperties
             var path = GetPath(mapControl);
             mapControl.MapElements.Add(CreateMapPolyline(path));
 
+            var startPin = CreateStartPin(path);
+            mapControl.MapElements.Add(startPin);
+
+            var stopPin = CreateStopPin(path);
+            mapControl.MapElements.Add(stopPin);
+
             var point = CreateGeoboundingBox(path);
             await mapControl.TrySetViewBoundsAsync(point, new Thickness(0), MapAnimationKind.Default);
+        }
+
+        private static MapIcon CreateStartPin(IBasicGeoposition[] path)
+        {
+            var first = path.First();
+            return new MapIcon
+            {
+                ZIndex = 0,
+                Title = "Start",
+                NormalizedAnchorPoint = new Point(0.5, 1.0),
+                Location = new Geopoint(new BasicGeoposition { Latitude = first.Latitude, Longitude = first.Longitude }),
+            };
+        }
+
+        private static MapIcon CreateStopPin(IBasicGeoposition[] path)
+        {
+            var last = path.Last();
+            return new MapIcon
+            {
+                ZIndex = 0,
+                Title = "Stop",
+                NormalizedAnchorPoint = new Point(0.5, 1.0),
+                Location = new Geopoint(new BasicGeoposition { Latitude = last.Latitude, Longitude = last.Longitude }),
+            };
         }
 
         private static GeoboundingBox CreateGeoboundingBox(IBasicGeoposition[] path)
