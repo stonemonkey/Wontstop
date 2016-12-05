@@ -19,9 +19,9 @@ namespace Mvvm.WinRT
         /// <summary>
         /// Retrives registred or creates new instance of requested type.
         /// </summary>
-        /// <typeparam name="T">The type of the requested instance</typeparam>
-        /// <returns>An instance of requested type</returns>
-        /// <exception cref="InvalidOperationException">ServiceLocator is not configured</exception>
+        /// <typeparam name="T">The type of the requested instance.</typeparam>
+        /// <returns>An instance of requested type.</returns>
+        /// <exception cref="InvalidOperationException">ServiceLocator is not configured.</exception>
         public static T Get<T>() where T : class
         {
             if (GetInstance == null)

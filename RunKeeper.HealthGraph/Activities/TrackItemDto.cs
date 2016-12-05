@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace RunKeeper.WinRT.HealthGraph.Activities
 {
-    public class TrackItemDto
+    public class TrackItemDto : IBasicGeoposition
     {
         [JsonProperty("type")]
         public string Type { get; set; }
@@ -13,10 +13,10 @@ namespace RunKeeper.WinRT.HealthGraph.Activities
         [JsonProperty("altitude")]
         public double Altitude { get; set; }
 
-        [JsonProperty("longitude")]
-        public double Longitude { get; set; }
-
         [JsonProperty("latitude")]
         public double Latitude { get; set; }
+
+        [JsonProperty("longitude")]
+        public double Longitude { get; set; }
     }
 }

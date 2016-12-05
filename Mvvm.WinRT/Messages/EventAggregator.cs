@@ -78,7 +78,8 @@ namespace Mvvm.WinRT.Messages
         /// Publishes a message.
         /// </summary>
         /// <param name = "message">The message instance.</param>
-        /// <param name = "marshal">Allows the publisher to provide a custom thread marshaller for the message publication.</param>
+        /// <param name = "marshal">Allows the publisher to provide a custom thread marshaller for 
+        /// the message publication.</param>
         public virtual void Publish(object message, Action<Action> marshal)
         {
             if (message == null)
@@ -119,7 +120,8 @@ namespace Mvvm.WinRT.Messages
         class Handler
         {
             readonly WeakReference _reference;
-            readonly Dictionary<Type, MethodInfo> _supportedHandlers = new Dictionary<Type, MethodInfo>();
+            readonly Dictionary<Type, MethodInfo> _supportedHandlers = 
+                new Dictionary<Type, MethodInfo>();
 
             public bool IsDead => _reference.Target == null;
 

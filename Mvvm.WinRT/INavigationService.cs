@@ -6,7 +6,7 @@ using System;
 namespace Mvvm.WinRT
 {
     /// <summary>
-    /// Contracts for the service handling Page navigation
+    /// Service handling Page navigation.
     /// </summary>
     public interface INavigationService
     {

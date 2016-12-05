@@ -7,9 +7,11 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:stateTriggers="using:WindowsStateTriggers"
-    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:maps="using:Windows.UI.Xaml.Controls.Maps"
+    xmlns:stateTriggers="using:WindowsStateTriggers"
+    xmlns:attached="using:Wontstop.Ui.Uwp.AttachedProperties"
     mc:Ignorable="d"
     DataContext="{Binding ActivityViewModel, Source={StaticResource ViewModelLocator}}">
     
@@ -54,7 +56,9 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <StackPanel Grid.Row="0"
@@ -68,11 +72,18 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     Style="{StaticResource BodyTextBlockStyle}"
                     Text="{Binding Activity.StartTime}"/>
             </StackPanel>
-            <StackPanel Grid.Row="1"
+            
+            <Grid Grid.Row="1"
                 Margin="16,8,16,0"
-                Orientation="Horizontal"
                 VerticalAlignment="Top">
-                <StackPanel>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
                     <TextBlock x:Name="ActivityDistanceUnitTextBlock"
                         Text="Km"
                         VerticalAlignment="Bottom"
@@ -82,7 +93,8 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         Style="{StaticResource SubtitleTextBlockStyle}"
                         Text="{Binding Activity.TotalDistance, Converter={StaticResource DoubleMetersToStringKiloMetersConverter}}"/>
                 </StackPanel>
-                <StackPanel Margin="8,0,0,0">
+                <StackPanel Grid.Column="2"
+                    Margin="8,0,0,0">
                     <TextBlock x:Name="ActivityDurationTitleTextBlock"
                         Text="Duration"
                         VerticalAlignment="Bottom"
@@ -92,7 +104,8 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         Style="{StaticResource SubtitleTextBlockStyle}"
                         Text="{Binding Activity.Duration, Converter={StaticResource DoubleDurationToStringTimeConverter}}"/>
                 </StackPanel>
-                <StackPanel Margin="8,0,0,0">
+                <StackPanel Grid.Column="4"
+                    Margin="8,0,0,0">
                     <TextBlock x:Name="ActivityHeartRateTitleTextBlock"
                         Text="Heart rate"
                         VerticalAlignment="Bottom"
@@ -102,7 +115,13 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         Style="{StaticResource SubtitleTextBlockStyle}"
                         Text="{Binding Activity.AverageHeartRate}"/>
                 </StackPanel>
-            </StackPanel>
+            </Grid>
+            
+            <maps:MapControl x:Name="ActivityMapControl"
+                Grid.Row="2"
+                attached:Polyline.Path="{Binding Activity.Track}"
+                MapServiceToken="{StaticResource BingMapServiceToken}">
+            </maps:MapControl>
         </Grid>
 
         <ProgressRing x:Name="BusyProgress"

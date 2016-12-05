@@ -11,7 +11,7 @@ namespace RunKeeper.WinRT.HealthGraph
         // Fixed URLs
         public static string ApiUrl = "https://api.runkeeper.com";
 
-        // Obtained RunKeeper portal when registering the application
+        // Obtained from RunKeeper portal when registering the application
         public static string AppAuthorizeUrl = "https://runkeeper.com/apps/authorize";
         public static string AppTokenUrl = "https://runkeeper.com/apps/token";
         public static string AppDeauthorizeUrl = "https://runkeeper.com/apps/de-authorize";

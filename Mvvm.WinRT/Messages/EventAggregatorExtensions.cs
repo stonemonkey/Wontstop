@@ -16,7 +16,8 @@ namespace Mvvm.WinRT.Messages
         /// </summary>
         /// <param name="eventAggregator">The event aggregator.</param>
         /// <param name = "message">The message instance.</param>
-        public static void PublishOnCurrentThread(this IEventAggregator eventAggregator, object message)
+        public static void PublishOnCurrentThread(
+            this IEventAggregator eventAggregator, object message)
         {
             eventAggregator.Publish(message, action => action());
         }
@@ -26,9 +27,11 @@ namespace Mvvm.WinRT.Messages
         /// </summary>
         /// <param name="eventAggregator">The event aggregator.</param>
         /// <param name = "message">The message instance.</param>
-        public static void PublishOnBackgroundThread(this IEventAggregator eventAggregator, object message)
+        public static void PublishOnBackgroundThread(
+            this IEventAggregator eventAggregator, object message)
         {
-            eventAggregator.Publish(message, action => Task.Factory.StartNew(action, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default));
+            eventAggregator.Publish(message, action => Task.Factory.StartNew(
+                action, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default));
         }
     }
 }

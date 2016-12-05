@@ -9,7 +9,7 @@ using Mvvm.WinRT.Messages;
 namespace Mvvm.WinRT
 {
     /// <summary>
-    /// Provides Page navigation operations
+    /// Provides Page navigation operations.
     /// </summary>
     public class NavigationService : INavigationService
     {
@@ -17,11 +17,11 @@ namespace Mvvm.WinRT
         private readonly IEventAggregator _eventAggregator;
 
         /// <summary>
-        /// Initializes new instance with the frame and the messaging aggregator
+        /// Initializes new instance with the frame and the messaging aggregator.
         /// </summary>
-        /// <param name="frame">Frame instance used to perform navigation operations</param>
+        /// <param name="frame">Frame instance used to perform navigation operations.</param>
         /// <param name="eventAggregator">Messaging aggregator instance used to publish navigation 
-        /// messages</param>
+        /// messages.</param>
         public NavigationService(Frame frame, IEventAggregator eventAggregator)
         {
             _frame = frame;
@@ -56,7 +56,7 @@ namespace Mvvm.WinRT
         }
 
         /// <summary>
-        /// Initiates navigation towards specified Page type
+        /// Initiates navigation towards specified Page type.
         /// </summary>
         /// <param name="pageType">The type of the page to navigate</param>
         public void Navigate(Type pageType)

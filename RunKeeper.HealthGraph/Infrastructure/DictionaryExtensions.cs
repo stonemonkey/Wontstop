@@ -32,8 +32,10 @@ namespace RunKeeper.WinRT.HealthGraph.Infrastructure
             return (dictionary == null) || !dictionary.Any();
         }
 
-        public static async Task<IDictionary<string, string>> FatchCachedAsync(this string resource, 
-            IModelRepository cacheRepository, IModelRepository serverRepository)
+        public static async Task<IDictionary<string, string>> FatchCachedAsync(
+            this string resource, 
+            IModelRepository cacheRepository, 
+            IModelRepository serverRepository)
         {
             if (string.IsNullOrWhiteSpace(resource))
             {

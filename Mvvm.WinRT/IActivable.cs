@@ -4,9 +4,8 @@
 namespace Mvvm.WinRT
 {
     /// <summary>
-    /// Contract for activable types, usualy it is implemented by view models to handle 
-    /// activation on navigation e.g. parsing and/or saving parameter for later use when the 
-    /// view model is loading data.
+    /// Activable type, usualy it is implemented by view models to handle  activation on navigation 
+    /// e.g. parsing and/or saving parameter for later use when the view model is loading data.
     /// </summary>
     public interface IActivable
     {

@@ -28,7 +28,8 @@ namespace RunKeeper.WinRT.HealthGraph.Authorization
         /// RunKeeper applications portal.</param>
         /// <param name="clientSecret">The client secred received for your application when 
         /// registred on RunKeeper applications portal.</param>
-        /// <exception cref="ArgumentOutOfRangeException">Null or empty clientId/clientSecret</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Null or empty clientId/clientSecret.
+        /// </exception>
         public AuthorizationProvider(string clientId, string clientSecret)
         {
             if (string.IsNullOrWhiteSpace(clientId))
@@ -50,7 +51,7 @@ namespace RunKeeper.WinRT.HealthGraph.Authorization
         /// </summary>
         /// <typeparam name="T">The type of data instance returned as the result of a successfull 
         /// authorization</typeparam>
-        /// <returns>Awaitable task containing successfull data received from RunKeeper</returns>
+        /// <returns>Awaitable task containing successfull data received from RunKeeper.</returns>
         /// <exception cref="WebAuthenticationResult">In case the authorization fails or the access 
         /// is denied.</exception>
         public async Task<T> AuthorizeAsync<T>() where T : class
@@ -72,14 +73,16 @@ namespace RunKeeper.WinRT.HealthGraph.Authorization
             }
             catch (FileNotFoundException)
             {
-                // [cosmo 2015/6/10] this is silly, WebAuthenticationBroker throws FileNotFound in airplain mode
+                // [cosmo 2015/6/10] this is silly, WebAuthenticationBroker throws FileNotFound in 
+                // airplain mode
                 throw new WebAuthenticationException(null);
             }
         }
 
         private static string Parse(WebAuthenticationResult result)
         {
-            if ((result.ResponseStatus != WebAuthenticationStatus.Success) || IsAccessDenied(result))
+            if ((result.ResponseStatus != WebAuthenticationStatus.Success) || 
+                IsAccessDenied(result))
             {
                 throw new WebAuthenticationException(result);
             }
@@ -123,7 +126,8 @@ namespace RunKeeper.WinRT.HealthGraph.Authorization
             { 
                 var request = new HttpRequestMessage(HttpMethod.Post, new Uri(Urls.AppTokenUrl))
                 {
-                    Content = new StringContent(body, Encoding.UTF8, "application/x-www-form-urlencoded"),
+                    Content = new StringContent(
+                        body, Encoding.UTF8, "application/x-www-form-urlencoded"),
                 };
 
                 var response = await client.SendAsync(request);

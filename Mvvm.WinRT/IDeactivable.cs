@@ -4,8 +4,8 @@
 namespace Mvvm.WinRT
 {
     /// <summary>
-    /// Contract for deactivable types, usualy it is implemented by view models to handle 
-    /// deactivation on navigation e.g. cleanup internal state
+    /// Deactivable type, usualy it is implemented by view models to handle deactivation on navigation 
+    /// e.g. cleanup internal state.
     /// </summary>
     public interface IDeactivable
     {

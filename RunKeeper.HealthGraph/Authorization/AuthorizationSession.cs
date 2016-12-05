@@ -27,9 +27,9 @@ namespace RunKeeper.WinRT.HealthGraph.Authorization
         /// <summary>
         /// Creates session authorization instance.
         /// </summary>
-        /// <param name="authorizationProvider">The provider used to authorize the session</param>
-        /// <exception cref="ArgumentOutOfRangeException">Null or empty sessionKey</exception>
-        /// <exception cref="ArgumentNullException">Null authorizationProvider</exception>
+        /// <param name="authorizationProvider">The provider used to authorize the session.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Null or empty sessionKey.</exception>
+        /// <exception cref="ArgumentNullException">Null authorizationProvider.</exception>
         public AuthorizationSession(IAuthorizationProvider authorizationProvider)
         {
             if (authorizationProvider == null)
@@ -47,7 +47,7 @@ namespace RunKeeper.WinRT.HealthGraph.Authorization
         /// Graph/Runkeeper account.
         /// </summary>
         /// <returns>Access token</returns>
-        /// <exception cref="InvalidOperationException">If session was not previously authorized
+        /// <exception cref="InvalidOperationException">If session was not previously authorized.
         /// </exception>
         public string GetAccessToken()
         {

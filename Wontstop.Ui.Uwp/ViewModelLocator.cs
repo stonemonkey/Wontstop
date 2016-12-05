@@ -1,6 +1,7 @@
 // Copyright (c) Costin Morariu. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Diagnostics;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Mvvm.WinRT;
@@ -95,9 +96,29 @@ namespace Wontstop.Ui.Uwp
             Container.RegisterSingleton(
                 typeof(IAuthorizationProvider),
                 () => new RunKeeperAuth.AuthorizationProvider(
-                        "85588e575f7e46b0a2b8b982e00162c6", "10f5ff51664c42989f1c8e7eb6d310ac"));
+                        GetRunKeeperClientId(), GetRunKeeperClientSecret()));
 
             Container.RegisterSingleton<RunKeeperAuth.AuthorizationSession>();
+        }
+
+        private static string GetRunKeeperClientId()
+        {
+            object runKeeperClientId;
+            Debug.Assert(Application.Current.Resources.TryGetValue(
+                "RunKeeperClientId", out runKeeperClientId),
+                "RunKeeperClientId is missing from app resources!" +
+                "Add <x:String x:Key=\"RunKeeperClientId\">your_id</x:String> in Config.xaml");
+            return runKeeperClientId.ToString();
+        }
+
+        private static string GetRunKeeperClientSecret()
+        {
+            object runKeeperClientSecret;
+            Debug.Assert(Application.Current.Resources.TryGetValue(
+                "RunKeeperClientSecret", out runKeeperClientSecret),
+                "RunKeeperClientSecret is missing from app resources!" +
+                "Add <x:String x:Key=\"RunKeeperClientSecret\">your_secret</x:String> in Config.xaml");
+            return runKeeperClientSecret.ToString();
         }
 
         public static ActivitiesViewModel ActivitiesViewModel => Get<ActivitiesViewModel>();

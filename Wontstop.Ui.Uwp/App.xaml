@@ -9,15 +9,20 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:converters="using:Microsoft.Toolkit.Uwp.UI.Converters"
     xmlns:localConverters="using:Wontstop.Ui.Uwp.Converters"
     RequestedTheme="Light">
-    
-    <Application.Resources>
-        <local:ViewModelLocator x:Key="ViewModelLocator"/>
-        
-        <!--converters-->
-        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-        <localConverters:DateTimeToStringConverter x:Key="DateTimeToStringConverter"/>
-        <localConverters:DoubleDurationToStringTimeConverter x:Key="DoubleDurationToStringTimeConverter"/>
-        <localConverters:DoubleMetersToStringKiloMetersConverter x:Key="DoubleMetersToStringKiloMetersConverter"/>
 
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Config.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            
+            <local:ViewModelLocator x:Key="ViewModelLocator"/>
+
+            <!--converters-->
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <localConverters:DateTimeToStringConverter x:Key="DateTimeToStringConverter"/>
+            <localConverters:DoubleDurationToStringTimeConverter x:Key="DoubleDurationToStringTimeConverter"/>
+            <localConverters:DoubleMetersToStringKiloMetersConverter x:Key="DoubleMetersToStringKiloMetersConverter"/>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
