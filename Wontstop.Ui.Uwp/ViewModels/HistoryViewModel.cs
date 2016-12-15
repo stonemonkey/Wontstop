@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Mvvm.WinRT;
 using Mvvm.WinRT.Commands;
@@ -24,7 +25,7 @@ namespace Wontstop.Ui.Uwp.ViewModels
 
         public ActivityHistoryItemDto SelectedItem { get; set; }
 
-        private readonly UserResources _userResources;
+            private readonly UserResources _userResources;
 
         private readonly IEventAggregator _eventAggregator;
         private readonly INavigationService _navigationService;
@@ -53,6 +54,7 @@ namespace Wontstop.Ui.Uwp.ViewModels
             try
             {
                 await LoadHistoryAsync();
+                SetSelected();
             }
             catch (Exception exception)
             {
@@ -61,6 +63,21 @@ namespace Wontstop.Ui.Uwp.ViewModels
             finally
             {
                 Busy = false;
+            }
+        }
+
+        private static string _lastOpenedItemId;
+
+        private void SetSelected()
+        {
+            if (_lastOpenedItemId != null)
+            {
+                SelectedItem = History.Items
+                    .SelectMany(x => x)
+                    .FirstOrDefault(x => string.Equals(
+                        _lastOpenedItemId, x.ResourcePath, StringComparison.Ordinal));
+
+                _eventAggregator.PublishOnCurrentThread(new ScrollMessage {Item = SelectedItem});
             }
         }
 
@@ -73,11 +90,13 @@ namespace Wontstop.Ui.Uwp.ViewModels
 
         private RelayCommand<ActivityHistoryItemDto> _itemClickComand;
         public RelayCommand<ActivityHistoryItemDto> ItemClickCommand => _itemClickComand ??
-            (_itemClickComand = new RelayCommand<ActivityHistoryItemDto>(ItemClick));
+            (_itemClickComand = new RelayCommand<ActivityHistoryItemDto>(Open));
 
-        protected virtual void ItemClick(ActivityHistoryItemDto item)
+        protected virtual void Open(ActivityHistoryItemDto item)
         {
-            _navigationService.Navigate(typeof(ActivityPage), item.ResourcePath);
+            _lastOpenedItemId = item.ResourcePath;
+
+            _navigationService.Navigate(typeof(ActivityPage), _lastOpenedItemId);
         }
 
         public void Handle(BusyMessage message)

@@ -11,6 +11,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:local="using:RunKeeper.WinRT.HealthGraph.Activities"
+    xmlns:behaviours="using:Wontstop.Ui.Uwp.Behaviours"
     mc:Ignorable="d"
     DataContext="{Binding HistoryViewModel, Source={StaticResource ViewModelLocator}}">
     
@@ -98,6 +99,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         </GroupStyle>
                     </ListView.GroupStyle>
                     <interactivity:Interaction.Behaviors>
+                        <behaviours:ScrollToItemBehavior/>
                         <core:EventTriggerBehavior EventName="ItemClick">
                             <core:InvokeCommandAction 
                                 Command="{Binding ItemClickCommand}"

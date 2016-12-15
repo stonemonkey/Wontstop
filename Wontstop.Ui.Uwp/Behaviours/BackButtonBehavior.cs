@@ -1,3 +1,6 @@
+// Copyright (c) Costin Morariu. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Microsoft.Xaml.Interactivity;
@@ -5,6 +8,10 @@ using Wontstop.Ui.Uwp.Utils;
 
 namespace Wontstop.Ui.Uwp.Behaviours
 {
+    /// <summary>
+    /// Attaches back navigation showing back button on the application title bar while loading 
+    /// the page.
+    /// </summary>
     public class BackButtonBehavior : Behavior<Page>
     {
         protected override void OnAttached()
