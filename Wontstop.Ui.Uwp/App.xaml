@@ -14,6 +14,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Config.xaml"/>
+                <ResourceDictionary Source="ms-appx:///Common.Uwp/Generic.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             
             <local:ViewModelLocator x:Key="ViewModelLocator"/>
@@ -21,8 +22,11 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             <!--converters-->
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
             <localConverters:DateTimeToStringConverter x:Key="DateTimeToStringConverter"/>
+            <localConverters:PageTypeNameToBoolConverter x:Key="PageTypeNameToBoolConverter"/>
             <localConverters:DoubleDurationToStringTimeConverter x:Key="DoubleDurationToStringTimeConverter"/>
             <localConverters:DoubleMetersToStringKiloMetersConverter x:Key="DoubleMetersToStringKiloMetersConverter"/>
+            <localConverters:ItemClickEventArgsToClickedItemObjectConverter x:Key="ItemClickEventArgsToClickedItemObjectConverter"/>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

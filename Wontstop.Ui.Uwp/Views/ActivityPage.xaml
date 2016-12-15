@@ -12,13 +12,12 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:maps="using:Windows.UI.Xaml.Controls.Maps"
     xmlns:stateTriggers="using:WindowsStateTriggers"
     xmlns:attached="using:Wontstop.Ui.Uwp.AttachedProperties"
+    xmlns:behaviours="using:Wontstop.Ui.Uwp.Behaviours"
     mc:Ignorable="d"
     DataContext="{Binding ActivityViewModel, Source={StaticResource ViewModelLocator}}">
-    
-    <Page.Resources>
-    </Page.Resources>
-    
+       
     <interactivity:Interaction.Behaviors>
+        <behaviours:BackButtonBehavior/>
         <core:EventTriggerBehavior EventName="Loaded">
             <core:InvokeCommandAction Command="{Binding LoadCommand}"/>
         </core:EventTriggerBehavior>
@@ -42,18 +41,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-
-        <TextBlock x:Name="TitleTextBlock"
-            Margin="12"
-            Text="Activity"
-            Style="{ThemeResource TitleTextBlockStyle}"/>
-
-        <Grid x:Name="ContentPanel"
-            Grid.Row="1">
+        <Grid x:Name="ContentPanel">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -125,9 +113,9 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
         </Grid>
 
         <ProgressRing x:Name="BusyProgress"
-            Grid.Row="0" Grid.RowSpan="2"
             IsActive="True"
-            Width="48" Height="48"
-            Visibility="Collapsed"/>
+            Visibility="Collapsed"
+            Width="{StaticResource ProgressSize}" 
+            Height="{StaticResource ProgressSize}"/>
     </Grid>
 </Page>

@@ -1,6 +1,3 @@
-﻿// Copyright (c) Costin Morariu. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -14,10 +11,12 @@ using RunKeeper.WinRT.HealthGraph.User;
 namespace Wontstop.Ui.Uwp.ViewModels
 {
     [ImplementPropertyChanged]
-    public class SettingsViewModel : IHandle<BusyMessage>
+    public class AccountViewModel : IHandle<BusyMessage>
     {
+        public string Title => "Profile";
+
         public bool Busy { get; set; }
-        
+
         public UserProfile Profile { get; }
 
         public AuthorizationSession Session { get; }
@@ -25,7 +24,7 @@ namespace Wontstop.Ui.Uwp.ViewModels
         private readonly UserResources _userResources;
         private readonly IEventAggregator _eventAggregator;
 
-        public SettingsViewModel(
+        public AccountViewModel(
             IEventAggregator eventAggregator,
             UserProfile userProfile,
             UserResources userResources,
@@ -39,8 +38,7 @@ namespace Wontstop.Ui.Uwp.ViewModels
 
         private RelayCommand _loadComand;
         public RelayCommand LoadCommand => _loadComand ??
-            (_loadComand = new RelayCommand(async () => 
-                await LoadAsync()));
+            (_loadComand = new RelayCommand(async () => await LoadAsync()));
 
         protected async Task LoadAsync()
         {
@@ -63,15 +61,6 @@ namespace Wontstop.Ui.Uwp.ViewModels
             {
                 Busy = false;
             }
-        }
-
-        private RelayCommand _unloadComand;
-        public RelayCommand UnloadCommand => _unloadComand ??
-            (_unloadComand = new RelayCommand(async () => await UnloadAsync()));
-        
-        protected virtual Task UnloadAsync()
-        {
-            return Task.FromResult(true);
         }
 
         private RelayCommand _connectComand;

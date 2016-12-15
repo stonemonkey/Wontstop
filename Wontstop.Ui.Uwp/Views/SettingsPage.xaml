@@ -7,127 +7,17 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
-    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
-    xmlns:local="using:RunKeeper.WinRT.HealthGraph.User"
-    xmlns:stateTriggers="using:WindowsStateTriggers"
-    mc:Ignorable="d"
-    DataContext="{Binding SettingsViewModel, Source={StaticResource ViewModelLocator}}">
-
-    <Page.Resources>
-        <DataTemplate x:Key="UserProfileTemplate" x:DataType="local:UserProfile">
-            <Grid x:Name="ViewPanel" 
-                Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid x:Name="ProfileImagePanel"
-                    Margin="12"
-                    Background="Gray"
-                    Grid.Row="0" Grid.RowSpan="2" Grid.Column="0">
-                    <Image x:Name="ProfileImage"
-                        Width="100" Height="100"
-                        Source="{Binding Picture}"/>
-                </Grid>
-                <StackPanel x:Name="NamePanel"
-                    VerticalAlignment="Center"
-                    Grid.Row="0" Grid.Column="1">
-                    <TextBlock 
-                        Text="Name:"
-                        Style="{ThemeResource BodyTextBlockStyle}"/>
-                    <TextBlock x:Name="NameTextBlock"
-                        Text="{Binding Name}"
-                        Style="{ThemeResource BodyTextBlockStyle}"/>
-                </StackPanel>
-                <StackPanel x:Name="LocationPanel"
-                    VerticalAlignment="Center"
-                    Grid.Row="1" Grid.Column="1">
-                    <TextBlock 
-                        Text="Location:"
-                        Style="{ThemeResource BodyTextBlockStyle}"/>
-                    <TextBlock x:Name="LocationTextBlock"
-                        MaxLines="1"
-                        TextWrapping="NoWrap"
-                        TextTrimming="CharacterEllipsis"                               
-                        Text="{Binding Location}"
-                        Style="{ThemeResource BodyTextBlockStyle}"/>
-                </StackPanel>
-            </Grid>
-        </DataTemplate>
-    </Page.Resources>
+    mc:Ignorable="d">
     
-    <interactivity:Interaction.Behaviors>
-        <core:EventTriggerBehavior EventName="Loaded">
-            <core:InvokeCommandAction Command="{Binding LoadCommand}"/>
-        </core:EventTriggerBehavior>
-        <core:EventTriggerBehavior EventName="Unloaded">
-            <core:InvokeCommandAction Command="{Binding UnloadCommand}"/>
-        </core:EventTriggerBehavior>
-    </interactivity:Interaction.Behaviors>
-   
     <Grid x:Name="PagePanel"
         Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup>
-                <VisualState x:Name="BusyState">
-                    <VisualState.StateTriggers>
-                        <stateTriggers:EqualsStateTrigger Value="{Binding Busy}" EqualTo="True"/>
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="PagePanel.Opacity" Value="0.5"/>
-                        <Setter Target="BusyProgress.Visibility" Value="Visible"/>
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
-
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+        <TextBlock
+            TextAlignment="Center"
+            Text="Under construction"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center"
+            Style="{StaticResource HeaderTextBlockStyle}"/>
         
-        <TextBlock x:Name="TitleTextBlock"
-            Margin="12"
-            Text="Settings"
-            Style="{ThemeResource TitleTextBlockStyle}"/>
-        
-        <ContentControl x:Name="ProfileContent"
-            Grid.Row="1"
-            Content="{Binding Profile}"
-            ContentTemplate="{StaticResource UserProfileTemplate}"
-            Visibility="{Binding Session.IsAuthorized, Converter={StaticResource BoolToVisibilityConverter}}">
-        </ContentControl>
-
-        <Grid x:Name="SessionPanel"
-            Grid.Row="2">
-            <Button x:Name="RunKeeperConnectButton" 
-                Margin="8"
-                VerticalAlignment="Top"
-                Content="Connect to RunKeeper"
-                Command="{Binding ConnectCommand}"
-                Visibility="{Binding Session.IsAuthorized, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}"
-                />
-            <Button x:Name="RunKeeperDisconnectButton" 
-                Margin="8"
-                VerticalAlignment="Top"
-                Content="Disconnect from RunKeeper"
-                Command="{Binding DisconnectCommand}"
-                Visibility="{Binding Session.IsAuthorized, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=False}"
-                />
-        </Grid>
-        
-        <ProgressRing x:Name="BusyProgress"
-            Grid.Row="0" Grid.RowSpan="4"
-            IsActive="True"
-            Width="48" Height="48"
-            Visibility="Collapsed"/>
     </Grid>
 </Page>

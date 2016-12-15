@@ -121,8 +121,9 @@ namespace Wontstop.Ui.Uwp
             return runKeeperClientSecret.ToString();
         }
 
-        public static ActivitiesViewModel ActivitiesViewModel => Get<ActivitiesViewModel>();
+        public static MainViewModel MainViewModel => Get<MainViewModel>();
+        public static AccountViewModel AccountViewModel => Get<AccountViewModel>();
+        public static HistoryViewModel HistoryViewModel => Get<HistoryViewModel>();
         public static ActivityViewModel ActivityViewModel => Get<ActivityViewModel>();
-        public static SettingsViewModel SettingsViewModel => Get<SettingsViewModel>();
     }
 }

@@ -5,7 +5,9 @@ using System;
 using System.Diagnostics;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.Foundation;
 using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -24,12 +26,6 @@ namespace Wontstop.Ui.Uwp
 
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
-#if DEBUG
-            if (Debugger.IsAttached)
-            {
-                DebugSettings.EnableFrameRateCounter = true;
-            }
-#endif
             _rootFrame = Window.Current.Content as Frame;
             if (_rootFrame == null)
             {
@@ -52,6 +48,9 @@ namespace Wontstop.Ui.Uwp
                     SetupBackButton();
                     _rootFrame.Navigate(typeof(Views.MainPage), e.Arguments);
                 }
+                
+                // Set minimum windows size
+                ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(320, 400));
 
                 Window.Current.Activate();
             }

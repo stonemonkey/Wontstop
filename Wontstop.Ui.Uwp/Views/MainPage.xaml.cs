@@ -1,46 +1,140 @@
 ﻿// Copyright (c) Costin Morariu. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
-using System.Linq;
+using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Navigation;
 
 namespace Wontstop.Ui.Uwp.Views
 {
-    public sealed partial class MainPage : Page
+    public sealed partial class MainPage : Page, INotifyPropertyChanged
     {
+        private Page _activePage;
+        public Page ActivePage
+        {
+            get { return _activePage; }
+            set
+            {
+                _activePage = value;
+                Notify();
+            }
+        }
+
+        private readonly Thickness _menuItemCompactPanelThickness;
+        private readonly Thickness _menuItemExpandedPanelThickness;
+
         public MainPage()
         {
             InitializeComponent();
 
-            var mainItems = CreateMainItems();
-            HamburgerMenuControl.ItemsSource = mainItems;
-            HamburgerMenuControl.OptionsItemsSource = CreateOptionsItems();
+            DataContext = this;
 
-            ContentFrame.Navigate(mainItems.First().PageType);
+            _menuItemCompactPanelThickness = 
+                (Thickness) Application.Current.Resources["MenuItemCompactPanelThickness"];
+            _menuItemExpandedPanelThickness = 
+                (Thickness) Application.Current.Resources["MenuItemExpandedPanelThickness"];
         }
 
-        private static List<HamburgerMenuItem> CreateMainItems()
+        private static Page _lastActivePage;
+
+        private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            return new List<HamburgerMenuItem>
+            if (_lastActivePage == null)
             {
-                new HamburgerMenuItem {Icon = Symbol.Globe, Name = "Feeds", PageType = typeof (FeedsPage)},
-                new HamburgerMenuItem {Icon = Symbol.Calendar, Name = "Activities", PageType = typeof (ActivitiesPage)}
-            };
-        }
-
-        private static List<HamburgerMenuItem> CreateOptionsItems()
-        {
-            return new List<HamburgerMenuItem>
+                Activate<HistoryPage>();
+            }
+            else
             {
-                new HamburgerMenuItem {Icon = Symbol.Setting, Name = "Settings", PageType = typeof (SettingsPage)}
-            };
+                Activate(_lastActivePage.GetType());
+            }
         }
 
-        private void OnMenuItemClick(object sender, ItemClickEventArgs e)
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            var menuItem = (HamburgerMenuItem) e.ClickedItem;
-            ContentFrame.Navigate(menuItem.PageType);
+            base.OnNavigatedFrom(e);
+
+            _lastActivePage = ActivePage;
         }
+
+        private void OnHamburgerButtonClick(object sender, RoutedEventArgs e)
+        {
+            AppSplitView.IsPaneOpen = !AppSplitView.IsPaneOpen;
+            UpdateTitlePosition();
+        }
+
+        private void OnAppSplitViewPaneClosed(SplitView sender, object args)
+        {
+            UpdateTitlePosition();
+        }
+
+        private void OnAppContentFrameSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            UpdateTitlePosition();
+        }
+
+        private void UpdateTitlePosition()
+        {
+            TitleBarPanel.Margin = 
+                    (AppSplitView.IsPaneOpen) &&
+                    (AppSplitView.DisplayMode == SplitViewDisplayMode.Inline ||
+                     AppSplitView.DisplayMode == SplitViewDisplayMode.CompactInline) ?
+                _menuItemExpandedPanelThickness :
+                _menuItemCompactPanelThickness;
+        }
+
+        private void OnAppContentFrameNavigated(object sender, NavigationEventArgs e)
+        {
+            ActivePage = (Page) e.Content;
+        }
+
+        private void OnClickHistoryButton(object sender, RoutedEventArgs e)
+        {
+            Activate<HistoryPage>();
+        }
+
+        private void OnClickEmptyAccountButton(object sender, RoutedEventArgs e)
+        {
+            Activate<AccountPage>();
+        }
+
+        private void OnClickSettingsButton(object sender, RoutedEventArgs e)
+        {
+            Activate<SettingsPage>();
+        }
+
+        private void Activate<T>()
+        {
+            Activate(typeof(T));
+        }
+
+        private void Activate(Type pageType)
+        {
+            TryCollapseMenu();
+
+            AppContentFrame.Navigate(pageType);
+        }
+
+        private void TryCollapseMenu()
+        {
+            if (AppSplitView.DisplayMode == SplitViewDisplayMode.Overlay ||
+                AppSplitView.DisplayMode == SplitViewDisplayMode.CompactOverlay)
+            {
+                AppSplitView.IsPaneOpen = false;
+            }
+        }
+
+        #region PropertyChanged
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void Notify([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #endregion
     }
 }

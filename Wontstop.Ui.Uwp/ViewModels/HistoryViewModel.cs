@@ -14,18 +14,22 @@ using Wontstop.Ui.Uwp.Views;
 namespace Wontstop.Ui.Uwp.ViewModels
 {
     [ImplementPropertyChanged]
-    public class ActivitiesViewModel : IHandle<BusyMessage>
+    public class HistoryViewModel : IHandle<BusyMessage>
     {
+        public string Title => "History";
+
         public bool Busy { get; private set; }
 
         public History History { get; }
+
+        public ActivityHistoryItemDto SelectedItem { get; set; }
 
         private readonly UserResources _userResources;
 
         private readonly IEventAggregator _eventAggregator;
         private readonly INavigationService _navigationService;
 
-        public ActivitiesViewModel(
+        public HistoryViewModel(
             IEventAggregator eventAggregator,
             INavigationService navigationService,
             History history,
@@ -41,7 +45,7 @@ namespace Wontstop.Ui.Uwp.ViewModels
         private RelayCommand _loadComand;
         public RelayCommand LoadCommand => _loadComand ??
             (_loadComand = new RelayCommand(async () => await LoadAsync()));
-        
+
         protected virtual async Task LoadAsync()
         {
             Busy = true;

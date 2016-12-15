@@ -7,36 +7,138 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    xmlns:views="using:Wontstop.Ui.Uwp.Views"
-    mc:Ignorable="d">
+    xmlns:controls="using:Common.Uwp.Controls"
+    xmlns:stateTriggers="using:Common.Uwp.StateTriggers"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:behaviours="using:Wontstop.Ui.Uwp.Behaviours"
+    mc:Ignorable="d"
+    Loaded="OnLoaded"
+    DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}">
 
-    <Page.Resources>
-        <DataTemplate x:Key="MenuItemTemplate" x:DataType="views:HamburgerMenuItem">
-            <Grid Width="240" Height="48">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="48"/>
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <SymbolIcon Grid.Column="0" 
-                    Symbol="{x:Bind Icon, Mode=OneWay}" 
-                    />
-                <TextBlock Grid.Column="1" 
-                    FontSize="16" 
-                    VerticalAlignment="Center"
-                    Text="{x:Bind Name, Mode=OneWay}" 
-                    />
-            </Grid>
-        </DataTemplate>
-    </Page.Resources>
+    <interactivity:Interaction.Behaviors>
+        <behaviours:BackButtonBehavior/>
+    </interactivity:Interaction.Behaviors>
+    
+    <Grid x:Name="MainPagePanel"
+        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="ScreenStates">
+                <VisualState x:Name="SmallScreens">
+                    <VisualState.StateTriggers>
+                        <stateTriggers:CompositeStateTrigger Operator="Or">
+                            <stateTriggers:CompositeStateTrigger.StateTriggers>
+                                <stateTriggers:DeviceFamilyTrigger DeviceFamily="Windows.Mobile"/>
+                                <stateTriggers:AdaptiveTrigger MinWindowWidth="0" MaxWindowWidth="{StaticResource SmallDeviceMaxWidth}"/>
+                            </stateTriggers:CompositeStateTrigger.StateTriggers>
+                        </stateTriggers:CompositeStateTrigger>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="AppSplitView.IsPaneOpen" Value="False"/>
+                        <Setter Target="AppSplitView.DisplayMode" Value="Overlay"/>
+                        <Setter Target="TitleTextBlock.Style" Value="{ThemeResource BodyTextBlockStyle}"/>
+                        <Setter Target="TitleBarPanel.Background" Value="{ThemeResource SystemControlPageBackgroundChromeLowBrush}"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="BigScreens">
+                    <VisualState.StateTriggers>
+                        <stateTriggers:AdaptiveTrigger MinWindowWidth="{StaticResource MediumDeviceMaxWidth}"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="AppSplitView.IsPaneOpen" Value="True"/>
+                        <Setter Target="AppSplitView.DisplayMode" Value="CompactInline"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        
+        <Grid x:Name="TitleBarPanel" 
+            VerticalAlignment="Top"
+            Height="{StaticResource TopBarHeight}"
+            Margin="{StaticResource MenuItemCompactPanelThickness}">
+            <TextBlock x:Name="TitleTextBlock"
+                Padding="16,0,0,0"
+                VerticalAlignment="Center"
+                Text="{Binding ActivePage.DataContext.Title}"
+                Style="{ThemeResource SubheaderTextBlockStyle}"/>
+        </Grid>
+        
+        <SplitView x:Name="AppSplitView"
+            IsTabStop="False"
+            IsPaneOpen="False"
+            DisplayMode="CompactOverlay"
+            PaneClosed="OnAppSplitViewPaneClosed"
+            OpenPaneLength="{StaticResource MenuItemExpandedPanelWidth}"
+            CompactPaneLength="{StaticResource MenuItemCompactPanelWidth}"
+            PaneBackground="{StaticResource SystemControlPageBackgroundChromeLowBrush}">
+            
+            <SplitView.Pane>
+                <Grid x:Name="AppMenuPanel"
+                    Margin="{StaticResource TopBarThickness}">
+                    
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <controls:HamburgerMenu x:Name="HamburgerMenuControl"
-            ItemClick="OnMenuItemClick"
-            ItemTemplate="{StaticResource MenuItemTemplate}"
-            OptionsItemClick="OnMenuItemClick"
-            OptionsItemTemplate="{StaticResource MenuItemTemplate}">
-            <Frame x:Name="ContentFrame"/>
-        </controls:HamburgerMenu>
+                    <controls:MenuItemButton x:Name="HistoryButton"
+                        Grid.Row="1"
+                        Label="History"
+                        Click="OnClickHistoryButton"
+                        Style="{StaticResource AppBarMenuItemStyle}"
+                        IsSelected="{Binding ActivePage, Converter={StaticResource PageTypeNameToBoolConverter}, ConverterParameter=HistoryPage}">
+                        <SymbolIcon Symbol="Calendar"/>
+                    </controls:MenuItemButton>
+                                       
+                    <controls:MenuItemButton x:Name="AccountButton"
+                        Grid.Row="3"
+                        Label="Account"
+                        Click="OnClickEmptyAccountButton"
+                        Style="{StaticResource AppBarMenuItemStyle}"
+                        IsSelected="{Binding ActivePage, Converter={StaticResource PageTypeNameToBoolConverter}, ConverterParameter=AccountPage}">
+                        <SymbolIcon Symbol="Contact"/>
+                    </controls:MenuItemButton>
+                    
+                    <controls:MenuItemButton x:Name="SettingsButton"
+                        Grid.Row="4"
+                        Label="Settings"
+                        Click="OnClickSettingsButton"
+                        Style="{StaticResource AppBarMenuItemStyle}"
+                        IsSelected="{Binding ActivePage, Converter={StaticResource PageTypeNameToBoolConverter}, ConverterParameter=SettingsPage}">
+                        <SymbolIcon Symbol="Setting"/>
+                    </controls:MenuItemButton>
+                </Grid>
+            </SplitView.Pane>
+            
+            <SplitView.Content>
+                <Frame x:Name="AppContentFrame"
+                    Margin="{StaticResource TopBarThickness}"
+                       Navigated="OnAppContentFrameNavigated"
+                    SizeChanged="OnAppContentFrameSizeChanged"/>
+            </SplitView.Content>
+        </SplitView>
+
+        <Button x:Name="HamburgerButton"
+            IsTabStop="False"
+            VerticalAlignment="Top"
+            Click="OnHamburgerButtonClick"
+            Height="{StaticResource TopBarHeight}"
+            Width="{StaticResource MenuItemCompactPanelWidth}"
+            Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
+            <StackPanel x:Name="HamburgerSymbol"
+                Width="20"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Left">
+                <Rectangle Margin="0,2,0,2"
+                    Height="1" Fill="{ThemeResource AppBarItemForegroundThemeBrush}"/>
+                <Rectangle Margin="0,2,0,2"
+                    Height="1" Fill="{ThemeResource AppBarItemForegroundThemeBrush}"/>
+                <Rectangle Margin="0,2,0,2"
+                    Height="1" Fill="{ThemeResource AppBarItemForegroundThemeBrush}"/>
+            </StackPanel>
+        </Button>
     </Grid>
 </Page>

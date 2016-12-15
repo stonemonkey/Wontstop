@@ -94,18 +94,23 @@
     <None Include="Wontstop.Ui.Uwp_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converters\ItemClickEventArgsToClickedItemObjectConverter.cs" />
+    <Compile Include="Converters\PageTypeNameToBoolConverter.cs" />
+    <Compile Include="Utils\BackButton.cs" />
+    <Compile Include="Behaviours\BackButtonBehavior.cs" />
     <Compile Include="Converters\DateTimeToStringConverter.cs" />
     <Compile Include="Converters\DoubleDurationToStringTimeConverter.cs" />
     <Compile Include="Converters\DoubleMetersToStringKiloMetersConverter.cs" />
     <Compile Include="ViewModelLocator.cs" />
+    <Compile Include="ViewModels\AccountViewModel.cs" />
     <Compile Include="ViewModels\ActivityViewModel.cs" />
-    <Compile Include="ViewModels\ActivitiesViewModel.cs" />
-    <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="ViewModels\HistoryViewModel.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Views\ActivityPage.xaml.cs">
       <DependentUpon>ActivityPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ActivitiesPage.xaml.cs">
-      <DependentUpon>ActivitiesPage.xaml</DependentUpon>
+    <Compile Include="Views\HistoryPage.xaml.cs">
+      <DependentUpon>HistoryPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -119,6 +124,9 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AttachedProperties\Polyline.cs" />
+    <Compile Include="Views\AccountPage.xaml.cs">
+      <DependentUpon>AccountPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
@@ -153,7 +161,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\ActivitiesPage.xaml">
+    <Page Include="Views\HistoryPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -165,12 +173,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\AccountPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\SettingsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common.Uwp\Common.Uwp.csproj">
+      <Project>{fcb95431-d99a-46ab-aae0-944f7213da85}</Project>
+      <Name>Common.Uwp</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Mvvm.WinRT\Mvvm.WinRT.csproj">
       <Project>{bb95914d-a53b-4e7f-900d-d73bfa5ea6d0}</Project>
       <Name>Mvvm.WinRT</Name>
