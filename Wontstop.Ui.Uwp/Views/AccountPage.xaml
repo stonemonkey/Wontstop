@@ -179,8 +179,8 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     </Grid.RowDefinitions>
                     <TextBlock
                         x:Name="DisconnectedMessageTextBlock"
-                        VerticalAlignment="Center"
                         TextAlignment="Center"
+                        VerticalAlignment="Center"
                         Style="{ThemeResource SubtitleTextBlockStyle}"
                         Text="Currently you're disconnected from RunKeeper"/>
                     <Button x:Name="RunKeeperConnectButton" 

@@ -20,6 +20,7 @@ namespace Wontstop.Ui.Uwp.ViewModels
         public string Title => "History";
 
         public bool Busy { get; private set; }
+        public bool Empty { get; private set; }
 
         public History History { get; }
 
@@ -63,6 +64,7 @@ namespace Wontstop.Ui.Uwp.ViewModels
             finally
             {
                 Busy = false;
+                Empty = (History.Items == null) || !History.Items.Any();
             }
         }
 

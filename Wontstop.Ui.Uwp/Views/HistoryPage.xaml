@@ -67,56 +67,66 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
         </core:EventTriggerBehavior>
     </interactivity:Interaction.Behaviors>
     
-    <Grid x:Name="PagePanel"
+    <Grid x:Name="HistoryPagePanel"
         Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         
         <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup>
+            <VisualStateGroup x:Name="ProgressStates">
                 <VisualState x:Name="BusyState">
                     <VisualState.StateTriggers>
                         <stateTriggers:EqualsStateTrigger Value="{Binding Busy}" EqualTo="True"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="PagePanel.Opacity" Value="0.5"/>
+                        <Setter Target="HistoryPagePanel.Opacity" Value="0.5"/>
                         <Setter Target="BusyProgress.Visibility" Value="Visible"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <SemanticZoom x:Name="ActivitiesSemanticZoom">
-            <SemanticZoom.ZoomedInView>
-                <ListView x:Name="ActivitiesList" 
-                    SelectionMode="Single"
-                    IsItemClickEnabled="True"
-                    SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
-                    ItemTemplate="{StaticResource HistoryItemTemplate}"
-                    ItemsSource="{Binding Source={StaticResource HistoryCollectionViewSource}}">
-                    <ListView.GroupStyle>
-                        <GroupStyle 
-                            HidesIfEmpty="True" 
-                            HeaderTemplate="{StaticResource HistoryGroupHeaderDataTemplate}">
-                        </GroupStyle>
-                    </ListView.GroupStyle>
-                    <interactivity:Interaction.Behaviors>
-                        <behaviours:ScrollToItemBehavior/>
-                        <core:EventTriggerBehavior EventName="ItemClick">
-                            <core:InvokeCommandAction 
-                                Command="{Binding ItemClickCommand}"
-                                InputConverter="{StaticResource ItemClickEventArgsToClickedItemObjectConverter}"/>
-                        </core:EventTriggerBehavior>
-                    </interactivity:Interaction.Behaviors>
-                </ListView>
-            </SemanticZoom.ZoomedInView>
-            <SemanticZoom.ZoomedOutView>
-                <ListView x:Name="GroupedActivitiesList"
-                    HeaderTemplate="{StaticResource EmptyDataTemplate}"
-                    ItemTemplate="{StaticResource HistoryCollapsedGroupHeaderDataTemplate}"
-                    ItemsSource="{Binding Source={StaticResource HistoryCollectionViewSource}, Path=CollectionGroups}">
-                </ListView>
-            </SemanticZoom.ZoomedOutView>
-        </SemanticZoom>
-
+        <Grid>
+            <SemanticZoom x:Name="ActivitiesSemanticZoom">
+                <SemanticZoom.ZoomedInView>
+                    <ListView x:Name="ActivitiesList" 
+                        SelectionMode="Single"
+                        IsItemClickEnabled="True"
+                        SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                        ItemTemplate="{StaticResource HistoryItemTemplate}"
+                        ItemsSource="{Binding Source={StaticResource HistoryCollectionViewSource}}">
+                        <ListView.GroupStyle>
+                            <GroupStyle 
+                                HidesIfEmpty="True" 
+                                HeaderTemplate="{StaticResource HistoryGroupHeaderDataTemplate}">
+                            </GroupStyle>
+                        </ListView.GroupStyle>
+                        <interactivity:Interaction.Behaviors>
+                            <behaviours:ScrollToItemBehavior/>
+                            <core:EventTriggerBehavior EventName="ItemClick">
+                                <core:InvokeCommandAction 
+                                    Command="{Binding ItemClickCommand}"
+                                    InputConverter="{StaticResource ItemClickEventArgsToClickedItemObjectConverter}"/>
+                            </core:EventTriggerBehavior>
+                        </interactivity:Interaction.Behaviors>
+                    </ListView>
+                </SemanticZoom.ZoomedInView>
+                <SemanticZoom.ZoomedOutView>
+                    <ListView x:Name="GroupedActivitiesList"
+                        HeaderTemplate="{StaticResource EmptyDataTemplate}"
+                        ItemTemplate="{StaticResource HistoryCollapsedGroupHeaderDataTemplate}"
+                        ItemsSource="{Binding Source={StaticResource HistoryCollectionViewSource}, Path=CollectionGroups}">
+                    </ListView>
+                </SemanticZoom.ZoomedOutView>
+            </SemanticZoom>
+            <Grid x:Name="EmptyStatePanel"
+                Visibility="{Binding Empty, Converter={StaticResource BoolToVisibilityConverter}}">
+                <TextBlock x:Name="EmptyState"
+                    TextAlignment="Center"
+                    VerticalAlignment="Center"
+                    Style="{ThemeResource SubtitleTextBlockStyle}"
+                    Text="Nothing to see here yet? Start an activity or reconnect to RunKeeper."/>
+            </Grid>
+        </Grid>
+        
         <ProgressRing x:Name="BusyProgress"
             IsActive="True"
             Visibility="Collapsed"
