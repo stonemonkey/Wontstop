@@ -98,7 +98,7 @@
     <Compile Include="Converters\ItemClickEventArgsToClickedItemObjectConverter.cs" />
     <Compile Include="Converters\PageTypeNameToBoolConverter.cs" />
     <Compile Include="Utils\BackButton.cs" />
-    <Compile Include="Behaviours\BackButtonBehavior.cs" />
+    <Compile Include="Behaviours\ShowBackButtonBehavior.cs" />
     <Compile Include="Converters\DateTimeToStringConverter.cs" />
     <Compile Include="Converters\DoubleDurationToStringTimeConverter.cs" />
     <Compile Include="Converters\DoubleMetersToStringKiloMetersConverter.cs" />

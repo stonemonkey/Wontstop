@@ -17,7 +17,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     DataContext="{Binding ActivityViewModel, Source={StaticResource ViewModelLocator}}">
        
     <interactivity:Interaction.Behaviors>
-        <behaviours:BackButtonBehavior/>
+        <behaviours:ShowBackButtonBehavior/>
         <core:EventTriggerBehavior EventName="Loaded">
             <core:InvokeCommandAction Command="{Binding LoadCommand}"/>
         </core:EventTriggerBehavior>

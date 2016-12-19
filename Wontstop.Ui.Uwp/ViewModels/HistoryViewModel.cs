@@ -26,7 +26,7 @@ namespace Wontstop.Ui.Uwp.ViewModels
 
         public ActivityHistoryItemDto SelectedItem { get; set; }
 
-            private readonly UserResources _userResources;
+        private readonly UserResources _userResources;
 
         private readonly IEventAggregator _eventAggregator;
         private readonly INavigationService _navigationService;

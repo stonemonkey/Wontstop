@@ -16,7 +16,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}">
 
     <interactivity:Interaction.Behaviors>
-        <behaviours:BackButtonBehavior/>
+        <behaviours:ShowBackButtonBehavior/>
     </interactivity:Interaction.Behaviors>
     
     <Grid x:Name="MainPagePanel"
@@ -121,7 +121,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             </SplitView.Content>
         </SplitView>
 
-        <Button x:Name="HamburgerButton"
+        <AppBarButton x:Name="HamburgerButton"
             IsTabStop="False"
             VerticalAlignment="Top"
             Click="OnHamburgerButtonClick"
@@ -131,7 +131,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             <StackPanel x:Name="HamburgerSymbol"
                 Width="20"
                 VerticalAlignment="Center"
-                HorizontalAlignment="Left">
+                HorizontalAlignment="Center">
                 <Rectangle Margin="0,2,0,2"
                     Height="1" Fill="{ThemeResource AppBarItemForegroundThemeBrush}"/>
                 <Rectangle Margin="0,2,0,2"
@@ -139,6 +139,6 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 <Rectangle Margin="0,2,0,2"
                     Height="1" Fill="{ThemeResource AppBarItemForegroundThemeBrush}"/>
             </StackPanel>
-        </Button>
+        </AppBarButton>
     </Grid>
 </Page>

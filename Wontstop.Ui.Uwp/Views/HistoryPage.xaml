@@ -27,7 +27,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
         <DataTemplate x:Key="HistoryGroupHeaderDataTemplate">
             <TextBlock
                 Text="{Binding Key}"
-                Style="{StaticResource SubtitleTextBlockStyle}"/>
+                Style="{StaticResource CaptionTextBlockStyle}"/>
         </DataTemplate>
         
         <DataTemplate x:Key="HistoryCollapsedGroupHeaderDataTemplate">
@@ -59,17 +59,96 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     Style="{StaticResource BodyTextBlockStyle}"/>
             </StackPanel>
         </DataTemplate>
+
+        <Style TargetType="ListViewHeaderItem">
+            <Setter Property="Margin" Value="0,0,0,2"/>
+            <Setter Property="Padding" Value="12,0,12,0"/>
+            <Setter Property="MinHeight" Value="24"/>
+            <Setter Property="UseSystemFocusVisuals" Value="True"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="FontSize" Value="{ThemeResource ListViewHeaderItemThemeFontSize}"/>
+            <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}"/>
+            <Setter Property="Background" Value="{ThemeResource SystemControlForegroundBaseLowBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewHeaderItem">
+                        <Grid
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter x:Name="ContentPresenter"
+                                Margin="{TemplateBinding Padding}"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                ContentTransitions="{TemplateBinding ContentTransitions}"
+                                VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                                HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style TargetType="ListViewItem">
+            <Setter Property="Margin" Value="0,0,0,2"/>
+            <Setter Property="Padding" Value="12,0,12,0"/>
+            <Setter Property="TabNavigation" Value="Local"/>
+            <Setter Property="IsHoldingEnabled" Value="True"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="MinWidth" Value="{ThemeResource ListViewItemMinWidth}"/>
+            <Setter Property="MinHeight" Value="{ThemeResource ListViewItemMinHeight}"/>
+            <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
+            <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
+            <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
+            <Setter Property="Background" Value="{ThemeResource SystemControlPageBackgroundChromeLowBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <ListViewItemPresenter
+                            CheckMode="Inline"
+                            SelectionCheckMarkVisualEnabled="True"
+                            ContentMargin="{TemplateBinding Padding}"
+                            ContentTransitions="{TemplateBinding ContentTransitions}"
+                            DragOpacity="{ThemeResource ListViewItemDragThemeOpacity}"
+                            DisabledOpacity="{ThemeResource ListViewItemDisabledThemeOpacity}"
+                            ReorderHintOffset="{ThemeResource ListViewItemReorderHintThemeOffset}"
+                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            CheckBrush="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
+                            CheckBoxBrush="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
+                            DragBackground="{ThemeResource ListViewItemDragBackgroundThemeBrush}"
+                            DragForeground="{ThemeResource ListViewItemDragForegroundThemeBrush}"
+                            FocusBorderBrush="{ThemeResource SystemControlForegroundAltHighBrush}"
+                            FocusSecondaryBorderBrush="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                            PlaceholderBackground="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}"
+                            PointerOverBackground="{ThemeResource SystemControlHighlightListLowBrush}"
+                            PointerOverForeground="{ThemeResource SystemControlHighlightAltBaseHighBrush}"
+                            SelectedForeground="{ThemeResource SystemControlHighlightAltBaseHighBrush}"
+                            SelectedBackground="{ThemeResource SystemControlHighlightListAccentLowBrush}"
+                            PressedBackground="{ThemeResource SystemControlHighlightListMediumBrush}"
+                            SelectedPressedBackground="{ThemeResource SystemControlHighlightListAccentHighBrush}"
+                            SelectedPointerOverBackground="{ThemeResource SystemControlHighlightListAccentMediumBrush}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Page.Resources>
-    
+
     <interactivity:Interaction.Behaviors>
         <core:EventTriggerBehavior EventName="Loaded">
             <core:InvokeCommandAction Command="{Binding LoadCommand}"/>
         </core:EventTriggerBehavior>
     </interactivity:Interaction.Behaviors>
-    
+
     <Grid x:Name="HistoryPagePanel"
         Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        
+                      
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="ProgressStates">
                 <VisualState x:Name="BusyState">
@@ -84,7 +163,12 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
             <SemanticZoom x:Name="ActivitiesSemanticZoom">
                 <SemanticZoom.ZoomedInView>
                     <ListView x:Name="ActivitiesList" 
@@ -127,7 +211,24 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             </Grid>
         </Grid>
         
+        <CommandBar x:Name="FastOperationsCommandBar"
+            Grid.Row="1"
+            VerticalAlignment="Bottom"
+            Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
+            <CommandBar.PrimaryCommands>
+                <AppBarButton x:Name="SelectAppBarButton"
+                    Label="Select" Icon="List"/>
+                <AppBarButton x:Name="AddItemAppBarButton" 
+                    Label="Add Item" Icon="Add"/>
+                <AppBarButton x:Name="RemoveItemAppBarButton"
+                    Label="Delete" Icon="Delete"/>
+                <AppBarButton x:Name="CancelSelectionAppBarButton"
+                    Label="Cancel" Icon="Cancel"/>
+            </CommandBar.PrimaryCommands>
+        </CommandBar>
+        
         <ProgressRing x:Name="BusyProgress"
+            Grid.Row="0" Grid.RowSpan="2"
             IsActive="True"
             Visibility="Collapsed"
             Width="{StaticResource ProgressSize}" 

@@ -12,7 +12,7 @@ namespace Wontstop.Ui.Uwp.Behaviours
     /// Attaches back navigation showing back button on the application title bar while loading 
     /// the page.
     /// </summary>
-    public class BackButtonBehavior : Behavior<Page>
+    public class ShowBackButtonBehavior : Behavior<Page>
     {
         protected override void OnAttached()
         {

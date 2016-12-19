@@ -46,7 +46,7 @@ namespace RunKeeper.WinRT.HealthGraph.Activities
 
         private static string GetMonthGroupNameFor(DateTime startTime)
         {
-            return startTime.ToString("MMMM yy");
+            return startTime.ToString("MMMM yyyy");
         }
     }
 }
