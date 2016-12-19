@@ -12,6 +12,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:local="using:RunKeeper.WinRT.HealthGraph.Activities"
     xmlns:behaviours="using:Wontstop.Ui.Uwp.Behaviours"
+    xmlns:controls="using:Common.Uwp.Controls"
     mc:Ignorable="d"
     DataContext="{Binding HistoryViewModel, Source={StaticResource ViewModelLocator}}">
     
@@ -37,27 +38,37 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
         </DataTemplate>
         
         <DataTemplate x:Key="HistoryItemTemplate" x:DataType="local:ActivityHistoryItemDto">
-            <StackPanel Orientation="Horizontal">
+            <Grid x:Name="HistoryItemPanel">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel x:Name="HistoryItemLeftPanel"
+                    Grid.Column="0" 
+                    Orientation="Horizontal">
+                    <TextBlock x:Name="ActivityTypeTextBlock"
+                        Margin="8,0,0,0" 
+                        VerticalAlignment="Bottom"
+                        Text="{Binding Type}"
+                        Style="{StaticResource SubtitleTextBlockStyle}"/>
+                    <TextBlock x:Name="ActivityDistanceTextBlock"
+                        Margin="8,0,0,2"
+                        VerticalAlignment="Bottom"
+                        Style="{StaticResource BodyTextBlockStyle}"
+                        Text="{Binding TotalDistance, Converter={StaticResource DoubleMetersToStringKiloMetersConverter}}"/>
+                    <TextBlock x:Name="ActivityDistanceUnitTextBlock"
+                        Margin="4,0,0,2" Text="Km"
+                        VerticalAlignment="Bottom"
+                        Style="{StaticResource BodyTextBlockStyle}"/>
+                </StackPanel>
                 <TextBlock x:Name="ActivityTimeTextBlock"
+                    Grid.Column="1"
                     Margin="0,0,0,2" 
                     VerticalAlignment="Bottom"
+                    HorizontalAlignment="Right"
                     Style="{StaticResource BodyTextBlockStyle}"
                     Text="{Binding StartTime, Converter={StaticResource DateTimeToStringConverter}}"/>
-                <TextBlock x:Name="ActivityTypeTextBlock"
-                    Margin="8,0,0,0" 
-                    VerticalAlignment="Bottom"
-                    Text="{Binding Type}"
-                    Style="{StaticResource SubtitleTextBlockStyle}"/>
-                <TextBlock x:Name="ActivityDistanceTextBlock"
-                    Margin="8,0,0,2"
-                    VerticalAlignment="Bottom"
-                    Style="{StaticResource BodyTextBlockStyle}"
-                    Text="{Binding TotalDistance, Converter={StaticResource DoubleMetersToStringKiloMetersConverter}}"/>
-                <TextBlock x:Name="ActivityDistanceUnitTextBlock"
-                    Margin="4,0,0,2" Text="Km"
-                    VerticalAlignment="Bottom"
-                    Style="{StaticResource BodyTextBlockStyle}"/>
-            </StackPanel>
+            </Grid>
         </DataTemplate>
 
         <Style TargetType="ListViewHeaderItem">
@@ -100,7 +111,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             <Setter Property="TabNavigation" Value="Local"/>
             <Setter Property="IsHoldingEnabled" Value="True"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
             <Setter Property="MinWidth" Value="{ThemeResource ListViewItemMinWidth}"/>
             <Setter Property="MinHeight" Value="{ThemeResource ListViewItemMinHeight}"/>
             <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
@@ -169,11 +180,14 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
-            <SemanticZoom x:Name="ActivitiesSemanticZoom">
+            <SemanticZoom x:Name="ActivitiesSemanticZoom"
+               MinWidth="320"
+               HorizontalAlignment="Left">
                 <SemanticZoom.ZoomedInView>
-                    <ListView x:Name="ActivitiesList" 
+                    <controls:EdgeTappedListView x:Name="ActivitiesList" 
                         SelectionMode="Single"
                         IsItemClickEnabled="True"
+                        IsItemLeftEdgeTapEnabled="True"
                         SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
                         ItemTemplate="{StaticResource HistoryItemTemplate}"
                         ItemsSource="{Binding Source={StaticResource HistoryCollectionViewSource}}">
@@ -185,13 +199,13 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         </ListView.GroupStyle>
                         <interactivity:Interaction.Behaviors>
                             <behaviours:ScrollToItemBehavior/>
-                            <core:EventTriggerBehavior EventName="ItemClick">
+                            <core:EventTriggerBehavior EventName="ItemClickOnSingleSelection">
                                 <core:InvokeCommandAction 
                                     Command="{Binding ItemClickCommand}"
                                     InputConverter="{StaticResource ItemClickEventArgsToClickedItemObjectConverter}"/>
                             </core:EventTriggerBehavior>
                         </interactivity:Interaction.Behaviors>
-                    </ListView>
+                    </controls:EdgeTappedListView>
                 </SemanticZoom.ZoomedInView>
                 <SemanticZoom.ZoomedOutView>
                     <ListView x:Name="GroupedActivitiesList"
