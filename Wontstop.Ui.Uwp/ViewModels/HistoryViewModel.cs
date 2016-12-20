@@ -21,6 +21,7 @@ namespace Wontstop.Ui.Uwp.ViewModels
 
         public bool Busy { get; private set; }
         public bool Empty { get; private set; }
+        public bool SingleSelection { get; set; }
 
         public History History { get; }
 
@@ -42,6 +43,8 @@ namespace Wontstop.Ui.Uwp.ViewModels
 
             History = history;
             _userResources = userResources;
+
+            SingleSelection = true;
         }
 
         private RelayCommand _loadComand;
@@ -99,6 +102,24 @@ namespace Wontstop.Ui.Uwp.ViewModels
             _lastOpenedItemId = item.ResourcePath;
 
             _navigationService.Navigate(typeof(ActivityPage), _lastOpenedItemId);
+        }
+
+        private RelayCommand _showMultiSelectionCommand;
+        public RelayCommand ShowMultiSelectionCommand => _showMultiSelectionCommand ??
+            (_showMultiSelectionCommand = new RelayCommand(ShowMultiSelection));
+
+        private void ShowMultiSelection()
+        {
+            SingleSelection = false;
+        }
+
+        private RelayCommand _cancelMultiSelectionCommand;
+        public RelayCommand CancelMultiSelectionCommand => _cancelMultiSelectionCommand ??
+            (_cancelMultiSelectionCommand = new RelayCommand(CancelMultiSelection));
+
+        private void CancelMultiSelection()
+        {
+            SingleSelection = true;
         }
 
         public void Handle(BusyMessage message)

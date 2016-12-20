@@ -187,9 +187,9 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     <controls:EdgeTappedListView x:Name="ActivitiesList" 
                         SelectionMode="Single"
                         IsItemClickEnabled="True"
-                        IsItemLeftEdgeTapEnabled="True"
                         SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
                         ItemTemplate="{StaticResource HistoryItemTemplate}"
+                        IsItemLeftEdgeTapEnabled="{Binding SingleSelection, Mode=TwoWay}"
                         ItemsSource="{Binding Source={StaticResource HistoryCollectionViewSource}}">
                         <ListView.GroupStyle>
                             <GroupStyle 
@@ -230,14 +230,36 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             VerticalAlignment="Bottom"
             Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
             <CommandBar.PrimaryCommands>
-                <AppBarButton x:Name="SelectAppBarButton"
-                    Label="Select" Icon="List"/>
                 <AppBarButton x:Name="AddItemAppBarButton" 
-                    Label="Add Item" Icon="Add"/>
+                    Icon="Add"
+                    Label="Add Item"
+                    Visibility="{Binding SingleSelection, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=False}"/>
+                <AppBarButton x:Name="SelectAppBarButton"
+                    Icon="List"
+                    Label="Select"
+                    Visibility="{Binding SingleSelection, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=False}">
+                    <interactivity:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="Click">
+                            <core:InvokeCommandAction 
+                                Command="{Binding ShowMultiSelectionCommand}"/>
+                        </core:EventTriggerBehavior>
+                    </interactivity:Interaction.Behaviors>
+                </AppBarButton>
                 <AppBarButton x:Name="RemoveItemAppBarButton"
-                    Label="Delete" Icon="Delete"/>
+                    Icon="Delete"
+                    Label="Delete" 
+                    Visibility="{Binding SingleSelection, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}"/>
                 <AppBarButton x:Name="CancelSelectionAppBarButton"
-                    Label="Cancel" Icon="Cancel"/>
+                    Icon="Cancel"
+                    Label="Cancel"
+                    Visibility="{Binding SingleSelection, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}">
+                    <interactivity:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="Click">
+                            <core:InvokeCommandAction 
+                                Command="{Binding CancelMultiSelectionCommand}"/>
+                        </core:EventTriggerBehavior>
+                    </interactivity:Interaction.Behaviors>
+                </AppBarButton>
             </CommandBar.PrimaryCommands>
         </CommandBar>
         

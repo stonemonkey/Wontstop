@@ -12,7 +12,64 @@ namespace Common.Uwp.Controls
 
     public class EdgeTappedListView : ListView
     {
-        public bool IsItemLeftEdgeTapEnabled { get; set; }
+        #region IsItemLeftEdgeTapEnabled property
+
+        public static readonly DependencyProperty IsItemLeftEdgeTapEnabledProperty = 
+            DependencyProperty.Register(
+                "IsItemLeftEdgeTapEnabled", 
+                typeof(bool), 
+                typeof(EdgeTappedListView), 
+                new PropertyMetadata(default(bool), IsItemLeftEdgeTapEnabledChanged));
+
+        private static void IsItemLeftEdgeTapEnabledChanged(
+            DependencyObject d, DependencyPropertyChangedEventArgs args)
+        {
+            var listView = (EdgeTappedListView) d;
+            var enabled = (bool) args.NewValue;
+            if (enabled)
+            {
+                listView.TryRestoreSelectionMode();
+            }
+            else
+            {
+                listView.EnableMultiSelection();
+            }
+        }
+
+        private bool _isSelectionModeChanging;
+
+        private void EnableMultiSelection()
+        {
+            SaveSelectionMode();
+
+            _isSelectionModeChanging = true;
+            SelectionMode = ListViewSelectionMode.Multiple;
+            _isSelectionModeChanging = false;
+        }
+
+        private ListViewSelectionMode? _savedSelectionMode;
+
+        private void SaveSelectionMode()
+        {
+            _savedSelectionMode = SelectionMode;
+        }
+
+        private void TryRestoreSelectionMode()
+        {
+            if (_savedSelectionMode.HasValue)
+            {
+                SelectionMode = _savedSelectionMode.Value;
+                _savedSelectionMode = null;
+            }
+        }
+
+        public bool IsItemLeftEdgeTapEnabled
+        {
+            get { return (bool) GetValue(IsItemLeftEdgeTapEnabledProperty); }
+            set { SetValue(IsItemLeftEdgeTapEnabledProperty, value); }
+        }
+
+        #endregion
 
         public event ItemClickEventHandler ItemClickOnSingleSelection;
         public event ListViewEdgeTappedEventHandler ItemLeftEdgeTapped;
@@ -36,14 +93,11 @@ namespace Common.Uwp.Controls
             }
         }
 
-        private ListViewSelectionMode _initialSelectionMode;
-
         private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if ((SelectedItems.Count == 0) && !_isSelectionModeChanging)
             {
                 IsItemLeftEdgeTapEnabled = true;
-                SelectionMode = _initialSelectionMode;
             }
         }
 
@@ -124,22 +178,10 @@ namespace Common.Uwp.Controls
                 return;
             }
 
-            _initialSelectionMode = SelectionMode;
             IsItemLeftEdgeTapEnabled = false;
-            SetSelectionMode(ListViewSelectionMode.Multiple);
-
             ItemLeftEdgeTapped?.Invoke(this, new EdgeTappedListViewEventArgs(_edgeTappedItem));
 
             _edgeTappedItem = null;
-        }
-
-        private bool _isSelectionModeChanging;
-
-        private void SetSelectionMode(ListViewSelectionMode mode)
-        {
-            _isSelectionModeChanging = true;
-            SelectionMode = mode;
-            _isSelectionModeChanging = false;
-        }
+        } 
     }
 }
