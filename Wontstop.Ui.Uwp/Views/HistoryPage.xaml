@@ -7,12 +7,13 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:stateTriggers="using:WindowsStateTriggers"
+    xmlns:windowsStateTriggers="using:WindowsStateTriggers"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:local="using:RunKeeper.WinRT.HealthGraph.Activities"
     xmlns:behaviours="using:Wontstop.Ui.Uwp.Behaviours"
     xmlns:controls="using:Common.Uwp.Controls"
+    xmlns:stateTriggers="using:Common.Uwp.StateTriggers"
     mc:Ignorable="d"
     DataContext="{Binding HistoryViewModel, Source={StaticResource ViewModelLocator}}">
     
@@ -161,10 +162,26 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
         Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
                       
         <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="ScreenStates">
+                <VisualState x:Name="SmallScreens">
+                    <VisualState.StateTriggers>
+                        <stateTriggers:CompositeStateTrigger Operator="Or">
+                            <stateTriggers:CompositeStateTrigger.StateTriggers>
+                                <stateTriggers:DeviceFamilyTrigger DeviceFamily="Windows.Mobile"/>
+                                <stateTriggers:AdaptiveTrigger MinWindowWidth="0" MaxWindowWidth="{StaticResource SmallDeviceMaxWidth}"/>
+                            </stateTriggers:CompositeStateTrigger.StateTriggers>
+                        </stateTriggers:CompositeStateTrigger>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="ActivitiesSemanticZoom.Width" Value="NaN"/>
+                        <Setter Target="ActivitiesSemanticZoom.HorizontalAlignment" Value="Stretch"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
             <VisualStateGroup x:Name="ProgressStates">
                 <VisualState x:Name="BusyState">
                     <VisualState.StateTriggers>
-                        <stateTriggers:EqualsStateTrigger Value="{Binding Busy}" EqualTo="True"/>
+                        <windowsStateTriggers:EqualsStateTrigger Value="{Binding Busy}" EqualTo="True"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="HistoryPagePanel.Opacity" Value="0.5"/>
@@ -181,8 +198,8 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
 
         <Grid Grid.Row="0">
             <SemanticZoom x:Name="ActivitiesSemanticZoom"
-               MinWidth="320"
-               HorizontalAlignment="Left">
+                Width="320"
+                HorizontalAlignment="Left">
                 <SemanticZoom.ZoomedInView>
                     <controls:EdgeTappedListView x:Name="ActivitiesList" 
                         SelectionMode="Single"
