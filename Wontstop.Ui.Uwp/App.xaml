@@ -23,7 +23,8 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
             <localConverters:DateTimeToStringConverter x:Key="DateTimeToStringConverter"/>
             <localConverters:PageTypeNameToBoolConverter x:Key="PageTypeNameToBoolConverter"/>
-            <localConverters:DoubleDurationToStringTimeConverter x:Key="DoubleDurationToStringTimeConverter"/>
+            <localConverters:TimeSpanToStringPaceConverter x:Key="TimeSpanToStringPaceConverter"/>
+            <localConverters:TimeSpanToStringTimeConverter x:Key="TimeSpanToStringTimeConverter"/>
             <localConverters:DoubleMetersToStringKiloMetersConverter x:Key="DoubleMetersToStringKiloMetersConverter"/>
             <localConverters:ItemClickEventArgsToClickedItemObjectConverter x:Key="ItemClickEventArgsToClickedItemObjectConverter"/>
 

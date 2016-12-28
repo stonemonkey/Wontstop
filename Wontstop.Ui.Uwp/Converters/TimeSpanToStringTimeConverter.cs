@@ -3,7 +3,7 @@ using Windows.UI.Xaml.Data;
 
 namespace Wontstop.Ui.Uwp.Converters
 {
-    public class DoubleDurationToStringTimeConverter : IValueConverter
+    public class TimeSpanToStringTimeConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
@@ -12,8 +12,7 @@ namespace Wontstop.Ui.Uwp.Converters
                 return null;
             }
 
-            var durationSec = double.Parse(value.ToString());
-            var timeSpan = TimeSpan.FromSeconds(durationSec);
+            var timeSpan = TimeSpan.Parse(value.ToString());
             return timeSpan.ToString(@"hh\:mm\:ss");
         }
 
