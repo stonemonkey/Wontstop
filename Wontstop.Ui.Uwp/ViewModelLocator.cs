@@ -125,5 +125,6 @@ namespace Wontstop.Ui.Uwp
         public static AccountViewModel AccountViewModel => Get<AccountViewModel>();
         public static HistoryViewModel HistoryViewModel => Get<HistoryViewModel>();
         public static ActivityViewModel ActivityViewModel => Get<ActivityViewModel>();
+        public static LiveActivityViewModel LiveActivityViewModel => Get<LiveActivityViewModel>();
     }
 }

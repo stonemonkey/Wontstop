@@ -104,6 +104,15 @@ namespace Wontstop.Ui.Uwp.ViewModels
             _navigationService.Navigate(typeof(ActivityPage), _lastOpenedItemId);
         }
 
+        private RelayCommand _addNewCommand;
+        public RelayCommand AddNewCommand => _addNewCommand ??
+            (_showMultiSelectionCommand = new RelayCommand(AddNew));
+
+        private void AddNew()
+        {
+            _navigationService.Navigate(typeof(LiveActivityPage), _lastOpenedItemId);
+        }
+
         private RelayCommand _showMultiSelectionCommand;
         public RelayCommand ShowMultiSelectionCommand => _showMultiSelectionCommand ??
             (_showMultiSelectionCommand = new RelayCommand(ShowMultiSelection));

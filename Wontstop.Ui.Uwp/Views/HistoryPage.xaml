@@ -250,7 +250,15 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 <AppBarButton x:Name="AddItemAppBarButton" 
                     Icon="Add"
                     Label="Add Item"
-                    Visibility="{Binding SingleSelection, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=False}"/>
+                    Visibility="{Binding SingleSelection, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=False}">
+                    <interactivity:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="Click">
+                            <core:InvokeCommandAction 
+                                Command="{Binding AddNewCommand}"/>
+                        </core:EventTriggerBehavior>
+                    </interactivity:Interaction.Behaviors>
+                </AppBarButton>
+                
                 <AppBarButton x:Name="SelectAppBarButton"
                     Icon="List"
                     Label="Select"

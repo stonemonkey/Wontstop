@@ -65,8 +65,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
             <Grid x:Name="ActivityTitlePanel"
@@ -96,148 +95,150 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 attached:Polyline.Path="{Binding Activity.Track}"
                 MapServiceToken="{StaticResource BingMapServiceToken}">
             </maps:MapControl>
-         
-            <controls:WrapPanel x:Name="ActivitySummaryPanel"
-                Grid.Row="2"
-                Margin="8"
-                HorizontalAlignment="Stretch">
-                <Grid x:Name="DistancePanel" 
-                    Margin="8">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <TextBlock x:Name="ActivityDistanceLabelTextBlock"
-                        Text="distance"
-                        VerticalAlignment="Bottom"
-                        Style="{StaticResource BodyTextBlockStyle}"/>
-                    <TextBlock x:Name="ActivityDistanceTextBlock"
-                        Grid.Row="1"
-                        VerticalAlignment="Bottom"
-                        Style="{StaticResource SubtitleTextBlockStyle}"
-                        Text="{Binding Activity.TotalDistance, Converter={StaticResource DoubleMetersToStringKiloMetersConverter}}"/>
-                </Grid>
 
-                <Grid x:Name="DurationPanel" 
-                    Margin="8">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <TextBlock x:Name="ActivityDurationLabelTextBlock"
-                        Text="duration"
-                        VerticalAlignment="Bottom"
-                        Style="{StaticResource BodyTextBlockStyle}"/>
-                    <TextBlock x:Name="ActivityDurationTextBlock"
-                        Grid.Row="1"
-                        VerticalAlignment="Bottom"
-                        Style="{StaticResource SubtitleTextBlockStyle}"
-                        Text="{Binding Activity.Duration, Converter={StaticResource TimeSpanToStringTimeConverter}}"/>
-                </Grid>
+            <ScrollViewer Grid.Row="2"
+                VerticalScrollMode="Auto"
+                VerticalScrollBarVisibility="Auto">
+                <controls:WrapPanel x:Name="ActivitySummaryPanel"
+                    Margin="8"
+                    HorizontalAlignment="Stretch">
+                    <Grid x:Name="DistancePanel" 
+                        Margin="8">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock x:Name="ActivityDistanceLabelTextBlock"
+                            Text="distance"
+                            VerticalAlignment="Bottom"
+                            Style="{StaticResource BodyTextBlockStyle}"/>
+                        <TextBlock x:Name="ActivityDistanceTextBlock"
+                            Grid.Row="1"
+                            VerticalAlignment="Bottom"
+                            Style="{StaticResource SubtitleTextBlockStyle}"
+                            Text="{Binding Activity.TotalDistance, Converter={StaticResource DoubleMetersToStringKiloMetersConverter}}"/>
+                    </Grid>
 
-                <Grid x:Name="AveragePacePanel"
-                    Margin="8">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <TextBlock x:Name="ActivityAvgPaceLabelTextBlock"
-                        Text="avg.pace"
-                        VerticalAlignment="Bottom"
-                        Style="{StaticResource BodyTextBlockStyle}"/>
-                    <TextBlock x:Name="ActivityAvgPaceTextBlock"
-                        Grid.Row="1"
-                        VerticalAlignment="Bottom"
-                        Style="{StaticResource SubtitleTextBlockStyle}"
-                        Text="{Binding Activity.AveragePace, Converter={StaticResource TimeSpanToStringPaceConverter}}"/>
-                </Grid>
+                    <Grid x:Name="DurationPanel" 
+                        Margin="8">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock x:Name="ActivityDurationLabelTextBlock"
+                            Text="duration"
+                            VerticalAlignment="Bottom"
+                            Style="{StaticResource BodyTextBlockStyle}"/>
+                        <TextBlock x:Name="ActivityDurationTextBlock"
+                            Grid.Row="1"
+                            VerticalAlignment="Bottom"
+                            Style="{StaticResource SubtitleTextBlockStyle}"
+                            Text="{Binding Activity.Duration, Converter={StaticResource TimeSpanToStringTimeConverter}}"/>
+                    </Grid>
 
-                <Grid x:Name="AverageHeartRate"
-                    Margin="8">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <TextBlock x:Name="ActivityAvgHeartRateLabelTextBlock"
-                        Text="avg.hr"
-                        VerticalAlignment="Bottom"
-                        Style="{StaticResource BodyTextBlockStyle}"/>
-                    <TextBlock x:Name="ActivityAvgHeartRateTextBlock"
-                        Grid.Row="1"
-                        VerticalAlignment="Bottom"
-                        Style="{StaticResource SubtitleTextBlockStyle}"
-                        Text="{Binding Activity.AverageHeartRate}"/>
-                </Grid>
+                    <Grid x:Name="AveragePacePanel"
+                        Margin="8">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock x:Name="ActivityAvgPaceLabelTextBlock"
+                            Text="avg.pace"
+                            VerticalAlignment="Bottom"
+                            Style="{StaticResource BodyTextBlockStyle}"/>
+                        <TextBlock x:Name="ActivityAvgPaceTextBlock"
+                            Grid.Row="1"
+                            VerticalAlignment="Bottom"
+                            Style="{StaticResource SubtitleTextBlockStyle}"
+                            Text="{Binding Activity.AveragePace, Converter={StaticResource TimeSpanToStringPaceConverter}}"/>
+                    </Grid>
+
+                    <Grid x:Name="AverageHeartRate"
+                        Margin="8">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock x:Name="ActivityAvgHeartRateLabelTextBlock"
+                            Text="avg.hr"
+                            VerticalAlignment="Bottom"
+                            Style="{StaticResource BodyTextBlockStyle}"/>
+                        <TextBlock x:Name="ActivityAvgHeartRateTextBlock"
+                            Grid.Row="1"
+                            VerticalAlignment="Bottom"
+                            Style="{StaticResource SubtitleTextBlockStyle}"
+                            Text="{Binding Activity.AverageHeartRate}"/>
+                    </Grid>
                 
-                <Grid x:Name="MaximumHeartRatePanel"
-                    Margin="8">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <TextBlock x:Name="ActivityMaxHeartRateLabelTextBlock"
-                        Text="max.hr"
-                        VerticalAlignment="Bottom"
-                        Style="{StaticResource BodyTextBlockStyle}"/>
-                    <TextBlock x:Name="ActivityMaxHeartRateTextBlock"
-                        Grid.Row="1"
-                        VerticalAlignment="Bottom"
-                        Style="{StaticResource SubtitleTextBlockStyle}"
-                        Text="{Binding Activity.MaximumHeartRate}"/>
-                </Grid>
+                    <Grid x:Name="MaximumHeartRatePanel"
+                        Margin="8">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock x:Name="ActivityMaxHeartRateLabelTextBlock"
+                            Text="max.hr"
+                            VerticalAlignment="Bottom"
+                            Style="{StaticResource BodyTextBlockStyle}"/>
+                        <TextBlock x:Name="ActivityMaxHeartRateTextBlock"
+                            Grid.Row="1"
+                            VerticalAlignment="Bottom"
+                            Style="{StaticResource SubtitleTextBlockStyle}"
+                            Text="{Binding Activity.MaximumHeartRate}"/>
+                    </Grid>
 
-                <Grid x:Name="MinimumAltitudePanel"
-                    Margin="8">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <TextBlock x:Name="ActivityMinAltitudeLabelTextBlock"
-                        Text="min.alt"
-                        VerticalAlignment="Bottom"
-                        Style="{StaticResource BodyTextBlockStyle}"/>
-                    <TextBlock x:Name="ActivityMinAltitudeTextBlock"
-                        Grid.Row="1"
-                        VerticalAlignment="Bottom"
-                        Style="{StaticResource SubtitleTextBlockStyle}"
-                        Text="{Binding Activity.MinimumAltitude}"/>
-                </Grid>
+                    <Grid x:Name="MinimumAltitudePanel"
+                        Margin="8">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock x:Name="ActivityMinAltitudeLabelTextBlock"
+                            Text="min.alt"
+                            VerticalAlignment="Bottom"
+                            Style="{StaticResource BodyTextBlockStyle}"/>
+                        <TextBlock x:Name="ActivityMinAltitudeTextBlock"
+                            Grid.Row="1"
+                            VerticalAlignment="Bottom"
+                            Style="{StaticResource SubtitleTextBlockStyle}"
+                            Text="{Binding Activity.MinimumAltitude}"/>
+                    </Grid>
 
-                <Grid x:Name="MaximumAltitudePanel"
-                    Margin="8">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <TextBlock x:Name="ActivityMaxAltitudeLabelTextBlock"
-                        Text="max.alt"
-                        VerticalAlignment="Bottom"
-                        Style="{StaticResource BodyTextBlockStyle}"/>
-                    <TextBlock x:Name="ActivityMaxAltitudeTextBlock"
-                        Grid.Row="1"
-                        VerticalAlignment="Bottom"
-                        Style="{StaticResource SubtitleTextBlockStyle}"
-                        Text="{Binding Activity.MaximumAltitude}"/>
-                </Grid>
+                    <Grid x:Name="MaximumAltitudePanel"
+                        Margin="8">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock x:Name="ActivityMaxAltitudeLabelTextBlock"
+                            Text="max.alt"
+                            VerticalAlignment="Bottom"
+                            Style="{StaticResource BodyTextBlockStyle}"/>
+                        <TextBlock x:Name="ActivityMaxAltitudeTextBlock"
+                            Grid.Row="1"
+                            VerticalAlignment="Bottom"
+                            Style="{StaticResource SubtitleTextBlockStyle}"
+                            Text="{Binding Activity.MaximumAltitude}"/>
+                    </Grid>
                 
-                <Grid x:Name="CaloriesPanel"
-                    Margin="8">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <TextBlock x:Name="CaloriesLabelTextBlock"
-                        Text="calories"
-                        VerticalAlignment="Bottom"
-                        Style="{StaticResource BodyTextBlockStyle}"/>
-                    <TextBlock x:Name="CaloriesTextBlock"
-                        Grid.Row="1"
-                        VerticalAlignment="Bottom"
-                        Style="{StaticResource SubtitleTextBlockStyle}"
-                        Text="{Binding Activity.TotalCalories}"/>
-                </Grid>
-                
-            </controls:WrapPanel>
+                    <Grid x:Name="CaloriesPanel"
+                        Margin="8">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock x:Name="CaloriesLabelTextBlock"
+                            Text="calories"
+                            VerticalAlignment="Bottom"
+                            Style="{StaticResource BodyTextBlockStyle}"/>
+                        <TextBlock x:Name="CaloriesTextBlock"
+                            Grid.Row="1"
+                            VerticalAlignment="Bottom"
+                            Style="{StaticResource SubtitleTextBlockStyle}"
+                            Text="{Binding Activity.TotalCalories}"/>
+                    </Grid>
+                </controls:WrapPanel>
+            </ScrollViewer>
         </Grid>
 
         <ProgressRing x:Name="BusyProgress"
