@@ -8,7 +8,7 @@ using Mvvm.WinRT;
 using Mvvm.WinRT.Messages;
 using Mvvm.WinRT.Utils;
 
-namespace Wontstop.Ui.Uwp.Behaviours
+namespace Common.Uwp.Behaviours
 {
     /// <summary>
     /// Attaches handler for ScrollMessage so that the ListViewBase will try to scroll to the item 

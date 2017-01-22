@@ -1,0 +1,64 @@
+﻿<UserControl
+    x:Class="Wontstop.Climb.Ui.Uwp.Views.ProblemItemView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    DataContext="{Binding ProblemItemViewModel, Source={StaticResource ViewModelLocator}}">
+
+    <Grid x:Name="ProblemItemControlPanel"
+        Background="Transparent">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Ellipse x:Name="ColorElipse"
+            Grid.Column="0"
+            Width="16" Height="16"
+            Fill="{Binding Problem.ColorName, Converter={StaticResource StringToColorConverter}}"/>
+        <TextBlock x:Name="GradeTextBlock"
+            Grid.Column="1"
+            Margin="8,0,0,0"
+            VerticalAlignment="Center"
+            Text="{Binding Problem.GradeFont}"/>
+        <TextBlock x:Name="TagTextBlock"
+            Grid.Column="2"
+            Margin="8,0,0,0"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Right"
+            Text="{Binding Problem.TagShort}"/>
+        <TextBlock x:Name="DoneTextBlock"
+            Grid.Column="4"
+            Margin="8,0,0,0"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Right"
+            Text="Done"
+            Visibility="{Binding Problem.WasClimbed, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=False}"/>
+        <!--<StackPanel x:Name="NumericUpDownPanel"
+            Grid.Column="3"
+            Margin="8,0,0,0"
+            Orientation="Horizontal">
+            <Button x:Name="DecrementButton" 
+                Content="-"
+                Command="{Binding DecrementTriesCommand}"/>
+            <TextBlock x:Name="TriesTextBlock" 
+                MinWidth="40"
+                TextAlignment="Center"
+                VerticalAlignment="Center"
+                Text="{Binding Tries, Mode=TwoWay}"/>
+            <Button x:Name="IncrementButton" 
+                Content="+"
+                Command="{Binding IncrementTriesCommand}"/>
+        </StackPanel>-->
+        <!--<Button x:Name="TickButton" 
+            Grid.Column="4"
+            Margin="8,0,0,0"
+            Content="Tick"
+            Command="{Binding TickCommand}"
+            Visibility="{Binding Problem.WasClimbed, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}"/>-->
+    </Grid>
+</UserControl>

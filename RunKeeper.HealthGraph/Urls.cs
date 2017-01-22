@@ -4,7 +4,7 @@
 namespace RunKeeper.WinRT.HealthGraph
 {
     /// <summary>
-    /// RunKeeper urls used across the application
+    /// RunKeeper URLs used across the application
     /// </summary>
     public class Urls
     {

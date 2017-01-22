@@ -12,9 +12,9 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:maps="using:Windows.UI.Xaml.Controls.Maps"
     xmlns:windowsStateTriggers="using:WindowsStateTriggers"
     xmlns:attached="using:Wontstop.Ui.Uwp.AttachedProperties"
-    xmlns:behaviours="using:Wontstop.Ui.Uwp.Behaviours"
     xmlns:stateTriggers="using:Common.Uwp.StateTriggers"
     xmlns:controls="using:WinRTXamlToolkit.Controls"
+    xmlns:behaviours="using:Common.Uwp.Behaviours"
     mc:Ignorable="d"
     DataContext="{Binding ActivityViewModel, Source={StaticResource ViewModelLocator}}">
        

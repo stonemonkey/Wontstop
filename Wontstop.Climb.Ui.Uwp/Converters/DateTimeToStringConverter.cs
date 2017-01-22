@@ -4,21 +4,19 @@
 using System;
 using Windows.UI.Xaml.Data;
 
-namespace Wontstop.Ui.Uwp.Converters
+namespace Wontstop.Climb.Ui.Uwp.Converters
 {
-    public class PageTypeNameToBoolConverter : IValueConverter
+    public class DateTimeToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            if ((value == null) || (parameter == null))
+            if (value == null)
             {
-                return false;
+                return null;
             }
 
-            var controlName = parameter.ToString();
-            var viewModelName = value.GetType().Name;
-
-            return string.Equals(viewModelName, controlName, StringComparison.Ordinal);
+            var dateTime = DateTime.Parse(value.ToString());
+            return dateTime.ToString("dd/MM/yyyy");
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

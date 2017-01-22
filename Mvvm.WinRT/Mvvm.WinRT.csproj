@@ -34,13 +34,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <!-- A reference to the entire .NET Framework is automatically included -->
-  </ItemGroup>
-  <ItemGroup>
     <TargetPlatform Include="Windows, Version=8.1" />
     <TargetPlatform Include="WindowsPhoneApp, Version=8.1" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AttachedProperties\ViewModel.cs" />
     <Compile Include="Commands\IExecuteWithObject.cs" />
     <Compile Include="Commands\IExecuteWithObjectAndResult.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
@@ -49,7 +47,10 @@
     <Compile Include="IActivable.cs" />
     <Compile Include="IDeactivable.cs" />
     <Compile Include="INavigationService.cs" />
+    <Compile Include="IStorageService.cs" />
+    <Compile Include="ITimeService.cs" />
     <Compile Include="Messages\BusyMessage.cs" />
+    <Compile Include="Messages\ErrorMessage.cs" />
     <Compile Include="Messages\EventAggregator.cs" />
     <Compile Include="Messages\EventAggregatorExtensions.cs" />
     <Compile Include="Messages\IEventAggregator.cs" />
@@ -57,6 +58,9 @@
     <Compile Include="Messages\NavigationMessage.cs" />
     <Compile Include="Messages\ScrollMessage.cs" />
     <Compile Include="NavigationService.cs" />
+    <Compile Include="StorageService.cs" />
+    <Compile Include="TimeService.cs" />
+    <Compile Include="Utils\DateTimeExtensions.cs" />
     <Compile Include="Utils\DependencyObjectExtensions.cs" />
     <Compile Include="Utils\ListViewBaseExtensions.cs" />
     <Compile Include="Utils\NavigationModeExtensions.cs" />
@@ -64,6 +68,15 @@
     <Compile Include="ServiceLocator.cs" />
     <Compile Include="Utils\ExceptionExtensions.cs" />
     <Compile Include="Utils\ReflectionExtensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

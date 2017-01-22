@@ -1,0 +1,140 @@
+﻿<!--Copyright (c) Costin Morariu. All rights reserved.
+Licensed under the MIT license. See LICENSE file in the project root for full license information.-->
+
+<Page
+    x:Class="Wontstop.Climb.Ui.Uwp.Views.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Common.Uwp.Controls"
+    xmlns:stateTriggers="using:Common.Uwp.StateTriggers"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:behaviours="using:Common.Uwp.Behaviours"
+    mc:Ignorable="d"
+    Loaded="OnLoaded"
+    DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}">
+
+    <interactivity:Interaction.Behaviors>
+        <behaviours:ShowBackButtonBehavior/>
+    </interactivity:Interaction.Behaviors>
+    
+    <Grid x:Name="MainPagePanel"
+        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="ScreenStates">
+                <VisualState x:Name="SmallScreens">
+                    <VisualState.StateTriggers>
+                        <stateTriggers:CompositeStateTrigger Operator="Or">
+                            <stateTriggers:CompositeStateTrigger.StateTriggers>
+                                <stateTriggers:DeviceFamilyTrigger DeviceFamily="Windows.Mobile"/>
+                                <stateTriggers:AdaptiveTrigger MinWindowWidth="0" MaxWindowWidth="{StaticResource SmallDeviceMaxWidth}"/>
+                            </stateTriggers:CompositeStateTrigger.StateTriggers>
+                        </stateTriggers:CompositeStateTrigger>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="AppSplitView.IsPaneOpen" Value="False"/>
+                        <Setter Target="AppSplitView.DisplayMode" Value="Overlay"/>
+                        <Setter Target="TitleTextBlock.Style" Value="{ThemeResource BodyTextBlockStyle}"/>
+                        <Setter Target="TitleBarPanel.Background" Value="{ThemeResource SystemControlPageBackgroundChromeLowBrush}"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="BigScreens">
+                    <VisualState.StateTriggers>
+                        <stateTriggers:AdaptiveTrigger MinWindowWidth="{StaticResource MediumDeviceMaxWidth}"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="AppSplitView.IsPaneOpen" Value="True"/>
+                        <Setter Target="AppSplitView.DisplayMode" Value="CompactInline"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        
+        <Grid x:Name="TitleBarPanel" 
+            VerticalAlignment="Top"
+            Height="{StaticResource TopBarHeight}"
+            Margin="{StaticResource MenuItemCompactPanelThickness}">
+            <TextBlock x:Name="TitleTextBlock"
+                Padding="16,0,0,0"
+                VerticalAlignment="Center"
+                Text="{Binding ActivePage.DataContext.Title}"
+                Style="{ThemeResource SubheaderTextBlockStyle}"/>
+        </Grid>
+        
+        <SplitView x:Name="AppSplitView"
+            IsTabStop="False"
+            IsPaneOpen="False"
+            DisplayMode="CompactOverlay"
+            PaneClosed="OnAppSplitViewPaneClosed"
+            OpenPaneLength="{StaticResource MenuItemExpandedPanelWidth}"
+            CompactPaneLength="{StaticResource MenuItemCompactPanelWidth}"
+            PaneBackground="{StaticResource SystemControlPageBackgroundChromeLowBrush}">
+            
+            <SplitView.Pane>
+                <Grid x:Name="AppMenuPanel"
+                    Margin="{StaticResource TopBarThickness}">
+                    
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <controls:MenuItemButton x:Name="ProblemsButton"
+                        Grid.Row="1"
+                        Label="Problems"
+                        Click="OnClickProblemsButton"
+                        Style="{StaticResource AppBarMenuItemStyle}"
+                        IsSelected="{Binding ActivePage, Converter={StaticResource PageTypeNameToBoolConverter}, ConverterParameter=HistoryPage}">
+                        <SymbolIcon Symbol="AllApps"/>
+                    </controls:MenuItemButton>
+                                                          
+                    <controls:MenuItemButton x:Name="LogoutButton"
+                        Grid.Row="3"
+                        Label="Logout"
+                        Command="{Binding LogoutCommand}"
+                        Style="{StaticResource AppBarMenuItemStyle}"
+                        IsSelected="False">
+                        <SymbolIcon Symbol="Clear"/>
+                    </controls:MenuItemButton>
+                </Grid>
+            </SplitView.Pane>
+            
+            <SplitView.Content>
+                <Frame x:Name="AppContentFrame"
+                    Margin="{StaticResource TopBarThickness}"
+                       Navigated="OnAppContentFrameNavigated"
+                    SizeChanged="OnAppContentFrameSizeChanged"/>
+            </SplitView.Content>
+        </SplitView>
+
+        <AppBarButton x:Name="HamburgerButton"
+            IsTabStop="False"
+            VerticalAlignment="Top"
+            Click="OnHamburgerButtonClick"
+            Height="{StaticResource TopBarHeight}"
+            Width="{StaticResource MenuItemCompactPanelWidth}"
+            Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
+            <StackPanel x:Name="HamburgerSymbol"
+                Width="20"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center">
+                <Rectangle Margin="0,2,0,2"
+                    Height="1" Fill="{ThemeResource AppBarItemForegroundThemeBrush}"/>
+                <Rectangle Margin="0,2,0,2"
+                    Height="1" Fill="{ThemeResource AppBarItemForegroundThemeBrush}"/>
+                <Rectangle Margin="0,2,0,2"
+                    Height="1" Fill="{ThemeResource AppBarItemForegroundThemeBrush}"/>
+            </StackPanel>
+        </AppBarButton>
+
+        <ProgressRing x:Name="BusyProgress"
+            IsActive="True"
+            Visibility="Collapsed"
+            Width="{StaticResource ProgressSize}" 
+            Height="{StaticResource ProgressSize}"/>
+    </Grid>
+</Page>

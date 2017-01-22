@@ -10,6 +10,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
         <ResourceDictionary Source="PlatformSpecificValues.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
+    <!--Styles-->
     <Style x:Key="AppBarMenuItemStyle" TargetType="controls:MenuItemButton">
         <Setter Property="IsTabStop" Value="True"/>
         <Setter Property="UseSystemFocusVisuals" Value="True"/>
@@ -22,7 +23,8 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
         <Setter Property="SelectedBackground" Value="{ThemeResource SystemControlForegroundAccentBrush}"/>
         <Setter Property="Template" Value="{ThemeResource VerticalMenuItemControlTemplate}"/>
     </Style>
-    
+
+    <!--Control templates-->
     <ControlTemplate x:Key="VerticalMenuItemControlTemplate" TargetType="controls:MenuItemButton">
         <Grid x:Name="MenuItemPanel"
             Control.IsTemplateFocusTarget="True"
@@ -80,5 +82,9 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             </Grid>
         </Grid>
     </ControlTemplate>
-   
+
+    <!--Data templates-->
+    <DataTemplate x:Key="EmptyDataTemplate">
+        <Grid/>
+    </DataTemplate>
 </ResourceDictionary>

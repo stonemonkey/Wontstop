@@ -1,0 +1,30 @@
+﻿<!--Copyright (c) Costin Morariu. All rights reserved.
+Licensed under the MIT license. See LICENSE file in the project root for full license information.-->
+
+<Application
+    x:Class="Wontstop.Climb.Ui.Uwp.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:commonConverters="using:Common.Uwp.Converters"
+    xmlns:uwp="using:Wontstop.Climb.Ui.Uwp"
+    xmlns:localConverters="using:Wontstop.Climb.Ui.Uwp.Converters"
+    RequestedTheme="Dark">
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ms-appx:///Common.Uwp/Generic.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <uwp:ViewModelLocator x:Key="ViewModelLocator"/>
+
+            <localConverters:IntOneToBoolConverter x:Key="IntOneToBoolConverter"/>
+            <localConverters:StringToColorConverter x:Key="StringToColorConverter"/>
+            <localConverters:DateTimeToStringConverter x:Key="DateTimeToStringConverter"/>
+            <commonConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <commonConverters:PageTypeNameToBoolConverter x:Key="PageTypeNameToBoolConverter"/>
+            <localConverters:AutoSuggestBoxTextChangedEventArgsToStringConverter x:Key="AutoSuggestBoxTextChangedEventArgsToStringConverter"/>
+            <localConverters:AutoSuggestBoxSuggestionChosenEventArgsToStringConverter x:Key="AutoSuggestBoxSuggestionChosenEventArgsToStringConverter"/>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

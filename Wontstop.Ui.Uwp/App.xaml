@@ -6,8 +6,8 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Wontstop.Ui.Uwp"
-    xmlns:converters="using:Microsoft.Toolkit.Uwp.UI.Converters"
     xmlns:localConverters="using:Wontstop.Ui.Uwp.Converters"
+    xmlns:commonConverters="using:Common.Uwp.Converters"
     RequestedTheme="Dark">
 
     <Application.Resources>
@@ -20,9 +20,9 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             <local:ViewModelLocator x:Key="ViewModelLocator"/>
 
             <!--converters-->
-            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
             <localConverters:DateTimeToStringConverter x:Key="DateTimeToStringConverter"/>
-            <localConverters:PageTypeNameToBoolConverter x:Key="PageTypeNameToBoolConverter"/>
+            <commonConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <commonConverters:PageTypeNameToBoolConverter x:Key="PageTypeNameToBoolConverter"/>
             <localConverters:TimeSpanToStringPaceConverter x:Key="TimeSpanToStringPaceConverter"/>
             <localConverters:TimeSpanToStringTimeConverter x:Key="TimeSpanToStringTimeConverter"/>
             <localConverters:DoubleMetersToStringKiloMetersConverter x:Key="DoubleMetersToStringKiloMetersConverter"/>

@@ -11,9 +11,9 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:local="using:RunKeeper.WinRT.HealthGraph.Activities"
-    xmlns:behaviours="using:Wontstop.Ui.Uwp.Behaviours"
     xmlns:controls="using:Common.Uwp.Controls"
     xmlns:stateTriggers="using:Common.Uwp.StateTriggers"
+    xmlns:behaviours1="using:Common.Uwp.Behaviours"
     mc:Ignorable="d"
     DataContext="{Binding HistoryViewModel, Source={StaticResource ViewModelLocator}}">
     
@@ -21,10 +21,6 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
         <CollectionViewSource x:Key="HistoryCollectionViewSource" 
             Source="{Binding History.Items}"
             IsSourceGrouped="True"/>
-
-        <DataTemplate x:Key="EmptyDataTemplate">
-            <Grid/>
-        </DataTemplate>
 
         <DataTemplate x:Key="HistoryGroupHeaderDataTemplate">
             <TextBlock
@@ -215,7 +211,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                             </GroupStyle>
                         </ListView.GroupStyle>
                         <interactivity:Interaction.Behaviors>
-                            <behaviours:ScrollToItemBehavior/>
+                            <behaviours1:ScrollToItemBehavior/>
                             <core:EventTriggerBehavior EventName="ItemClickOnSingleSelection">
                                 <core:InvokeCommandAction 
                                     Command="{Binding ItemClickCommand}"

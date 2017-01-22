@@ -3,10 +3,10 @@
 
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Common.Uwp.Utils;
 using Microsoft.Xaml.Interactivity;
-using Wontstop.Ui.Uwp.Utils;
 
-namespace Wontstop.Ui.Uwp.Behaviours
+namespace Common.Uwp.Behaviours
 {
     /// <summary>
     /// Attaches back navigation showing back button on the application title bar while loading 

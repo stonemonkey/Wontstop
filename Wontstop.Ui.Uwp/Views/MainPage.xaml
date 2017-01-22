@@ -10,7 +10,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:controls="using:Common.Uwp.Controls"
     xmlns:stateTriggers="using:Common.Uwp.StateTriggers"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
-    xmlns:behaviours="using:Wontstop.Ui.Uwp.Behaviours"
+    xmlns:behaviours="using:Common.Uwp.Behaviours"
     mc:Ignorable="d"
     Loaded="OnLoaded"
     DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}">

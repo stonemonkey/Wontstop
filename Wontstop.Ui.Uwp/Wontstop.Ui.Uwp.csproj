@@ -94,12 +94,8 @@
     <None Include="Wontstop.Ui.Uwp_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Behaviours\ScrollToItemBehavior.cs" />
     <Compile Include="Converters\TimeSpanToStringPaceConverter.cs" />
     <Compile Include="Converters\ItemClickEventArgsToClickedItemObjectConverter.cs" />
-    <Compile Include="Converters\PageTypeNameToBoolConverter.cs" />
-    <Compile Include="Utils\BackButton.cs" />
-    <Compile Include="Behaviours\ShowBackButtonBehavior.cs" />
     <Compile Include="Converters\DateTimeToStringConverter.cs" />
     <Compile Include="Converters\TimeSpanToStringTimeConverter.cs" />
     <Compile Include="Converters\DoubleMetersToStringKiloMetersConverter.cs" />

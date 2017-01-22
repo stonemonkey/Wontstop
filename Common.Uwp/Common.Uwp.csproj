@@ -107,9 +107,14 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Behaviours\ScrollToItemBehavior.cs" />
+    <Compile Include="Behaviours\ShowBackButtonBehavior.cs" />
     <Compile Include="Controls\EdgeTappedListView.cs" />
     <Compile Include="Controls\EdgeTappedListViewEventArgs.cs" />
     <Compile Include="Controls\MenuItemButton.cs" />
+    <Compile Include="Converters\BoolToObjectConverter.cs" />
+    <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\PageTypeNameToBoolConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StateTriggers\AdaptiveTrigger.cs" />
     <Compile Include="StateTriggers\CompositeStateTrigger.cs" />
@@ -117,6 +122,8 @@
     <Compile Include="StateTriggers\ITriggerValue.cs" />
     <Compile Include="StateTriggers\StateTriggerValueBase.cs" />
     <Compile Include="StateTriggers\WeakEventListener.cs" />
+    <Compile Include="Utils\BackButton.cs" />
+    <Compile Include="Utils\Converter.cs" />
     <EmbeddedResource Include="Properties\Common.Uwp.rd.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -128,6 +135,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Mvvm.WinRT\Mvvm.WinRT.csproj">
+      <Project>{bb95914d-a53b-4e7f-900d-d73bfa5ea6d0}</Project>
+      <Name>Mvvm.WinRT</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

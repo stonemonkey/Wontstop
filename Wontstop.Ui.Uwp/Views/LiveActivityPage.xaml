@@ -10,9 +10,9 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:windowsStateTriggers="using:WindowsStateTriggers"
-    xmlns:behaviours="using:Wontstop.Ui.Uwp.Behaviours"
     xmlns:maps="using:Windows.UI.Xaml.Controls.Maps"
     xmlns:attachedProperties="using:Wontstop.Ui.Uwp.AttachedProperties"
+    xmlns:behaviours="using:Common.Uwp.Behaviours"
     mc:Ignorable="d"
     DataContext="{Binding LiveActivityViewModel, Source={StaticResource ViewModelLocator}}">
        
