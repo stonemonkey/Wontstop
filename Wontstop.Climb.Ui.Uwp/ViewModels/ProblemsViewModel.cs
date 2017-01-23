@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using HttpApiClient;
@@ -117,14 +118,10 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
 
         private void SuggestionChosen(string tag)
         {
-            //var problem = SuggestedProblems.Single(x =>
-            //    string.Equals(tag, x.TagShort, StringComparison.OrdinalIgnoreCase));
-            //if (problem.IsVisible)
-            //{
-                var lastTag = GetLastTagFrom(Tags);
-
-                Tags = Tags.Replace(lastTag, tag);
-            //}
+            // TODO: don't update in case problem was removed
+            var lastTag = GetLastTagFrom(Tags);
+            var tags = Tags.Substring(0, Tags.Length - lastTag.Length);
+            Tags = tags + tag;
         }
 
         private static string GetLastTagFrom(string text)
@@ -152,12 +149,9 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
         {
             Busy = true;
 
-            if (ValidateTicks())
+            if (!ShowErrorForInexistentTags())
             {
-                // TODO: send it to Problemator ...
-                await LoadSectionsAsync();
-
-                Tags = null;
+                await SaveTicksAsync();
             }
 
             Busy = false;
@@ -165,7 +159,15 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             Empty = (Sections == null) || !Sections.Any();
         }
 
-        private bool ValidateTicks()
+        private async Task SaveTicksAsync()
+        {
+            // TODO: send it to Problemator ...
+            await LoadSectionsAsync();
+
+            Tags = null;
+        }
+
+        private bool ShowErrorForInexistentTags()
         {
             var inexisten = GetInexistenTags();
             if (inexisten.Any())
@@ -173,10 +175,10 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
                 _eventAggregator.PublishOnCurrentThread(
                     new ErrorMessage($"Unable to find: {string.Join(TicksSeparator, inexisten)}"));
 
-                return false;
+                return true;
             }
 
-            return true;
+            return false;
         }
 
         private List<string> GetInexistenTags()
