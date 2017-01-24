@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using HttpApiClient.Parsers;
 using Mvvm.WinRT;
 using Mvvm.WinRT.Commands;
+using Wontstop.Climb.Ui.Uwp.Views;
 
 namespace Wontstop.Climb.Ui.Uwp.ViewModels
 {
@@ -26,6 +27,15 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             _requestsFactory = requestsFactory;
         }
 
+        private RelayCommand _loadComand;
+        public RelayCommand LoadCommand => _loadComand ??
+            (_loadComand = new RelayCommand(Load));
+
+        private void Load()
+        {
+            _navigationService.ClearBackStack();
+        }
+
         private RelayCommand _logoutComand;
         public RelayCommand LogoutCommand => _logoutComand ??
             (_logoutComand = new RelayCommand(async () => await LogoutAsync()));
@@ -41,7 +51,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
 
             _storageService.DeleteLocal(Settings.ContextKey);
 
-            _navigationService.Navigate(typeof(LoginViewModel));
+            _navigationService.Navigate(typeof(LoginPage));
 
             Busy = false;
         }

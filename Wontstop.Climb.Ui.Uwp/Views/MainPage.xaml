@@ -10,13 +10,15 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:controls="using:Common.Uwp.Controls"
     xmlns:stateTriggers="using:Common.Uwp.StateTriggers"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
-    xmlns:behaviours="using:Common.Uwp.Behaviours"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     mc:Ignorable="d"
     Loaded="OnLoaded"
     DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}">
 
     <interactivity:Interaction.Behaviors>
-        <behaviours:ShowBackButtonBehavior/>
+        <core:EventTriggerBehavior EventName="Loaded">
+            <core:InvokeCommandAction Command="{Binding LoadCommand}"/>
+        </core:EventTriggerBehavior>
     </interactivity:Interaction.Behaviors>
     
     <Grid x:Name="MainPagePanel"

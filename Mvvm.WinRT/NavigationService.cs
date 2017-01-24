@@ -105,6 +105,16 @@ namespace Mvvm.WinRT
         }
 
         /// <summary>
+        /// Clears back navigation history.
+        /// </summary>
+        /// <remarks>Pressing back with empty navigation history will exit suspend the app and move 
+        /// the user out of the app context.</remarks>
+        public void ClearBackStack()
+        {
+            _frame.BackStack.Clear();
+        }
+
+        /// <summary>
         /// Gets a value that indicates whether there is at least one entry in forward navigation
         /// history. True if there is at least one entry in forward navigation history; false if 
         /// there are no entries in forward navigation history or the Frame does not own its own

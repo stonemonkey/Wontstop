@@ -15,6 +15,7 @@ namespace Mvvm.WinRT
 
         bool CanGoBack { get; }
         void GoBack();
+        void ClearBackStack();
 
         bool CanGoForward { get; }
         void GoForward();
