@@ -2,6 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using HttpApiClient;
+using Mvvm.WinRT.Messages;
 
 namespace Wontstop.Climb.Ui.Uwp.Utils
 {
@@ -12,17 +14,45 @@ namespace Wontstop.Climb.Ui.Uwp.Utils
             return parser.GetData().ToObject<T>();
         }
 
+        private const string ErrorKey = "error";
+        private const string ErrorValue = "true";
+
         public static bool IsError(this ProblematorJsonParser parser)
         {
             return string.Equals(
-                "true", 
-                parser.GetValue("error"), 
+                ErrorValue, 
+                parser.GetValue(ErrorKey), 
                 StringComparison.OrdinalIgnoreCase);
         }
 
+        private const string ErrorMessageKey = "message";
+
         public static string GetErrorMessage(this ProblematorJsonParser parser)
         {
-            return parser.GetValue("message");
+            return parser.GetValue(ErrorMessageKey);
+        }
+
+        public static bool PublishMessageOnError(
+            this ProblematorJsonParser parser, IEventAggregator eventAggregator)
+        {
+            var isError = string.Equals(
+                ErrorValue,
+                parser.GetValue(ErrorKey),
+                StringComparison.OrdinalIgnoreCase);
+            if (isError)
+            {
+                eventAggregator.PublishErrorMessageOnCurrentThread(parser.GetErrorMessage());
+            }
+
+            return isError;
+        }
+
+        public static Response<ProblematorJsonParser> PublishErrorOnFailure(
+            this Response<ProblematorJsonParser> response, IEventAggregator eventAggregator)
+        {
+            return response
+                .OnRequestFailure(x => eventAggregator.PublishOnCurrentThread(x.Exception))
+                .OnResponseFailure(x => eventAggregator.PublishErrorMessageOnCurrentThread(x.GetContent()));
         }
     }
 }

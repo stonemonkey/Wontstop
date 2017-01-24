@@ -38,7 +38,7 @@
             HorizontalAlignment="Right"
             Text="Done"
             Visibility="{Binding Problem.WasClimbed, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=False}"/>
-        <!--<StackPanel x:Name="NumericUpDownPanel"
+        <StackPanel x:Name="NumericUpDownPanel"
             Grid.Column="3"
             Margin="8,0,0,0"
             Orientation="Horizontal">
@@ -53,12 +53,12 @@
             <Button x:Name="IncrementButton" 
                 Content="+"
                 Command="{Binding IncrementTriesCommand}"/>
-        </StackPanel>-->
-        <!--<Button x:Name="TickButton" 
+        </StackPanel>
+        <Button x:Name="TickButton" 
             Grid.Column="4"
             Margin="8,0,0,0"
             Content="Tick"
             Command="{Binding TickCommand}"
-            Visibility="{Binding Problem.WasClimbed, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}"/>-->
+            Visibility="{Binding Problem.WasClimbed, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}"/>
     </Grid>
 </UserControl>

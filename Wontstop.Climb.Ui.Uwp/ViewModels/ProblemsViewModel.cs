@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using HttpApiClient;
@@ -58,30 +57,22 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
         {
             (await _requestsFactory.CreateProblemsRequest()
                 .RunAsync<ProblematorJsonParser>())
-                    .OnSuccess(HandleResponse)
-                    .OnRequestFailure(x =>
-                        _eventAggregator.PublishOnCurrentThread(x.Exception))
-                    .OnResponseFailure(x =>
-                        _eventAggregator.PublishOnCurrentThread(new ErrorMessage(x.GetContent())));
+                    .OnSuccess(HandleProblemsResponse)
+                    .PublishErrorOnFailure(_eventAggregator);
         }
 
-        private List<string> _tags;
-
-        private void HandleResponse(ProblematorJsonParser parser)
+        private void HandleProblemsResponse(ProblematorJsonParser parser)
         {
-            if (parser.IsError())
+            if (parser.PublishMessageOnError(_eventAggregator))
             {
-                _eventAggregator.PublishOnCurrentThread(
-                    new ErrorMessage(parser.GetErrorMessage()));
+                return;
             }
-            else
-            {
-                Sections = parser.To<IDictionary<string, WallSection>>()
-                    .Values.ToList();
-                _tags = Sections.SelectMany(x => x.Problems)
-                    .Select(x => x.TagShort)
-                    .ToList();
-            }
+
+            Sections = parser.To<IDictionary<string, WallSection>>()
+                .Values.ToList();
+            _tags = Sections.SelectMany(x => x.Problems)
+                .Select(x => x.TagShort)
+                .ToList();
         }
 
         private RelayCommand<bool> _tagsChangedComand;
@@ -89,6 +80,8 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
         public RelayCommand<bool> TagsChangedCommand => _tagsChangedComand ??
             (_tagsChangedComand = new RelayCommand<bool>(
                 TagsChanged, byUser => !Busy && byUser && !string.IsNullOrWhiteSpace(Tags)));
+
+        private List<string> _tags;
 
         private const int TagMinLength = 2;
 
@@ -118,7 +111,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
 
         private void SuggestionChosen(string tag)
         {
-            // TODO: don't update in case problem was removed
+            // TODO: maybe don't update in case problem was removed
             var lastTag = GetLastTagFrom(Tags);
             var tags = Tags.Substring(0, Tags.Length - lastTag.Length);
             Tags = tags + tag;
@@ -151,7 +144,8 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
 
             if (!ShowErrorForInexistentTags())
             {
-                await SaveTicksAsync();
+                await SaveTicksAsync(Tags);
+                Tags = null;
             }
 
             Busy = false;
@@ -159,21 +153,13 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             Empty = (Sections == null) || !Sections.Any();
         }
 
-        private async Task SaveTicksAsync()
-        {
-            // TODO: send it to Problemator ...
-            await LoadSectionsAsync();
-
-            Tags = null;
-        }
-
         private bool ShowErrorForInexistentTags()
         {
             var inexisten = GetInexistenTags();
             if (inexisten.Any())
             {
-                _eventAggregator.PublishOnCurrentThread(
-                    new ErrorMessage($"Unable to find: {string.Join(TicksSeparator, inexisten)}"));
+                _eventAggregator.PublishErrorMessageOnCurrentThread(
+                    $"Unable to find: {string.Join(TicksSeparator, inexisten)}");
 
                 return true;
             }
@@ -193,6 +179,24 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             
             return tags.Where(x => !_tags.Contains(x))
                 .ToList();
+        }
+
+        private async Task SaveTicksAsync(string ticks)
+        {
+            await (await _requestsFactory.CreateSaveTicksRequest(ticks)
+                .RunAsync<ProblematorJsonParser>())
+                    .PublishErrorOnFailure(_eventAggregator)
+                    .OnSuccessAsync(HandleSaveTicksResponse);
+        }
+
+        private async Task HandleSaveTicksResponse(ProblematorJsonParser parser)
+        {
+            if (parser.PublishMessageOnError(_eventAggregator))
+            {
+                return;
+            }
+
+            await LoadSectionsAsync();
         }
     }
 }

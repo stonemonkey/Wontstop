@@ -67,6 +67,16 @@ namespace Wontstop.Climb.Ui.Uwp
             config.AddParam("problematorlocation", gymId ?? _context.GymId);
         }
 
+        protected void AddGymIdParam(ConfigBase config)
+        {
+            if (_context == null)
+            {
+                throw new InvalidOperationException(_missingUserContextMessage);
+            }
+
+            config.AddParam("gymid", _context.GymId);
+        }
+
         protected void AddApiAuthTokenParam(ConfigBase config)
         {
             if (_context == null)
@@ -157,6 +167,29 @@ namespace Wontstop.Climb.Ui.Uwp
         {
             var urn = $"{Server}/problems";
             var config = new Config(urn, IsSecure);
+            AddApiAuthTokenParam(config);
+            AddClientTimestampParam(config);
+            AddUserAgentHeader(config);
+            AddApplicationKindHeader(config);
+
+            return new GetRequest(config, _responseLogger);
+        }
+
+        /// <summary>
+        /// Creates request for adding problem ticks.
+        /// </summary>
+        /// <returns>GET request.</returns>
+        public GetRequest CreateSaveTicksRequest(string ticks)
+        {
+            if (string.IsNullOrWhiteSpace(ticks))
+            {
+                throw new ArgumentException(_invalidArgumentMessage, nameof(ticks));
+            }
+
+            var urn = $"{Server}/saveticks/";
+            var config = new Config(urn, IsSecure);
+            config.AddParam("ticks", ticks);
+            AddGymIdParam(config);
             AddApiAuthTokenParam(config);
             AddClientTimestampParam(config);
             AddUserAgentHeader(config);
