@@ -114,6 +114,7 @@
     <Compile Include="Controls\MenuItemButton.cs" />
     <Compile Include="Converters\BoolToObjectConverter.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\ItemClickEventArgsToClickedItemObjectConverter.cs" />
     <Compile Include="Converters\PageTypeNameToBoolConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StateTriggers\AdaptiveTrigger.cs" />

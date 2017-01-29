@@ -44,12 +44,7 @@ namespace Wontstop.Climb.Ui.Uwp
         /// <param name="context">User context instance.</param>
         public void SetUserContext(UserContext context)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
-
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
         
         /// <summary>
@@ -190,6 +185,23 @@ namespace Wontstop.Climb.Ui.Uwp
             var config = new Config(urn, IsSecure);
             config.AddParam("ticks", ticks);
             AddGymIdParam(config);
+            AddApiAuthTokenParam(config);
+            AddClientTimestampParam(config);
+            AddUserAgentHeader(config);
+            AddApplicationKindHeader(config);
+
+            return new GetRequest(config, _responseLogger);
+        }
+
+        /// <summary>
+        /// Creates request for fetching problem ticks for today.
+        /// </summary>
+        /// <returns>GET request.</returns>
+        public GetRequest CreateDayTicksRequest(DateTime date)
+        {
+            var urn = $"{Server}/tickarchive";
+            var config = new Config(urn, IsSecure);
+            config.AddParam("date", date.ToString("yyyy-MM-dd"));
             AddApiAuthTokenParam(config);
             AddClientTimestampParam(config);
             AddUserAgentHeader(config);

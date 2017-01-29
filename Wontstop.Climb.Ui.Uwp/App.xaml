@@ -23,8 +23,11 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             <localConverters:DateTimeToStringConverter x:Key="DateTimeToStringConverter"/>
             <commonConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
             <commonConverters:PageTypeNameToBoolConverter x:Key="PageTypeNameToBoolConverter"/>
-            <localConverters:AutoSuggestBoxTextChangedEventArgsToStringConverter x:Key="AutoSuggestBoxTextChangedEventArgsToStringConverter"/>
+            <commonConverters:ItemClickEventArgsToClickedItemObjectConverter x:Key="ItemClickEventArgsToClickedItemObjectConverter"/>
+            <localConverters:AutoSuggestBoxTextChangedEventArgsToBoolConverter x:Key="AutoSuggestBoxTextChangedEventArgsToBoolConverter"/>
+            <localConverters:AutoSuggestBoxQuerySubmittedEventArgsToStringConverter x:Key="AutoSuggestBoxQuerySubmittedEventArgsToStringConverter"/>
             <localConverters:AutoSuggestBoxSuggestionChosenEventArgsToStringConverter x:Key="AutoSuggestBoxSuggestionChosenEventArgsToStringConverter"/>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

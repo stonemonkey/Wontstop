@@ -87,7 +87,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
 
                     <controls:MenuItemButton x:Name="ProblemsButton"
                         Grid.Row="1"
-                        Label="Problems"
+                        Label="Ticks today"
                         Click="OnClickProblemsButton"
                         Style="{StaticResource AppBarMenuItemStyle}"
                         IsSelected="{Binding ActivePage, Converter={StaticResource PageTypeNameToBoolConverter}, ConverterParameter=HistoryPage}">
@@ -108,7 +108,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             <SplitView.Content>
                 <Frame x:Name="AppContentFrame"
                     Margin="{StaticResource TopBarThickness}"
-                       Navigated="OnAppContentFrameNavigated"
+                    Navigated="OnAppContentFrameNavigated"
                     SizeChanged="OnAppContentFrameSizeChanged"/>
             </SplitView.Content>
         </SplitView>

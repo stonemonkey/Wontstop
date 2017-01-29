@@ -95,7 +95,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converters\TimeSpanToStringPaceConverter.cs" />
-    <Compile Include="Converters\ItemClickEventArgsToClickedItemObjectConverter.cs" />
     <Compile Include="Converters\DateTimeToStringConverter.cs" />
     <Compile Include="Converters\TimeSpanToStringTimeConverter.cs" />
     <Compile Include="Converters\DoubleMetersToStringKiloMetersConverter.cs" />

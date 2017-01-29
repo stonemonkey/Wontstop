@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Diagnostics;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 
 namespace Wontstop.Climb.Ui.Uwp.Converters
 {
-    public class AutoSuggestBoxTextChangedEventArgsToStringConverter : IValueConverter
+    public class AutoSuggestBoxTextChangedEventArgsToBoolConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {

@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Costin Morariu. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Threading.Tasks;
 using Mvvm.WinRT.AttachedProperties;
 using Mvvm.WinRT.Commands;
+using Mvvm.WinRT.Messages;
 using PropertyChanged;
 using Wontstop.Climb.Ui.Uwp.Dtos;
 
@@ -12,45 +12,32 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
     [ImplementPropertyChanged]
     public class ProblemItemViewModel
     {
-        public bool Busy { get; private set; }
-
-        private const int MinNoTries = 1;
-        private const int MaxNoTries = 100;
-
-        public int Tries { get; set; } = MinNoTries;
-
         [Model]
         public Problem Problem { get; set; }
 
-        private RelayCommand _incrementTriesComand;
-        public RelayCommand IncrementTriesCommand => _incrementTriesComand ??
-            (_incrementTriesComand = new RelayCommand(
-                () => Tries++, () => (Tries < MaxNoTries) && !Busy));
+        private readonly IEventAggregator _eventAggregator;
 
-        private RelayCommand _decrementTriesComand;
-        public RelayCommand DecrementTriesCommand => _decrementTriesComand ??
-            (_decrementTriesComand = new RelayCommand(
-                () => Tries--, () => (Tries > MinNoTries) && !Busy));
-
-        private RelayCommand _tickComand;
-        public RelayCommand TickCommand => _tickComand ??
-            (_tickComand = new RelayCommand(async () => await TickAsync(), () => !Busy));
-
-        private async Task TickAsync()
+        public ProblemItemViewModel(IEventAggregator eventAggregator)
         {
-            Busy = true;
-
-            // TODO: send it to Problemator ...
-            await Task.Delay(2000);
-
-            Busy = false;
+            _eventAggregator = eventAggregator;
         }
 
-        private readonly ProblematorRequestsFactory _requestsFactory;
+        private RelayCommand _loadComand;
+        public RelayCommand LoadCommand => _loadComand ??
+            (_loadComand = new RelayCommand(Load));
 
-        public ProblemItemViewModel(ProblematorRequestsFactory requestsFactory)
+        private void Load()
         {
-            _requestsFactory = requestsFactory;
+            _eventAggregator.Subscribe(this);
+        }
+
+        private RelayCommand _unloadComand;
+        public RelayCommand UnloadCommand => _unloadComand ??
+            (_unloadComand = new RelayCommand(Unload));
+
+        private void Unload()
+        {
+            _eventAggregator.Unsubscribe(this);
         }
     }
 }

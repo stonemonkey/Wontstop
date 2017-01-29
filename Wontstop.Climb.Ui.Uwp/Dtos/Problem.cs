@@ -11,6 +11,9 @@ namespace Wontstop.Climb.Ui.Uwp.Dtos
     /// </summary>
     public class Problem
     {
+        [JsonProperty(PropertyName = "problemId")]
+        public string Id { get; set; }
+
         [JsonProperty(PropertyName = "colour")]
         public string ColorName { get; set; }
 

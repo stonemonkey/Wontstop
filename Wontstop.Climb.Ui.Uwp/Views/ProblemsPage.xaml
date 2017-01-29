@@ -10,8 +10,9 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:windowsStateTriggers="using:WindowsStateTriggers"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
-    xmlns:dtos="using:Wontstop.Climb.Ui.Uwp.Dtos"
-    mc:Ignorable="d"
+    xmlns:views="using:Wontstop.Climb.Ui.Uwp.Views"
+    xmlns:mvvm="using:Mvvm.WinRT.AttachedProperties"
+    mc:Ignorable="d" 
     DataContext="{Binding ProblemsViewModel, Source={StaticResource ViewModelLocator}}">
 
     <Page.Resources>
@@ -23,7 +24,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
             <Setter Property="MinWidth" Value="{ThemeResource ListViewItemMinWidth}"/>
-            <Setter Property="MinHeight" Value="{ThemeResource ListViewItemMinHeight}"/>
+            <Setter Property="MinHeight" Value="0"/>
             <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
             <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
             <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
@@ -60,8 +61,15 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             </Setter>
         </Style>
 
-        <DataTemplate x:Key="SuggestedProblemDataTemplate" x:DataType="dtos:Problem">
-            <Grid x:Name="ProblemItemControlPanel"
+        <DataTemplate x:Key="ProblemDataTemplate">
+            <Grid x:Name="ProblemItemPanel">
+                <views:ProblemItemView 
+                    mvvm:ViewModel.Model="{Binding DataContext, ElementName=ProblemItemPanel}"/>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="SuggestedProblemDataTemplate">
+            <Grid x:Name="SuggestedProblemItemPanel"
                 Background="Transparent">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -101,7 +109,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         Margin="8,0,0,0"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Right"
-                        Text="REMOVED"
+                        Text="removed"
                         Foreground="Red"
                         Visibility="{Binding IsVisible, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}"/>
                 </Grid>
@@ -143,15 +151,17 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         VerticalAlignment="Center"
                         Style="{ThemeResource CaptionTextBlockStyle}"
                         Visibility="{Binding Tick.Tries, Converter={StaticResource IntOneToBoolConverter}, ConverterParameter=True}"/>
-                </StackPanel>            
+                </StackPanel>
             </Grid>
         </DataTemplate>
-        
     </Page.Resources>
 
     <interactivity:Interaction.Behaviors>
         <core:EventTriggerBehavior EventName="Loaded">
             <core:InvokeCommandAction Command="{Binding LoadCommand}"/>
+        </core:EventTriggerBehavior>
+        <core:EventTriggerBehavior EventName="Unloaded">
+            <core:InvokeCommandAction Command="{Binding UnloadCommand}"/>
         </core:EventTriggerBehavior>
     </interactivity:Interaction.Behaviors>
 
@@ -175,28 +185,36 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
         <Grid x:Name="ContentPanel">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Grid x:Name="TicksPanel"
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition MaxWidth="{StaticResource SmallDeviceMaxWidth}"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid x:Name="SuggestionsPanel"
                 Grid.Row="0"
-                Width="320"
-                HorizontalAlignment="Left"
                 Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
                 <AutoSuggestBox x:Name="TicksSuggestBox"
                     Margin="12,8"
-                    QueryIcon="Save"
                     Text="{Binding Tags, Mode=TwoWay}"
                     ItemsSource="{Binding SuggestedProblems}"
                     ItemTemplate="{StaticResource SuggestedProblemDataTemplate}"
                     PlaceholderText="type some tags (e.g. A1001,B2001)">
                     <interactivity:Interaction.Behaviors>
-                        <core:EventTriggerBehavior EventName="QuerySubmitted">
-                            <core:InvokeCommandAction Command="{Binding TickCommand}"/>
-                        </core:EventTriggerBehavior>
                         <core:EventTriggerBehavior EventName="TextChanged">
                             <core:InvokeCommandAction 
                                 Command="{Binding TagsChangedCommand}"
-                                InputConverter="{StaticResource AutoSuggestBoxTextChangedEventArgsToStringConverter}"/>
+                                InputConverter="{StaticResource AutoSuggestBoxTextChangedEventArgsToBoolConverter}"/>
+                        </core:EventTriggerBehavior>
+                        <core:EventTriggerBehavior EventName="QuerySubmitted">
+                            <core:InvokeCommandAction 
+                                Command="{Binding TagsSelectedCommand}"
+                                InputConverter="{StaticResource AutoSuggestBoxQuerySubmittedEventArgsToStringConverter}"/>
                         </core:EventTriggerBehavior>
                         <core:EventTriggerBehavior EventName="SuggestionChosen">
                             <core:InvokeCommandAction 
@@ -205,13 +223,27 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         </core:EventTriggerBehavior>
                     </interactivity:Interaction.Behaviors>
                 </AutoSuggestBox>
+                <Button x:Name="TickButton"
+                    Grid.Column="1"
+                    Margin="0,0,12,0"
+                    Command="{Binding TickCommand}">
+                    <SymbolIcon Symbol="Save"/>
+                </Button>
             </Grid>
-            <ListView x:Name="SectionsList"
+            <ListView x:Name="TicksList"
                 Grid.Row="1"
                 Margin="0,4,0,0"
-                Width="320"
                 SelectionMode="None"
-                HorizontalAlignment="Left"
+                HorizontalAlignment="Stretch"
+                ItemsSource="{Binding Ticks}"
+                ItemTemplate="{StaticResource ProblemDataTemplate}"
+                HeaderTemplate="{StaticResource EmptyDataTemplate}">
+            </ListView>
+            <!--<ListView x:Name="SectionsList"
+                Grid.Row="2"
+                Margin="0,4,0,0"
+                SelectionMode="None"
+                HorizontalAlignment="Stretch"
                 ItemsSource="{Binding Sections}"
                 HeaderTemplate="{StaticResource EmptyDataTemplate}">
                 <ListView.ItemTemplate>
@@ -226,22 +258,28 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                                 Grid.Row="0"
                                 IsChecked="False"
                                 Content="{Binding FullName}"
-                                HorizontalAlignment="Stretch"/>
+                                HorizontalAlignment="Stretch">
+                                <interactivity:Interaction.Behaviors>
+                                    <core:EventTriggerBehavior EventName="Checked">
+                                        <core:InvokeCommandAction Command="{Binding DataContext.PublishTagsCommand, ElementName=SectionsList}"/>
+                                    </core:EventTriggerBehavior>
+                                </interactivity:Interaction.Behaviors>
+                            </ToggleButton>
                             <ListView x:Name="ProblemsList"
                                 Grid.Row="1"
                                 Margin="0,4,0,0"
                                 SelectionMode="None"
                                 ItemsSource="{Binding Problems}"
-                                ItemTemplate="{StaticResource SuggestedProblemDataTemplate}"
+                                ItemTemplate="{StaticResource ProblemDataTemplate}"
                                 HeaderTemplate="{StaticResource EmptyDataTemplate}"
                                 Visibility="{Binding IsChecked, ElementName=SectionName, Converter={StaticResource BoolToVisibilityConverter}}">
                             </ListView>
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
-            </ListView>
+            </ListView>-->
             <Grid x:Name="EmptyStatePanel"
-                Grid.Row="0" Grid.RowSpan="2"
+                Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Grid.ColumnSpan="2"
                 Visibility="{Binding Empty, Converter={StaticResource BoolToVisibilityConverter}}">
                 <TextBlock x:Name="EmptyState"
                     TextAlignment="Center"
@@ -250,7 +288,6 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     Text="We couldn't find any problem for the gym you signed in."/>
             </Grid>
         </Grid>
-
         <ProgressRing x:Name="BusyProgress"
             IsActive="True"
             Visibility="Collapsed"

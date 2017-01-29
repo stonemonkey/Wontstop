@@ -96,11 +96,13 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="ConsoleResponseLogger.cs" />
+    <Compile Include="Converters\AutoSuggestBoxQuerySubmittedEventArgsToStringConverter.cs" />
     <Compile Include="Converters\AutoSuggestBoxSuggestionChosenEventArgsToStringConverter.cs" />
-    <Compile Include="Converters\AutoSuggestBoxTextChangedEventArgsToStringConverter.cs" />
+    <Compile Include="Converters\AutoSuggestBoxTextChangedEventArgsToBoolConverter.cs" />
     <Compile Include="Converters\IntOneToBoolConverter.cs" />
     <Compile Include="Converters\DateTimeToStringConverter.cs" />
     <Compile Include="Converters\StringToColorConverter.cs" />
+    <Compile Include="Dtos\DayTicks.cs" />
     <Compile Include="Dtos\Tick.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -5,7 +5,7 @@ using System;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 
-namespace Wontstop.Ui.Uwp.Converters
+namespace Common.Uwp.Converters
 {
     public class ItemClickEventArgsToClickedItemObjectConverter : IValueConverter
     {

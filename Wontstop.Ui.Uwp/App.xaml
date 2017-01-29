@@ -26,7 +26,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             <localConverters:TimeSpanToStringPaceConverter x:Key="TimeSpanToStringPaceConverter"/>
             <localConverters:TimeSpanToStringTimeConverter x:Key="TimeSpanToStringTimeConverter"/>
             <localConverters:DoubleMetersToStringKiloMetersConverter x:Key="DoubleMetersToStringKiloMetersConverter"/>
-            <localConverters:ItemClickEventArgsToClickedItemObjectConverter x:Key="ItemClickEventArgsToClickedItemObjectConverter"/>
+            <commonConverters:ItemClickEventArgsToClickedItemObjectConverter x:Key="ItemClickEventArgsToClickedItemObjectConverter"/>
 
         </ResourceDictionary>
     </Application.Resources>
