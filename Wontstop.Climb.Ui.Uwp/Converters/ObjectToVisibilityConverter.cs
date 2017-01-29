@@ -3,20 +3,21 @@
 
 using System;
 using Windows.UI.Xaml.Data;
+using Common.Uwp.Utils;
+using Windows.UI.Xaml;
 
 namespace Wontstop.Climb.Ui.Uwp.Converters
 {
-    public class DateTimeToStringConverter : IValueConverter
+    public class ObjectToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            if (value == null)
+            var boolValue = value != null;
+            if (parameter.TryParseBool())
             {
-                return null;
+                boolValue = !boolValue;
             }
-
-            var dateTime = DateTime.Parse(value.ToString());
-            return dateTime.ToString("dd/MM/yyyy");
+            return boolValue ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

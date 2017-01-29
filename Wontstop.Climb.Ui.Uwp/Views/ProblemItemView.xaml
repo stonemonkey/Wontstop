@@ -225,11 +225,9 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
 
     <ToggleButton x:Name="ProblemItemToggleButton"
         HorizontalAlignment="Stretch"
-        HorizontalContentAlignment="Stretch"
-        IsChecked="{Binding IsSelected, Mode=TwoWay}">
+        HorizontalContentAlignment="Stretch">
         <Grid x:Name="ProblemItemPanel"
-            Background="Transparent"
-            DataContext="{Binding Problem}">
+            Background="Transparent">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -246,17 +244,17 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 <Ellipse x:Name="ColorElipse"
                     Grid.Column="1"
                     Width="16" Height="16"
-                    Fill="{Binding ColorName, Converter={StaticResource StringToColorConverter}}"/>
+                    Fill="{Binding Problem.ColorName, Converter={StaticResource StringToColorConverter}}"/>
                 <TextBlock x:Name="GradeTextBlock"
                     Grid.Column="2"
                     Margin="8,0,0,0"
                     VerticalAlignment="Center"
-                    Text="{Binding GradeFont}"/>
+                    Text="{Binding Problem.GradeFont}"/>
                 <TextBlock x:Name="TagTextBlock"
                     Grid.Column="3"
                     Margin="8,0,0,0"
                     VerticalAlignment="Center"
-                    Text="{Binding TagShort}"/>
+                    Text="{Binding Problem.TagShort}"/>
                 <TextBlock x:Name="RemovedTextBlock"
                     Grid.Column="4"
                     Margin="8,0,0,0"
@@ -264,23 +262,50 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     HorizontalAlignment="Right"
                     Text="removed"
                     Foreground="Red"
-                    Visibility="{Binding IsVisible, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}"/>
+                    Visibility="{Binding Problem.Visible, Converter={StaticResource IntOneToVisibilityConverter}, ConverterParameter=True}"/>
             </Grid>
             <StackPanel x:Name="TickPanel"
                 Grid.Row="1"
                 Margin="0,2"
-                Orientation="Horizontal"
-                Visibility="{Binding WasClimbed, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=False}">
-                <TextBlock Text="Solved" 
+                Orientation="Horizontal">
+                <TextBlock Text="{Binding Problem.ColorName}" 
                     Foreground="Gray"
                     Style="{ThemeResource CaptionTextBlockStyle}"/>
-                <TextBlock x:Name="LoggedDateTextBlock"
+                <TextBlock Text="|" 
+                    Margin="4,0,0,0"
+                    Foreground="Gray"
+                    Style="{ThemeResource CaptionTextBlockStyle}"/>
+                <TextBlock x:Name="RouteTypeTextBlock"
+                    Margin="4,0,0,0"
+                    Foreground="Gray"
+                    VerticalAlignment="Center"
+                    Text="{Binding RouteTypeText}"
+                    Style="{ThemeResource CaptionTextBlockStyle}"/>
+                <TextBlock Text="|" 
+                    Margin="4,0,0,0"
+                    Foreground="Gray"
+                    Style="{ThemeResource CaptionTextBlockStyle}"/>
+                <TextBlock x:Name="LoggedTimeTextBlock"
                     Margin="4,0,0,0"
                     Foreground="Gray"
                     VerticalAlignment="Center"
                     Style="{ThemeResource CaptionTextBlockStyle}"
-                    Text="{Binding Tick.Timestamp, Converter={StaticResource DateTimeToStringConverter}}"/>
-                <TextBlock Text="in" 
+                    Text="{Binding Problem.Tick.Timestamp, Converter={StaticResource DateTimeToTimeStringConverter}}"/>
+                <StackPanel x:Name="AscentTypePanel"
+                    Orientation="Horizontal"
+                    Visibility="{Binding Problem.RouteType, Converter={StaticResource StringEqualToVisibilityConverter}, ConverterParameter=sport}">
+                    <TextBlock Text="|" 
+                        Margin="4,0,0,0"
+                        Foreground="Gray"
+                        Style="{ThemeResource CaptionTextBlockStyle}"/>
+                    <TextBlock x:Name="AscentionTypeTextBlock"
+                        Margin="4,0,0,0"
+                        Foreground="Gray"
+                        VerticalAlignment="Center"
+                        Text="{Binding AscentTypeText}"
+                        Style="{ThemeResource CaptionTextBlockStyle}"/>
+                </StackPanel>                
+                <TextBlock Text="|" 
                     Margin="4,0,0,0"
                     Foreground="Gray"
                     Style="{ThemeResource CaptionTextBlockStyle}"/>
@@ -288,7 +313,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     Margin="4,0,0,0"
                     Foreground="Gray"
                     VerticalAlignment="Center"
-                    Text="{Binding Tick.Tries}"
+                    Text="{Binding Problem.Tick.Tries}"
                     Style="{ThemeResource CaptionTextBlockStyle}"/>
                 <TextBlock x:Name="OneTryLabelTextBlock"
                     Text="try"
@@ -296,14 +321,14 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     Foreground="Gray"
                     VerticalAlignment="Center"
                     Style="{ThemeResource CaptionTextBlockStyle}"
-                    Visibility="{Binding Tick.Tries, Converter={StaticResource IntOneToBoolConverter}, ConverterParameter=False}"/>
-                <TextBlock x:Name="TriesLabelTextBlock"
+                    Visibility="{Binding Problem.Tick.Tries, Converter={StaticResource IntOneToBoolConverter}, ConverterParameter=False}"/>
+                <TextBlock x:Name="ManyTriesLabelTextBlock"
                     Text="tries"
                     Margin="4,0,0,0"
                     Foreground="Gray"
                     VerticalAlignment="Center"
                     Style="{ThemeResource CaptionTextBlockStyle}"
-                    Visibility="{Binding Tick.Tries, Converter={StaticResource IntOneToBoolConverter}, ConverterParameter=True}"/>
+                    Visibility="{Binding Problem.Tick.Tries, Converter={StaticResource IntOneToBoolConverter}, ConverterParameter=True}"/>
             </StackPanel>
         </Grid>
         <interactivity:Interaction.Behaviors>

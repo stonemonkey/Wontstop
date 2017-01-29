@@ -1,3 +1,6 @@
+// Copyright (c) Costin Morariu. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 using System;
 using Newtonsoft.Json;
 
@@ -25,5 +28,8 @@ namespace Wontstop.Climb.Ui.Uwp.Dtos
 
         [JsonProperty(PropertyName = "grade_opinion")]
         public string GradeOpinion { get; set; }
+
+        [JsonProperty(PropertyName = "ascent_type")]
+        public int AscentType { get; set; }
     }
 }

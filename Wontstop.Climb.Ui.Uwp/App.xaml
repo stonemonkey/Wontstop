@@ -19,11 +19,21 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             <uwp:ViewModelLocator x:Key="ViewModelLocator"/>
 
             <localConverters:IntOneToBoolConverter x:Key="IntOneToBoolConverter"/>
+            <localConverters:IntOneToVisibilityConverter x:Key="IntOneToVisibilityConverter"/>
+            
+            <localConverters:ObjectToVisibilityConverter x:Key="ObjectToVisibilityConverter"/>
+            
             <localConverters:StringToColorConverter x:Key="StringToColorConverter"/>
-            <localConverters:DateTimeToStringConverter x:Key="DateTimeToStringConverter"/>
+            <localConverters:StringEqualToVisibilityConverter x:Key="StringEqualToVisibilityConverter"/>
+
+            <localConverters:DateTimeToDateStringConverter x:Key="DateTimeToDateStringConverter"/>
+            <localConverters:DateTimeToTimeStringConverter x:Key="DateTimeToTimeStringConverter"/>
+
             <commonConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
             <commonConverters:PageTypeNameToBoolConverter x:Key="PageTypeNameToBoolConverter"/>
+            
             <commonConverters:ItemClickEventArgsToClickedItemObjectConverter x:Key="ItemClickEventArgsToClickedItemObjectConverter"/>
+            
             <localConverters:AutoSuggestBoxTextChangedEventArgsToBoolConverter x:Key="AutoSuggestBoxTextChangedEventArgsToBoolConverter"/>
             <localConverters:AutoSuggestBoxQuerySubmittedEventArgsToStringConverter x:Key="AutoSuggestBoxQuerySubmittedEventArgsToStringConverter"/>
             <localConverters:AutoSuggestBoxSuggestionChosenEventArgsToStringConverter x:Key="AutoSuggestBoxSuggestionChosenEventArgsToStringConverter"/>

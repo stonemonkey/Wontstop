@@ -24,7 +24,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
             <Setter Property="MinWidth" Value="{ThemeResource ListViewItemMinWidth}"/>
-            <Setter Property="MinHeight" Value="0"/>
+            <Setter Property="MinHeight" Value="{ThemeResource ListViewItemMinHeight}"/>
             <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
             <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
             <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
@@ -89,7 +89,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         Margin="0,0,8,0"
                         VerticalAlignment="Center"
                         Symbol="Accept"
-                        Visibility="{Binding WasClimbed, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=False}"/>
+                        Visibility="{Binding Tick, Converter={StaticResource ObjectToVisibilityConverter}}"/>
                     <Ellipse x:Name="ColorElipse"
                         Grid.Column="1"
                         Width="16" Height="16"
@@ -111,14 +111,14 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         HorizontalAlignment="Right"
                         Text="removed"
                         Foreground="Red"
-                        Visibility="{Binding IsVisible, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}"/>
+                        Visibility="{Binding Visible, Converter={StaticResource IntOneToVisibilityConverter}, ConverterParameter=True}"/>
                 </Grid>
                 <StackPanel x:Name="TickPanel"
                     Grid.Row="1"
                     Margin="0,2"
                     Orientation="Horizontal"
-                    Visibility="{Binding WasClimbed, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=False}">
-                    <TextBlock Text="Solved" 
+                    Visibility="{Binding Tick, Converter={StaticResource ObjectToVisibilityConverter}}">
+                    <TextBlock Text="Ticked" 
                         Foreground="Gray"
                         Style="{ThemeResource CaptionTextBlockStyle}"/>
                     <TextBlock x:Name="LoggedDateTextBlock"
@@ -126,8 +126,8 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         Foreground="Gray"
                         VerticalAlignment="Center"
                         Style="{ThemeResource CaptionTextBlockStyle}"
-                        Text="{Binding Tick.Timestamp, Converter={StaticResource DateTimeToStringConverter}}"/>
-                    <TextBlock Text="in" 
+                        Text="{Binding Tick.Timestamp, Converter={StaticResource DateTimeToDateStringConverter}}"/>
+                    <TextBlock Text="|" 
                         Margin="4,0,0,0"
                         Foreground="Gray"
                         Style="{ThemeResource CaptionTextBlockStyle}"/>
@@ -144,7 +144,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         VerticalAlignment="Center"
                         Style="{ThemeResource CaptionTextBlockStyle}"
                         Visibility="{Binding Tick.Tries, Converter={StaticResource IntOneToBoolConverter}, ConverterParameter=False}"/>
-                    <TextBlock x:Name="TriesLabelTextBlock"
+                    <TextBlock x:Name="ManyTriesLabelTextBlock"
                         Text="tries"
                         Margin="4,0,0,0"
                         Foreground="Gray"
@@ -184,7 +184,6 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
 
         <Grid x:Name="ContentPanel">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
@@ -279,7 +278,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 </ListView.ItemTemplate>
             </ListView>-->
             <Grid x:Name="EmptyStatePanel"
-                Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Grid.ColumnSpan="2"
+                Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2"
                 Visibility="{Binding Empty, Converter={StaticResource BoolToVisibilityConverter}}">
                 <TextBlock x:Name="EmptyState"
                     TextAlignment="Center"

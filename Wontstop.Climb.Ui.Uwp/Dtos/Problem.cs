@@ -1,7 +1,6 @@
 // Copyright (c) Costin Morariu. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using Newtonsoft.Json;
 
 namespace Wontstop.Climb.Ui.Uwp.Dtos
@@ -31,11 +30,5 @@ namespace Wontstop.Climb.Ui.Uwp.Dtos
 
         [JsonProperty(PropertyName = "tick")]
         public Tick Tick { get; set; }
-
-        [JsonIgnore]
-        public bool WasClimbed => Tick != null;
-
-        [JsonIgnore]
-        public bool IsVisible => string.Equals("1", Visible, StringComparison.Ordinal);
     }
 }
