@@ -208,7 +208,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             if (!ShowErrorForInexistentTags())
             {
                 await SaveTicksAsync(Tags.ToUpper());
-                await Task.FromResult(true);
+                await LoadTicksForToday();
                 Tags = null;
             }
 
