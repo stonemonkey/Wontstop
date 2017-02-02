@@ -31,5 +31,14 @@ namespace Wontstop.Climb.Ui.Uwp.Dtos
 
         [JsonProperty(PropertyName = "ascent_type")]
         public int AscentType { get; set; }
+
+        [JsonProperty(PropertyName = "a_like")]
+        public int Like { get; set; }
+
+        [JsonProperty(PropertyName = "a_love")]
+        public int Love { get; set; }
+
+        [JsonProperty(PropertyName = "a_dislike")]
+        public int Dislike { get; set; }
     }
 }

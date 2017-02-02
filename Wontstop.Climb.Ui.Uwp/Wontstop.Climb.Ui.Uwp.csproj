@@ -107,6 +107,7 @@
     <Compile Include="Converters\StringEqualToVisibilityConverter.cs" />
     <Compile Include="Converters\StringToColorConverter.cs" />
     <Compile Include="Dtos\DayTicks.cs" />
+    <Compile Include="Dtos\GradeOpinion.cs" />
     <Compile Include="Dtos\Tick.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -121,6 +122,9 @@
     <Compile Include="ProblematorRequestsFactory.cs" />
     <Compile Include="Dtos\UserContext.cs" />
     <Compile Include="Dtos\WallSection.cs" />
+    <Compile Include="Views\ProblemDetailesPage.xaml.cs">
+      <DependentUpon>ProblemDetailesPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ProblemItemView.xaml.cs">
       <DependentUpon>ProblemItemView.xaml</DependentUpon>
     </Compile>
@@ -156,6 +160,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Views\ProblemDetailesPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\ProblemItemView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

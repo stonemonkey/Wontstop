@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Wontstop.Climb.Ui.Uwp.Dtos
 {
@@ -25,8 +26,32 @@ namespace Wontstop.Climb.Ui.Uwp.Dtos
         [JsonProperty(PropertyName = "font")]
         public string GradeFont { get; set; }
 
+        [JsonProperty(PropertyName = "author")]
+        public string Author { get; set; }
+
+        [JsonProperty(PropertyName = "added")]
+        public string Added { get; set; }
+
+        [JsonProperty(PropertyName = "addedrelative")]
+        public string AddedRelative { get; set; }
+
+        [JsonProperty(PropertyName = "addedformatted")]
+        public string AddedFormatted { get; set; }
+
         [JsonProperty(PropertyName = "routetype")]
         public string RouteType { get; set; }
+
+        [JsonProperty(PropertyName = "score")]
+        public int Score { get; set; }
+
+        [JsonProperty(PropertyName = "ascentcount")]
+        public int AscentCount { get; set; }
+
+        [JsonProperty(PropertyName = "mytickcount")]
+        public int TickCount { get; set; }
+
+        [JsonProperty(PropertyName = "gradedist")]
+        public IList<GradeOpinion> GradeOpinions { get; set; }
 
         [JsonProperty(PropertyName = "tick")]
         public Tick Tick { get; set; }

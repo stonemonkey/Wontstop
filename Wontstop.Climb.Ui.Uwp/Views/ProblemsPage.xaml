@@ -210,11 +210,11 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                                 Command="{Binding TagsChangedCommand}"
                                 InputConverter="{StaticResource AutoSuggestBoxTextChangedEventArgsToBoolConverter}"/>
                         </core:EventTriggerBehavior>
-                        <core:EventTriggerBehavior EventName="QuerySubmitted">
+                        <!--<core:EventTriggerBehavior EventName="QuerySubmitted">
                             <core:InvokeCommandAction 
                                 Command="{Binding TagsSelectedCommand}"
                                 InputConverter="{StaticResource AutoSuggestBoxQuerySubmittedEventArgsToStringConverter}"/>
-                        </core:EventTriggerBehavior>
+                        </core:EventTriggerBehavior>-->
                         <core:EventTriggerBehavior EventName="SuggestionChosen">
                             <core:InvokeCommandAction 
                                 Command="{Binding SuggestionChosenCommand}"
