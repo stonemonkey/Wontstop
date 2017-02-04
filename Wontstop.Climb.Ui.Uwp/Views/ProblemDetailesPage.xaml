@@ -9,49 +9,140 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:behaviours="using:Common.Uwp.Behaviours"
+    xmlns:controls="using:WinRTXamlToolkit.Controls"
     mc:Ignorable="d"
     DataContext="{Binding ProblemDetailesViewModel, Source={StaticResource ViewModelLocator}}">
 
+    <Page.Resources>
+        <x:Double x:Key="CellWidth">320</x:Double>
+    </Page.Resources>
+    
     <interactivity:Interaction.Behaviors>
         <behaviours:ShowBackButtonBehavior/>
     </interactivity:Interaction.Behaviors>
-    
-    <Grid x:Name="ProblemItemPanel"
-        Background="Transparent">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-        </Grid.ColumnDefinitions>
-        <StackPanel x:Name="ProblemHeaderPanel"
-            Grid.Row="0" Grid.Column="0"
-            Margin="0,12,0,0"
-            HorizontalAlignment="Center">
+
+    <controls:WrapPanel x:Name="ProblemItemPanel"
+        Background="Transparent"
+        HorizontalAlignment="Center">
+
+        <Grid x:Name="ProblemHeaderPanel" Background="Green"
+            Width="{StaticResource CellWidth}"
+            Margin="0,0,0,0"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
             <TextBlock 
+                Grid.Row="0"
+                HorizontalAlignment="Center"
                 Text="{Binding Problem.GradeFont}" FontSize="48"/>
             <TextBlock
+                Grid.Row="1"
                 HorizontalAlignment="Center"
                 Text="{Binding Problem.TagShort}"/>
-        </StackPanel>
-        <StackPanel x:Name="TriesPanel"
-            Margin="0,12,0,0"
-            Grid.Row="1" Grid.Column="0"
-            Orientation="Horizontal"
-            HorizontalAlignment="Center">
+        </Grid>
+
+        <Grid x:Name="AuthorPanel" Background="Red"
+            Width="{StaticResource CellWidth}"
+            Margin="0,0,0,0"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <StackPanel x:Name="AppreciationPanel"
+                Grid.Row="0"
+                Orientation="Horizontal"
+                HorizontalAlignment="Center">
+                <TextBlock
+                    Text="{Binding Problem.Like}"/>
+                <TextBlock 
+                    Text="&#xE8E1;"
+                    VerticalAlignment="Center"
+                    FontFamily="Segoe MDL2 Assets"/>
+                <TextBlock Text="|"/>
+                <TextBlock 
+                    Text="{Binding Problem.Love}"/>
+                <TextBlock 
+                    Text="&#xEB51;"
+                    VerticalAlignment="Center"
+                    FontFamily="Segoe MDL2 Assets"/>
+                <TextBlock Text="|"/>
+                <TextBlock
+                    Text="{Binding Problem.Dislike}"/>
+                <TextBlock 
+                    Text="&#xE8E0;"
+                    VerticalAlignment="Center"
+                    FontFamily="Segoe MDL2 Assets"/>
+            </StackPanel>
+            <TextBlock 
+                Grid.Row="1"
+                HorizontalAlignment="Center"
+                Text="{Binding Problem.Author}"/>
+            <TextBlock 
+                Grid.Row="2"
+                HorizontalAlignment="Center"
+                Text="{Binding Problem.AddedRelative}"/>
+        </Grid>
+
+        <Grid x:Name="TriesPanel" Background="Blue"
+            Width="{StaticResource CellWidth}"
+            Margin="0,0,0,0"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
             <Button x:Name="DecrementTriesButton"
+                Grid.Row="0" Grid.Column="1"
                 Content="-"
                 Command="{Binding DecrementCommand}"/>
             <TextBlock x:Name="TriesCountTextBlock"
+                Grid.Row="0" Grid.Column="2"
                 Margin="8,0,0,0"
                 Text="{Binding TriesCount, Mode=TwoWay}"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Center"/>
             <Button x:Name="IncrementTriesButton"
+                Grid.Row="0" Grid.Column="3"
                 Margin="8,0,0,0"
                 Content="+"
                 Command="{Binding IncrementCommand}"/>
-        </StackPanel>
-    </Grid>
+            <TextBlock x:Name="TriesTextBlock"
+                Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5"
+                HorizontalAlignment="Center"
+                Text="TRIES"/>
+        </Grid>
+        
+        <Grid x:Name="AscentPanel" Background="Green"
+            Width="{StaticResource CellWidth}"
+            Margin="0,0,0,0"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock 
+                Grid.Row="0"
+                HorizontalAlignment="Center"
+                Text="{Binding Problem.Tick.AscentType, Converter={StaticResource IntToAscentTypeStringConverter}}"/>
+            <TextBlock
+                Grid.Row="1"
+                HorizontalAlignment="Center"
+                Text="ASCENT TYPE"/>
+        </Grid>
+    </controls:WrapPanel>
 </Page>

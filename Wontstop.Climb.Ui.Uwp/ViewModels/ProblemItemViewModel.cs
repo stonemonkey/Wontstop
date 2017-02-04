@@ -6,7 +6,6 @@ using Mvvm.WinRT.AttachedProperties;
 using Mvvm.WinRT.Commands;
 using Mvvm.WinRT.Messages;
 using PropertyChanged;
-using System.Collections.Generic;
 using Windows.UI.Xaml.Navigation;
 using Wontstop.Climb.Ui.Uwp.Dtos;
 using Wontstop.Climb.Ui.Uwp.Views;
@@ -75,25 +74,6 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             }
         }
 
-        private IDictionary<int, string> _ascentTypesMap = new Dictionary<int, string>
-        {
-            { 0, "lead" },
-            { 1, "toprope" },
-        };
-
-        public string AscentTypeText
-        {
-            get
-            {
-                string ascentTypeText;
-                if ((Problem != null) && (Problem.Tick != null) &&
-                    _ascentTypesMap.TryGetValue(Problem.Tick.AscentType, out ascentTypeText))
-                {
-                    return ascentTypeText;
-                }
-                return null;
-            }
-        }
         private readonly IEventAggregator _eventAggregator;
         private readonly INavigationService _navigationService;
 

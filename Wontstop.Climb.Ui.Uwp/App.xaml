@@ -20,6 +20,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
 
             <localConverters:IntOneToBoolConverter x:Key="IntOneToBoolConverter"/>
             <localConverters:IntOneToVisibilityConverter x:Key="IntOneToVisibilityConverter"/>
+            <localConverters:IntToAscentTypeStringConverter x:Key="IntToAscentTypeStringConverter"/>
             
             <localConverters:ObjectToVisibilityConverter x:Key="ObjectToVisibilityConverter"/>
             

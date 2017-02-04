@@ -287,6 +287,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     Text="We couldn't find any problem for the gym you signed in."/>
             </Grid>
         </Grid>
+        
         <ProgressRing x:Name="BusyProgress"
             IsActive="True"
             Visibility="Collapsed"

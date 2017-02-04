@@ -14,8 +14,15 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
 
     <Button x:Name="ProblemItemToggleButton"
         HorizontalAlignment="Stretch"
-        HorizontalContentAlignment="Stretch"
-        Command="{Binding ShowProblemDetailesCommand}">
+        HorizontalContentAlignment="Stretch">
+        <Button.Flyout>
+            <Flyout>
+                <StackPanel>
+                    <Button Content="Details" HorizontalAlignment="Stretch"
+                        Command="{Binding ShowProblemDetailesCommand}"/>
+                </StackPanel>
+            </Flyout>
+        </Button.Flyout>
         <Grid x:Name="ProblemItemPanel"
             Background="Transparent">
             <Grid.RowDefinitions>
@@ -92,7 +99,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         Margin="4,0,0,0"
                         Foreground="Gray"
                         VerticalAlignment="Center"
-                        Text="{Binding AscentTypeText}"
+                        Text="{Binding Problem.Tick.AscentType, Converter={StaticResource IntToAscentTypeStringConverter}}"
                         Style="{ThemeResource CaptionTextBlockStyle}"/>
                 </StackPanel>                
                 <TextBlock Text="|" 

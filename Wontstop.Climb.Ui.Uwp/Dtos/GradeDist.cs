@@ -5,10 +5,7 @@ using Newtonsoft.Json;
 
 namespace Wontstop.Climb.Ui.Uwp.Dtos
 {
-    /// <summary>
-    /// Represents an user opinion about a problem grade.
-    /// </summary>
-    public class GradeOpinion
+    public class GradeDist
     {
         [JsonProperty(PropertyName = "gradename")]
         public string Grade { get; set; }

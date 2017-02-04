@@ -86,7 +86,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
 
         private async Task LoadTicksForToday()
         {
-            (await _requestsFactory.CreateDayTicksRequest(_timeService.Now)
+            (await _requestsFactory.CreateDayTicksRequest(_timeService.Now.AddDays(-1))
                 .RunAsync<ProblematorJsonParser>())
                     .OnSuccess(HandleTicksResponse)
                     .PublishErrorOnFailure(_eventAggregator);
@@ -207,7 +207,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
 
             if (!ShowErrorForInexistentTags())
             {
-                await SaveTicksAsync(Tags.ToUpper());
+                //await SaveTicksAsync(Tags.ToUpper());
                 await LoadTicksForToday();
                 Tags = null;
             }

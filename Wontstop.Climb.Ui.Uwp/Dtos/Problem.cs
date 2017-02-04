@@ -41,6 +41,15 @@ namespace Wontstop.Climb.Ui.Uwp.Dtos
         [JsonProperty(PropertyName = "routetype")]
         public string RouteType { get; set; }
 
+        [JsonProperty(PropertyName = "c_like")]
+        public int Like { get; set; }
+
+        [JsonProperty(PropertyName = "c_love")]
+        public int Love { get; set; }
+
+        [JsonProperty(PropertyName = "c_dislike")]
+        public int Dislike { get; set; }
+
         [JsonProperty(PropertyName = "score")]
         public int Score { get; set; }
 
@@ -51,7 +60,10 @@ namespace Wontstop.Climb.Ui.Uwp.Dtos
         public int TickCount { get; set; }
 
         [JsonProperty(PropertyName = "gradedist")]
-        public IList<GradeOpinion> GradeOpinions { get; set; }
+        public IList<GradeDist> GradeDist { get; set; }
+
+        [JsonProperty(PropertyName = "opinions")]
+        public IDictionary<string, int> Opinions { get; set; }
 
         [JsonProperty(PropertyName = "tick")]
         public Tick Tick { get; set; }
