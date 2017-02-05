@@ -12,11 +12,12 @@ using PropertyChanged;
 using Wontstop.Climb.Ui.Uwp.Dtos;
 using Wontstop.Climb.Ui.Uwp.Utils;
 using Mvvm.WinRT;
+using System.Collections.ObjectModel;
 
 namespace Wontstop.Climb.Ui.Uwp.ViewModels
 {
     [ImplementPropertyChanged]
-    public class ProblemsViewModel //: IHandle<Problem>
+    public class ProblemsViewModel : IHandle<Problem>
     {
         public string Title => "Ticks today";
 
@@ -25,11 +26,11 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
 
         public string Tags { get; set; }
 
-        public IList<Problem> Ticks { get; private set; }
-
         public IList<Problem> SuggestedProblems { get; set; }
 
         public IList<WallSection> Sections { get; private set; }
+
+        public ObservableCollection<Problem> Ticks { get; private set; }
 
         private readonly ITimeService _timeService;
         private readonly IEventAggregator _eventAggregator;
@@ -86,7 +87,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
 
         private async Task LoadTicksForToday()
         {
-            (await _requestsFactory.CreateDayTicksRequest(_timeService.Now.AddDays(-1))
+            (await _requestsFactory.CreateDayTicksRequest(_timeService.Now)
                 .RunAsync<ProblematorJsonParser>())
                     .OnSuccess(HandleTicksResponse)
                     .PublishErrorOnFailure(_eventAggregator);
@@ -100,9 +101,10 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             }
 
             var day = parser.To<DayTicks>();
-            Ticks = Sections.SelectMany(x => x.Problems)
+            Ticks = new ObservableCollection<Problem>(
+                Sections.SelectMany(x => x.Problems)
                 .Where(x => day.Ticks.Any(t => string.Equals(x.Id, t.ProblemId)))
-                .ToList();
+                .ToList());
         }
         
         private RelayCommand _unloadComand;
@@ -207,7 +209,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
 
             if (!ShowErrorForInexistentTags())
             {
-                //await SaveTicksAsync(Tags.ToUpper());
+                await SaveTicksAsync(Tags.ToUpper());
                 await LoadTicksForToday();
                 Tags = null;
             }
@@ -261,6 +263,11 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             }
 
             await LoadSectionsAsync();
+        }
+
+        public void Handle(Problem message)
+        {
+            Ticks.Remove(message);
         }
 
         //public void Handle(Problem message)

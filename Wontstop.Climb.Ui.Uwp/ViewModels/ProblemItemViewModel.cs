@@ -1,88 +1,39 @@
 ﻿// Copyright (c) Costin Morariu. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using HttpApiClient;
 using Mvvm.WinRT;
 using Mvvm.WinRT.AttachedProperties;
 using Mvvm.WinRT.Commands;
 using Mvvm.WinRT.Messages;
 using PropertyChanged;
-using Windows.UI.Xaml.Navigation;
+using System.Threading.Tasks;
 using Wontstop.Climb.Ui.Uwp.Dtos;
+using Wontstop.Climb.Ui.Uwp.Utils;
 using Wontstop.Climb.Ui.Uwp.Views;
 
 namespace Wontstop.Climb.Ui.Uwp.ViewModels
 {
     [ImplementPropertyChanged]
-    public class ProblemDetailesViewModel : IActivable
-    {
-        public int TriesCount
-        {
-            get
-            {
-                return Problem.Tick.Tries;
-            }
-            set
-            {
-                Problem.Tick.Tries = value;
-            }
-        }
-
-        public Problem Problem { get; private set; }
-
-        public void Activate(object parameter)
-        {
-            var navigationEventArgs = (NavigationEventArgs) parameter;
-            Problem = (Problem) navigationEventArgs.Parameter;
-        }
-
-        private const int MaxTriesCount = 100;
-
-        private RelayCommand _incrementTriesCountComand;
-        public RelayCommand IncrementCommand => _incrementTriesCountComand ??
-            (_incrementTriesCountComand = new RelayCommand(IncrementTriesCount, () => TriesCount < MaxTriesCount));
-
-        private void IncrementTriesCount()
-        {
-            TriesCount++;
-        }
-
-        private RelayCommand _decrementTriesCountComand;
-        public RelayCommand DecrementCommand => _decrementTriesCountComand ??
-            (_decrementTriesCountComand = new RelayCommand(DecrementTriesCount, () => TriesCount > 1));
-
-        private void DecrementTriesCount()
-        {
-            TriesCount--;
-        }
-    }
-
-    [ImplementPropertyChanged]
     public class ProblemItemViewModel
     {
+        public bool Busy { get; private set; }
+     
         [Model]
         public Problem Problem { get; set; }
 
-        public string RouteTypeText
-        {
-            get
-            {
-                if (Problem != null)
-                {
-                    return Problem.RouteType;
-                }
-                return null;
-            }
-        }
-
         private readonly IEventAggregator _eventAggregator;
         private readonly INavigationService _navigationService;
+        private readonly ProblematorRequestsFactory _requestFactory;
 
         public ProblemItemViewModel(
             IEventAggregator eventAggregator,
-            INavigationService navigationService)
+            INavigationService navigationService,
+            ProblematorRequestsFactory requestFactory)
         {
             _eventAggregator = eventAggregator;
             _navigationService = navigationService;
+            _requestFactory = requestFactory;
         }
 
         private RelayCommand _loadComand;
@@ -103,13 +54,45 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             _eventAggregator.Unsubscribe(this);
         }
 
-        private RelayCommand _showProblemDetailes;
-        public RelayCommand ShowProblemDetailesCommand => _showProblemDetailes ??
-            (_showProblemDetailes = new RelayCommand(ShowProblemDetailes));
+        private RelayCommand _editTickCommand;
+        public RelayCommand EditTickCommand => _editTickCommand ??
+            (_editTickCommand = new RelayCommand(EditTick, () => !Busy));
 
-        private void ShowProblemDetailes()
+        private void EditTick()
         {
             _navigationService.Navigate(typeof (ProblemDetailesPage), Problem);
+        }
+
+        private RelayCommand _deleteTickCommand;
+        public RelayCommand DeleteTickCommand => _deleteTickCommand ??
+            (_deleteTickCommand = new RelayCommand(
+                async () => await DeleteTickAsync(), () => !Busy));
+
+        private async Task DeleteTickAsync()
+        {
+            Busy = true;
+
+            await RemoveTickAsync();
+
+            Busy = false;
+        }
+
+        private async Task RemoveTickAsync()
+        {
+            (await _requestFactory.CreateDeleteTickRequest(Problem.Tick.Id)
+                .RunAsync<ProblematorJsonParser>())
+                    .OnSuccess(HandleRemoveResponse)
+                    .PublishErrorOnFailure(_eventAggregator);
+        }
+
+        private void HandleRemoveResponse(ProblematorJsonParser parser)
+        {
+            if (parser.PublishMessageOnError(_eventAggregator))
+            {
+                return;
+            }
+
+            _eventAggregator.PublishOnCurrentThread(Problem);
         }
     }
 }

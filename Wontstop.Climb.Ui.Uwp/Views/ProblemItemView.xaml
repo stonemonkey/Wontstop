@@ -12,17 +12,8 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     mc:Ignorable="d"
     DataContext="{Binding ProblemItemViewModel, Source={StaticResource ViewModelLocator}}">
 
-    <Button x:Name="ProblemItemToggleButton"
-        HorizontalAlignment="Stretch"
-        HorizontalContentAlignment="Stretch">
-        <Button.Flyout>
-            <Flyout>
-                <StackPanel>
-                    <Button Content="Details" HorizontalAlignment="Stretch"
-                        Command="{Binding ShowProblemDetailesCommand}"/>
-                </StackPanel>
-            </Flyout>
-        </Button.Flyout>
+    <Border x:Name="ProblemItemButton"
+        HorizontalAlignment="Stretch">
         <Grid x:Name="ProblemItemPanel"
             Background="Transparent">
             <Grid.RowDefinitions>
@@ -56,8 +47,8 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     Grid.Column="4"
                     Margin="8,0,0,0"
                     VerticalAlignment="Center"
-                    HorizontalAlignment="Right"
-                    Text="removed"
+                    HorizontalAlignment="Left"
+                    Text="(removed)"
                     Foreground="Red"
                     Visibility="{Binding Problem.Visible, Converter={StaticResource IntOneToVisibilityConverter}, ConverterParameter=True}"/>
             </Grid>
@@ -76,7 +67,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     Margin="4,0,0,0"
                     Foreground="Gray"
                     VerticalAlignment="Center"
-                    Text="{Binding RouteTypeText}"
+                    Text="{Binding Problem.RouteType}"
                     Style="{ThemeResource CaptionTextBlockStyle}"/>
                 <TextBlock Text="|" 
                     Margin="4,0,0,0"
@@ -127,6 +118,31 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     Style="{ThemeResource CaptionTextBlockStyle}"
                     Visibility="{Binding Problem.Tick.Tries, Converter={StaticResource IntOneToBoolConverter}, ConverterParameter=True}"/>
             </StackPanel>
+            <StackPanel x:Name="ActionsPanel"
+                Grid.Row="0" Grid.RowSpan="2"
+                Orientation="Horizontal"
+                VerticalAlignment="Stretch"
+                HorizontalAlignment="Right">
+                <Button x:Name="EditButton"
+                    VerticalAlignment="Stretch"
+                    Command="{Binding EditTickCommand}"
+                    Width="{Binding ActualHeight, ElementName=EditButton}">
+                    <TextBlock 
+                        Text="&#xE70F;"
+                        VerticalAlignment="Center"
+                        FontFamily="Segoe MDL2 Assets"/>
+                </Button>
+                <Button x:Name="DeleteButton"
+                    Margin="12,0,0,0"
+                    VerticalAlignment="Stretch"
+                    Command="{Binding DeleteTickCommand}"
+                    Width="{Binding ActualHeight, ElementName=DeleteButton}">
+                    <TextBlock 
+                        Text="&#xE74D;"
+                        VerticalAlignment="Center"
+                        FontFamily="Segoe MDL2 Assets"/>
+                </Button>
+            </StackPanel>
         </Grid>
         <interactivity:Interaction.Behaviors>
             <core:EventTriggerBehavior EventName="Loaded">
@@ -136,5 +152,5 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 <core:InvokeCommandAction Command="{Binding UnloadCommand}"/>
             </core:EventTriggerBehavior>
         </interactivity:Interaction.Behaviors>
-    </Button>
+    </Border>
 </UserControl>

@@ -7,6 +7,7 @@ using HttpApiClient.Requests;
 using Mvvm.WinRT;
 using Mvvm.WinRT.Utils;
 using Wontstop.Climb.Ui.Uwp.Dtos;
+using System.Globalization;
 
 namespace Wontstop.Climb.Ui.Uwp
 {
@@ -202,6 +203,44 @@ namespace Wontstop.Climb.Ui.Uwp
             var urn = $"{Server}/tickarchive";
             var config = new Config(urn, IsSecure);
             config.AddParam("date", date.ToString("yyyy-MM-dd"));
+            AddApiAuthTokenParam(config);
+            AddClientTimestampParam(config);
+            AddUserAgentHeader(config);
+            AddApplicationKindHeader(config);
+
+            return new GetRequest(config, _responseLogger);
+        }
+
+        /// <summary>
+        /// Creates request for updating a problem tick.
+        /// </summary>
+        /// <returns>GET request.</returns>
+        public GetRequest CreateUpdateTickRequest(Tick tick)
+        {
+            var urn = $"{Server}/savetick";
+            var config = new Config(urn, IsSecure);
+            config.AddParam("problemid", tick.ProblemId);
+            config.AddParam("grade_opinion", tick.GradeOpinion);
+            config.AddParam("tries", tick.Tries.ToString());
+            config.AddParam("ascent_type", tick.AscentType.ToString());
+            config.AddParam("tickdate", tick.Timestamp.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
+            AddApiAuthTokenParam(config);
+            AddClientTimestampParam(config);
+            AddUserAgentHeader(config);
+            AddApplicationKindHeader(config);
+
+            return new GetRequest(config, _responseLogger);
+        }
+        
+        /// <summary>
+        /// Creates request for deleting a problem tick.
+        /// </summary>
+        /// <returns>GET request.</returns>
+        public GetRequest CreateDeleteTickRequest(string tickId)
+        {
+            var urn = $"{Server}/untick";
+            var config = new Config(urn, IsSecure);
+            config.AddParam("tickid", tickId);
             AddApiAuthTokenParam(config);
             AddClientTimestampParam(config);
             AddUserAgentHeader(config);

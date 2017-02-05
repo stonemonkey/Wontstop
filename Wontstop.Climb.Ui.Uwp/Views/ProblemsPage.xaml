@@ -11,7 +11,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:views="using:Wontstop.Climb.Ui.Uwp.Views"
-    xmlns:mvvm="using:Mvvm.WinRT.AttachedProperties"
+    xmlns:attached="using:Mvvm.WinRT.AttachedProperties"
     mc:Ignorable="d" 
     DataContext="{Binding ProblemsViewModel, Source={StaticResource ViewModelLocator}}">
 
@@ -20,6 +20,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             <Setter Property="Margin" Value="0,0,0,2"/>
             <Setter Property="Padding" Value="12,0,12,0"/>
             <Setter Property="TabNavigation" Value="Local"/>
+            <Setter Property="IsTabStop" Value="False"/>
             <Setter Property="IsHoldingEnabled" Value="True"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -28,7 +29,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
             <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
             <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
-            <Setter Property="Background" Value="{ThemeResource SystemControlPageBackgroundChromeLowBrush}"/>
+            <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListViewItem">
@@ -64,7 +65,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
         <DataTemplate x:Key="ProblemDataTemplate">
             <Grid x:Name="ProblemItemPanel">
                 <views:ProblemItemView 
-                    mvvm:ViewModel.Model="{Binding DataContext, ElementName=ProblemItemPanel}"/>
+                    attached:ViewModel.Model="{Binding DataContext, ElementName=ProblemItemPanel}"/>
             </Grid>
         </DataTemplate>
 

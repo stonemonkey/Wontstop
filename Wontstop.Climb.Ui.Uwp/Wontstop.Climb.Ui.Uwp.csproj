@@ -116,6 +116,7 @@
     <Compile Include="ViewModelLocator.cs" />
     <Compile Include="Utils\ProblematorJsonParserExtensions.cs" />
     <Compile Include="Dtos\Problem.cs" />
+    <Compile Include="ViewModels\ProblemDetailesViewModel.cs" />
     <Compile Include="ViewModels\ProblemItemViewModel.cs" />
     <Compile Include="ViewModels\ProblemsViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
