@@ -12,6 +12,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:views="using:Wontstop.Climb.Ui.Uwp.Views"
     xmlns:attached="using:Mvvm.WinRT.AttachedProperties"
+    xmlns:stateTriggers="using:Common.Uwp.StateTriggers"
     mc:Ignorable="d" 
     DataContext="{Binding ProblemsViewModel, Source={StaticResource ViewModelLocator}}">
 
@@ -168,8 +169,32 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
 
     <Grid x:Name="ProblemsPagePanel"
         Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
+        
         <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="ScreenStates">
+                <VisualState x:Name="SmallScreens">
+                    <VisualState.StateTriggers>
+                        <stateTriggers:CompositeStateTrigger Operator="Or">
+                            <stateTriggers:CompositeStateTrigger.StateTriggers>
+                                <stateTriggers:DeviceFamilyTrigger DeviceFamily="Windows.Mobile"/>
+                                <stateTriggers:AdaptiveTrigger MinWindowWidth="0" MaxWindowWidth="{StaticResource SmallDeviceMaxWidth}"/>
+                            </stateTriggers:CompositeStateTrigger.StateTriggers>
+                        </stateTriggers:CompositeStateTrigger>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <!--<Setter Target="TitleBarPanel.HorizontalAlignment" Value="Stretch"/>-->
+                        <Setter Target="TitleTextBlock.Style" Value="{ThemeResource BodyTextBlockStyle}"/>
+                        <Setter Target="TitleTextBlock.Margin" Value="{StaticResource MenuItemCompactPanelThickness}"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="BigScreens">
+                    <VisualState.StateTriggers>
+                        <stateTriggers:AdaptiveTrigger MinWindowWidth="{StaticResource MediumDeviceMaxWidth}"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
             <VisualStateGroup x:Name="ProgressStates">
                 <VisualState x:Name="BusyState">
                     <VisualState.StateTriggers>
@@ -183,18 +208,46 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <Grid x:Name="ContentPanel">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid x:Name="TitleBarPanel"
+            VerticalAlignment="Top"
+            Height="{StaticResource TopBarHeight}"
+            Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock x:Name="TitleTextBlock"
+                Grid.Column="0"
+                Padding="16,0,0,0"
+                VerticalAlignment="Center"
+                Text="{Binding Title}"
+                Style="{ThemeResource SubheaderTextBlockStyle}"/>
+            <CalendarDatePicker x:Name="TicksDatePicker"
+                Grid.Column="1"
+                Margin="12,0" Date="{Binding Day, Mode=TwoWay}">
+                <interactivity:Interaction.Behaviors>
+                    <core:EventTriggerBehavior EventName="DateChanged">
+                        <core:InvokeCommandAction Command="{Binding DateChangedCommand}"/>
+                    </core:EventTriggerBehavior>
+                </interactivity:Interaction.Behaviors>
+            </CalendarDatePicker>
+        </Grid>
+
+        <Grid x:Name="ContentPanel"
+            Grid.Row="1"
+            HorizontalAlignment="Stretch">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition MaxWidth="{StaticResource SmallDeviceMaxWidth}"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
             <Grid x:Name="SuggestionsPanel"
                 Grid.Row="0"
-                Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
+                Background="Transparent">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
@@ -290,6 +343,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
         </Grid>
         
         <ProgressRing x:Name="BusyProgress"
+            Grid.Row="0" Grid.RowSpan="2"
             IsActive="True"
             Visibility="Collapsed"
             Width="{StaticResource ProgressSize}" 

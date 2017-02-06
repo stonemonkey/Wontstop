@@ -38,8 +38,8 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     <VisualState.Setters>
                         <Setter Target="AppSplitView.IsPaneOpen" Value="False"/>
                         <Setter Target="AppSplitView.DisplayMode" Value="Overlay"/>
-                        <Setter Target="TitleTextBlock.Style" Value="{ThemeResource BodyTextBlockStyle}"/>
-                        <Setter Target="TitleBarPanel.Background" Value="{ThemeResource SystemControlPageBackgroundChromeLowBrush}"/>
+                        <!--<Setter Target="TitleTextBlock.Style" Value="{ThemeResource BodyTextBlockStyle}"/>
+                        <Setter Target="TitleBarPanel.Background" Value="{ThemeResource SystemControlPageBackgroundChromeLowBrush}"/>-->
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="BigScreens">
@@ -54,7 +54,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         
-        <Grid x:Name="TitleBarPanel" 
+        <!--<Grid x:Name="TitleBarPanel" 
             VerticalAlignment="Top"
             Height="{StaticResource TopBarHeight}"
             Margin="{StaticResource MenuItemCompactPanelThickness}">
@@ -63,13 +63,12 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 VerticalAlignment="Center"
                 Text="{Binding ActivePage.DataContext.Title}"
                 Style="{ThemeResource SubheaderTextBlockStyle}"/>
-        </Grid>
+        </Grid>-->
         
         <SplitView x:Name="AppSplitView"
             IsTabStop="False"
             IsPaneOpen="False"
             DisplayMode="CompactOverlay"
-            PaneClosed="OnAppSplitViewPaneClosed"
             OpenPaneLength="{StaticResource MenuItemExpandedPanelWidth}"
             CompactPaneLength="{StaticResource MenuItemCompactPanelWidth}"
             PaneBackground="{StaticResource SystemControlPageBackgroundChromeLowBrush}">
@@ -100,16 +99,18 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         Command="{Binding LogoutCommand}"
                         Style="{StaticResource AppBarMenuItemStyle}"
                         IsSelected="False">
-                        <SymbolIcon Symbol="Clear"/>
+                        <TextBlock 
+                            Text="&#xE7E8;"
+                            TextAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontFamily="Segoe MDL2 Assets"/>
                     </controls:MenuItemButton>
                 </Grid>
             </SplitView.Pane>
             
             <SplitView.Content>
                 <Frame x:Name="AppContentFrame"
-                    Margin="{StaticResource TopBarThickness}"
-                    Navigated="OnAppContentFrameNavigated"
-                    SizeChanged="OnAppContentFrameSizeChanged"/>
+                    Navigated="OnAppContentFrameNavigated"/>
             </SplitView.Content>
         </SplitView>
 

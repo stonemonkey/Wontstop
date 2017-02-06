@@ -19,12 +19,15 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
     [ImplementPropertyChanged]
     public class ProblemsViewModel : IHandle<Problem>
     {
-        public string Title => "Ticks today";
+        public string Title => "Ticks";
 
         public bool Busy { get; private set; }
         public bool Empty { get; private set; }
 
         public string Tags { get; set; }
+
+        private static bool _isDaySaved;
+        public static DateTimeOffset Day { get; set; }
 
         public IList<Problem> SuggestedProblems { get; set; }
 
@@ -44,6 +47,12 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             _timeService = timeService;
             _eventAggregator = eventAggregator;
             _requestsFactory = requestsFactory;
+
+            if (!_isDaySaved)
+            {
+                Day = _timeService.Now;
+                _isDaySaved = true;
+            }
         }
 
         private RelayCommand _loadComand;
@@ -52,15 +61,20 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
 
         protected virtual async Task LoadAsync()
         {
+            await RefreshAsync();
+
+            _eventAggregator.Subscribe(this);
+        }
+
+        private async Task RefreshAsync()
+        {
             Busy = true;
 
             await LoadSectionsAsync();
-            await LoadTicksForToday();
+            await LoadTicksForDay();
 
             Busy = false;
             Empty = (Sections == null) || !Sections.Any();
-
-            _eventAggregator.Subscribe(this);
         }
 
         private async Task LoadSectionsAsync()
@@ -85,9 +99,9 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
                 .ToList();
         }
 
-        private async Task LoadTicksForToday()
+        private async Task LoadTicksForDay()
         {
-            (await _requestsFactory.CreateDayTicksRequest(_timeService.Now)
+            (await _requestsFactory.CreateDayTicksRequest(Day.LocalDateTime)
                 .RunAsync<ProblematorJsonParser>())
                     .OnSuccess(HandleTicksResponse)
                     .PublishErrorOnFailure(_eventAggregator);
@@ -116,6 +130,11 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             _eventAggregator.Unsubscribe(this);
         }
 
+        private RelayCommand _dateChangedComand;
+
+        public RelayCommand DateChangedCommand => _dateChangedComand ??
+            (_dateChangedComand = new RelayCommand(async () => await RefreshAsync(), () => !Busy));
+
         private RelayCommand _publisTagsComand;
         public RelayCommand PublishTagsCommand => _publisTagsComand ??
             (_publisTagsComand = new RelayCommand(PublishTags));
@@ -124,19 +143,6 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
         {
             _eventAggregator.PublishOnCurrentThread(Tags ?? string.Empty);
         }
-
-        //private RelayCommand<string> _tagsSelectedComand;
-
-        //public RelayCommand<string> TagsSelectedCommand => _tagsSelectedComand ??
-        //    (_tagsSelectedComand = new RelayCommand<string>(
-        //        TagsSelected, tag => !Busy && !string.IsNullOrWhiteSpace(tag)));
-
-        //private void TagsSelected(string tags)
-        //{
-        //    Tags = tags;
-
-        //    PublishTags();
-        //}
 
         private RelayCommand<bool> _tagsChangedComand;
 
@@ -210,7 +216,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             if (!ShowErrorForInexistentTags())
             {
                 await SaveTicksAsync(Tags.ToUpper());
-                await LoadTicksForToday();
+                await LoadTicksForDay();
                 Tags = null;
             }
 
@@ -253,6 +259,13 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
                 .RunAsync<ProblematorJsonParser>())
                     .PublishErrorOnFailure(_eventAggregator)
                     .OnSuccessAsync(HandleSaveTicksResponse);
+
+            var today = _timeService.Now.Date;
+            var selectedDay = Day.LocalDateTime.Date;
+            if (!today.Equals(selectedDay))
+            {
+                // TODO: update ticks
+            }
         }
 
         private async Task HandleSaveTicksResponse(ProblematorJsonParser parser)
@@ -269,27 +282,5 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
         {
             Ticks.Remove(message);
         }
-
-        //public void Handle(Problem message)
-        //{
-        //    if (string.IsNullOrWhiteSpace(Tags))
-        //    {
-        //        Tags = message.TagShort;
-        //        return;
-        //    }
-
-        //    var exists = Tags.Contains(message.TagShort);
-        //    if (exists)
-        //    {
-        //        Tags = Tags
-        //            .Replace($"{message.TagShort},", null)
-        //            .Replace($",{message.TagShort}", null)
-        //            .Replace(message.TagShort, null);
-        //    }
-        //    else
-        //    {
-        //        Tags = Tags.Trim(',', ' ') + $",{message.TagShort}";
-        //    }
-        //}
     }
 }

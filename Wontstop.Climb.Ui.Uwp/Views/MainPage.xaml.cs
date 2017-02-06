@@ -23,20 +23,19 @@ namespace Wontstop.Climb.Ui.Uwp.Views
             }
         }
 
-        private readonly Thickness _menuItemCompactPanelThickness;
-        private readonly Thickness _menuItemExpandedPanelThickness;
+        //private readonly Thickness _menuItemCompactPanelThickness;
+        //private readonly Thickness _menuItemExpandedPanelThickness;
 
         public MainPage()
         {
             InitializeComponent();
 
-            TitleTextBlock.DataContext = this;
             ProblemsButton.DataContext = this;
 
-            _menuItemCompactPanelThickness = 
-                (Thickness) Application.Current.Resources["MenuItemCompactPanelThickness"];
-            _menuItemExpandedPanelThickness = 
-                (Thickness) Application.Current.Resources["MenuItemExpandedPanelThickness"];
+            //_menuItemCompactPanelThickness = 
+            //    (Thickness) Application.Current.Resources["MenuItemCompactPanelThickness"];
+            //_menuItemExpandedPanelThickness = 
+            //    (Thickness) Application.Current.Resources["MenuItemExpandedPanelThickness"];
         }
 
         private static Page _lastActivePage;
@@ -63,27 +62,6 @@ namespace Wontstop.Climb.Ui.Uwp.Views
         private void OnHamburgerButtonClick(object sender, RoutedEventArgs e)
         {
             AppSplitView.IsPaneOpen = !AppSplitView.IsPaneOpen;
-            UpdateTitlePosition();
-        }
-
-        private void OnAppSplitViewPaneClosed(SplitView sender, object args)
-        {
-            UpdateTitlePosition();
-        }
-
-        private void OnAppContentFrameSizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            UpdateTitlePosition();
-        }
-
-        private void UpdateTitlePosition()
-        {
-            TitleBarPanel.Margin = 
-                    (AppSplitView.IsPaneOpen) &&
-                    (AppSplitView.DisplayMode == SplitViewDisplayMode.Inline ||
-                     AppSplitView.DisplayMode == SplitViewDisplayMode.CompactInline) ?
-                _menuItemExpandedPanelThickness :
-                _menuItemCompactPanelThickness;
         }
 
         private void OnAppContentFrameNavigated(object sender, NavigationEventArgs e)

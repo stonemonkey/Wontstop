@@ -7,6 +7,7 @@ using Mvvm.WinRT.AttachedProperties;
 using Mvvm.WinRT.Commands;
 using Mvvm.WinRT.Messages;
 using PropertyChanged;
+using System;
 using System.Threading.Tasks;
 using Wontstop.Climb.Ui.Uwp.Dtos;
 using Wontstop.Climb.Ui.Uwp.Utils;
@@ -34,6 +35,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             _eventAggregator = eventAggregator;
             _navigationService = navigationService;
             _requestFactory = requestFactory;
+
         }
 
         private RelayCommand _loadComand;
