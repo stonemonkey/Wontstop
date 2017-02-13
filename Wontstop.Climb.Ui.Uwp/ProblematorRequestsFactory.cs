@@ -159,7 +159,7 @@ namespace Wontstop.Climb.Ui.Uwp
         /// Creates request for retriving problems on the gym wall sections.
         /// </summary>
         /// <returns>GET request.</returns>
-        public GetRequest CreateProblemsRequest()
+        public GetRequest CreateWallSectionsRequest()
         {
             var urn = $"{Server}/problems";
             var config = new Config(urn, IsSecure);
@@ -217,13 +217,18 @@ namespace Wontstop.Climb.Ui.Uwp
         /// <returns>GET request.</returns>
         public GetRequest CreateUpdateTickRequest(Tick tick)
         {
+            if (tick == null)
+            {
+                throw new ArgumentNullException(nameof(tick));
+            }
+
             var urn = $"{Server}/savetick";
             var config = new Config(urn, IsSecure);
             config.AddParam("problemid", tick.ProblemId);
-            config.AddParam("grade_opinion", tick.GradeOpinion);
+            config.AddParam("grade_opinion", tick.GradeOpinionId);
             config.AddParam("tries", tick.Tries.ToString());
             config.AddParam("ascent_type", tick.AscentType.ToString());
-            config.AddParam("tickdate", tick.Timestamp.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
+            config.AddParam("tickdate", tick.Timestamp.ToString("dd.MM.yyyy", CultureInfo.InvariantCulture));
             AddApiAuthTokenParam(config);
             AddClientTimestampParam(config);
             AddUserAgentHeader(config);
@@ -238,6 +243,11 @@ namespace Wontstop.Climb.Ui.Uwp
         /// <returns>GET request.</returns>
         public GetRequest CreateDeleteTickRequest(string tickId)
         {
+            if (string.IsNullOrWhiteSpace(tickId))
+            {
+                throw new ArgumentException(_invalidArgumentMessage, nameof(tickId));
+            }
+
             var urn = $"{Server}/untick";
             var config = new Config(urn, IsSecure);
             config.AddParam("tickid", tickId);

@@ -35,16 +35,21 @@ namespace Wontstop.Climb.Ui.Uwp.Utils
         public static bool PublishMessageOnError(
             this ProblematorJsonParser parser, IEventAggregator eventAggregator)
         {
-            var isError = string.Equals(
-                ErrorValue,
-                parser.GetValue(ErrorKey),
-                StringComparison.OrdinalIgnoreCase);
+            var isError = parser.IsInternalError();
             if (isError)
             {
                 eventAggregator.PublishErrorMessageOnCurrentThread(parser.GetErrorMessage());
             }
 
             return isError;
+        }
+
+        public static bool IsInternalError(this ProblematorJsonParser parser)
+        {
+            return string.Equals(
+                ErrorValue,
+                parser.GetValue(ErrorKey),
+                StringComparison.OrdinalIgnoreCase);
         }
 
         public static Response<ProblematorJsonParser> PublishErrorOnFailure(

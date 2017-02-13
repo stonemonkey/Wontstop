@@ -86,7 +86,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
 
                     <controls:MenuItemButton x:Name="ProblemsButton"
                         Grid.Row="1"
-                        Label="Ticks today"
+                        Label="Ticks"
                         Click="OnClickProblemsButton"
                         Style="{StaticResource AppBarMenuItemStyle}"
                         IsSelected="{Binding ActivePage, Converter={StaticResource PageTypeNameToBoolConverter}, ConverterParameter=HistoryPage}">

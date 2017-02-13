@@ -23,12 +23,12 @@ namespace Wontstop.Climb.Ui.Uwp.Dtos
         [JsonProperty(PropertyName = "tstamp")]
         public DateTime Timestamp { get; set; }
 
+        [JsonProperty(PropertyName = "grade_opinion")]
+        public string GradeOpinionId { get; set; }
+
         [JsonProperty(PropertyName = "tries")]
         public int Tries { get; set; }
-
-        [JsonProperty(PropertyName = "grade_opinion")]
-        public string GradeOpinion { get; set; }
-
+        
         [JsonProperty(PropertyName = "ascent_type")]
         public int AscentType { get; set; }
 

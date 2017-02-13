@@ -13,6 +13,8 @@ using Wontstop.Climb.Ui.Uwp.Dtos;
 using Wontstop.Climb.Ui.Uwp.Utils;
 using Mvvm.WinRT;
 using System.Collections.ObjectModel;
+using HttpApiClient.Requests;
+using System.Diagnostics;
 
 namespace Wontstop.Climb.Ui.Uwp.ViewModels
 {
@@ -30,8 +32,6 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
         public static DateTimeOffset Day { get; set; }
 
         public IList<Problem> SuggestedProblems { get; set; }
-
-        public IList<WallSection> Sections { get; private set; }
 
         public ObservableCollection<Problem> Ticks { get; private set; }
 
@@ -66,42 +66,50 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             _eventAggregator.Subscribe(this);
         }
 
+        private List<string> _tags;
+        private List<Problem> _problems;
+
         private async Task RefreshAsync()
         {
             Busy = true;
 
+            ClearTaggedProblems();
+
             await LoadSectionsAsync();
-            await LoadTicksForDay();
+            await LoadTicksForDay(Day);
 
             Busy = false;
-            Empty = (Sections == null) || !Sections.Any();
+            Empty = (_problems == null) || !_problems.Any();
         }
 
         private async Task LoadSectionsAsync()
         {
-            (await _requestsFactory.CreateProblemsRequest()
+            (await _requestsFactory.CreateWallSectionsRequest()
                 .RunAsync<ProblematorJsonParser>())
-                    .OnSuccess(HandleProblemsResponse)
+                    .OnSuccess(HandleWallSectionsResponse)
                     .PublishErrorOnFailure(_eventAggregator);
         }
 
-        private void HandleProblemsResponse(ProblematorJsonParser parser)
+        private void HandleWallSectionsResponse(ProblematorJsonParser parser)
         {
             if (parser.PublishMessageOnError(_eventAggregator))
             {
                 return;
             }
 
-            Sections = parser.To<IDictionary<string, WallSection>>()
+            var sections = parser.To<IDictionary<string, WallSection>>()
                 .Values.ToList();
-            _tags = Sections.SelectMany(x => x.Problems)
+            _problems = sections
+                .SelectMany(x => x.Problems)
+                .ToList();
+            _tags = _problems
                 .Select(x => x.TagShort)
                 .ToList();
         }
 
-        private async Task LoadTicksForDay()
+        private async Task LoadTicksForDay(DateTimeOffset day)
         {
-            (await _requestsFactory.CreateDayTicksRequest(Day.LocalDateTime)
+            (await _requestsFactory.CreateDayTicksRequest(day.Date)
                 .RunAsync<ProblematorJsonParser>())
                     .OnSuccess(HandleTicksResponse)
                     .PublishErrorOnFailure(_eventAggregator);
@@ -115,9 +123,9 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             }
 
             var day = parser.To<DayTicks>();
-            Ticks = new ObservableCollection<Problem>(
-                Sections.SelectMany(x => x.Problems)
-                .Where(x => day.Ticks.Any(t => string.Equals(x.Id, t.ProblemId)))
+            Ticks = new ObservableCollection<Problem>(_problems
+                .Where(x => day.Ticks.Any(tick => 
+                    string.Equals(x.Id, tick.ProblemId, StringComparison.OrdinalIgnoreCase)))
                 .ToList());
         }
         
@@ -150,8 +158,6 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             (_tagsChangedComand = new RelayCommand<bool>(
                 TagsChanged, byUser => !Busy && byUser && !string.IsNullOrWhiteSpace(Tags)));
 
-        private List<string> _tags;
-
         private const int TagMinLength = 2;
 
         private void TagsChanged(bool byUser)
@@ -164,12 +170,15 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             }
             if (_tags.Contains(lastTag))
             {
+                AddTaggedProblem(lastTag);
                 PublishTags();
                 return;
             }
 
-            SuggestedProblems = Sections.SelectMany(x => x.Problems)
-                .Where(x => x.TagShort.StartsWith(lastTag, StringComparison.OrdinalIgnoreCase))
+            SuggestedProblems = _problems
+                .Where(x => 
+                    IsAvailaleAt(x, Day.Date) &&
+                    x.TagShort.StartsWith(lastTag, StringComparison.OrdinalIgnoreCase))
                 .ToList();
         }
 
@@ -185,8 +194,55 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             var tags = Tags.Substring(0, Tags.Length - lastTag.Length);
             Tags = tags + tag;
 
+            AddTaggedProblem(tag);
             PublishTags();
         }
+
+        private IList<Problem> _taggedProblems = new List<Problem>();
+
+        private void ClearTaggedProblems() // TODO: clear tagged problems when Tags is cleared
+        {
+            _taggedProblems.Clear();
+        }
+
+        private void AddTaggedProblem(string tag)
+        {
+            if (_taggedProblems.Any(x => string.Equals(tag, x.TagShort, StringComparison.OrdinalIgnoreCase)))
+            {
+                return;
+            }
+
+            var problem = _problems
+                .Where(x =>
+                    IsAvailaleAt(x, Day.Date) &&
+                    x.TagShort.Equals(tag, StringComparison.OrdinalIgnoreCase))
+                .First();
+
+            _taggedProblems.Add(problem);
+        }
+
+        private List<Problem> GetTaggedProblems()
+        {
+            var tags = SplitTags();
+
+            return _taggedProblems
+                .Where(x => tags.Any(tag => string.Equals(tag, x.TagShort, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+        }
+
+        private bool IsAvailaleAt(Problem problem, DateTime date)
+        {
+            if (problem.Removed == null)
+            {
+                return true;
+            }
+
+            var removed = DateTime.Parse(problem.Removed);
+
+            return removed > date;
+        }
+
+        private const string TicksSeparator = ",";
 
         private static string GetLastTagFrom(string text)
         {
@@ -207,22 +263,31 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             (_tickComand = new RelayCommand(
                 async () => await TickAsync(), () => !Busy && !string.IsNullOrWhiteSpace(Tags)));
 
-        private const string TicksSeparator = ",";
-
         private async Task TickAsync()
         {
             Busy = true;
 
             if (!ShowErrorForInexistentTags())
             {
-                await SaveTicksAsync(Tags.ToUpper());
-                await LoadTicksForDay();
+                if (IsSelectedDayToday())
+                {
+                    await SaveTicksForTodayAsync(Tags);
+                }
+                else
+                {
+                    await SaveTicksForDayAsync(Day, 1, 0); // TODO: resolve tries and ascent type
+                }
+
                 Tags = null;
+                ClearTaggedProblems();
+
+                await LoadSectionsAsync();
+                await LoadTicksForDay(Day);
             }
 
             Busy = false;
             SuggestedProblems = null;
-            Empty = (Sections == null) || !Sections.Any();
+            Empty = (_problems == null) || !_problems.Any();
         }
 
         private bool ShowErrorForInexistentTags()
@@ -246,36 +311,61 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
                 return new List<string>();
             }
 
-            var tags = Tags.Replace(" ", null)
-                .Split(new[] {TicksSeparator}, StringSplitOptions.RemoveEmptyEntries);
-            
+            var tags = SplitTags();
+
             return tags.Where(x => !_tags.Contains(x))
                 .ToList();
         }
 
-        private async Task SaveTicksAsync(string ticks)
+        private string[] SplitTags()
         {
-            await (await _requestsFactory.CreateSaveTicksRequest(ticks)
-                .RunAsync<ProblematorJsonParser>())
-                    .PublishErrorOnFailure(_eventAggregator)
-                    .OnSuccessAsync(HandleSaveTicksResponse);
-
-            var today = _timeService.Now.Date;
-            var selectedDay = Day.LocalDateTime.Date;
-            if (!today.Equals(selectedDay))
-            {
-                // TODO: update ticks
-            }
+            return Tags.Replace(" ", null)
+                .Split(new[] { TicksSeparator }, StringSplitOptions.RemoveEmptyEntries);
         }
 
-        private async Task HandleSaveTicksResponse(ProblematorJsonParser parser)
+        private bool IsSelectedDayToday()
         {
-            if (parser.PublishMessageOnError(_eventAggregator))
-            {
-                return;
-            }
+            return Day.Date == _timeService.Now.Date;
+        }
 
-            await LoadSectionsAsync();
+        private async Task SaveTicksForTodayAsync(string tags)
+        {
+            (await _requestsFactory.CreateSaveTicksRequest(tags.ToUpper())
+                .RunAsync<ProblematorJsonParser>())
+                    .PublishErrorOnFailure(_eventAggregator)
+                    .OnSuccess(x => x.PublishMessageOnError(_eventAggregator));
+        }
+
+        private async Task SaveTicksForDayAsync(DateTimeOffset day, int tries, int ascentType)
+        {
+            var problems = GetTaggedProblems();
+
+            var responses = await Task.WhenAll(problems
+                .Select(x => _requestsFactory.CreateUpdateTickRequest(
+                        CreateTick(x, tries, Day.Date, ascentType))
+                    .RunAsync<ProblematorJsonParser>()));
+
+            Debug.Assert(GetFailedRequests(responses).Count() == 0); // TODO: add error handling
+        }
+
+        public IEnumerable<IRequest> GetFailedRequests(
+            IEnumerable<Response<ProblematorJsonParser>> responses)
+        {
+            return responses
+                .Where(x => !x.IsSuccessfull() || x.TypedParser.IsInternalError())
+                .Select(x => x.Request);
+        }
+
+        private Tick CreateTick(Problem problem, int tries, DateTime timestamp, int ascentType)
+        {
+            return new Tick
+            {
+                Tries = tries,
+                Timestamp = timestamp,
+                ProblemId = problem.Id,
+                AscentType = ascentType,
+                GradeOpinionId = problem.GradeId,
+            };
         }
 
         public void Handle(Problem message)

@@ -23,11 +23,17 @@ namespace Wontstop.Climb.Ui.Uwp.Dtos
         [JsonProperty(PropertyName = "tagshort")]
         public string TagShort { get; set; }
 
+        [JsonProperty(PropertyName = "gradeid")]
+        public string GradeId { get; set; }
+
         [JsonProperty(PropertyName = "font")]
         public string GradeFont { get; set; }
 
         [JsonProperty(PropertyName = "author")]
         public string Author { get; set; }
+
+        [JsonProperty(PropertyName = "hidedate")]
+        public string Removed { get; set; }
 
         [JsonProperty(PropertyName = "added")]
         public string Added { get; set; }
