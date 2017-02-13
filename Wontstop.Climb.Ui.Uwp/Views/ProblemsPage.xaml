@@ -288,7 +288,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 Margin="0,4,0,0"
                 SelectionMode="None"
                 HorizontalAlignment="Stretch"
-                ItemsSource="{Binding Ticks}"
+                ItemsSource="{Binding TickedProblems}"
                 ItemTemplate="{StaticResource ProblemDataTemplate}"
                 HeaderTemplate="{StaticResource EmptyDataTemplate}">
             </ListView>

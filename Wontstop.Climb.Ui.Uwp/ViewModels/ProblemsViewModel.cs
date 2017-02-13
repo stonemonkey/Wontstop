@@ -33,7 +33,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
 
         public IList<Problem> SuggestedProblems { get; set; }
 
-        public ObservableCollection<Problem> Ticks { get; private set; }
+        public ObservableCollection<Problem> TickedProblems { get; private set; }
 
         private readonly ITimeService _timeService;
         private readonly IEventAggregator _eventAggregator;
@@ -75,14 +75,14 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
 
             ClearTaggedProblems();
 
-            await LoadSectionsAsync();
+            await LoadProblemsAsync();
             await LoadTicksForDay(Day);
 
             Busy = false;
             Empty = (_problems == null) || !_problems.Any();
         }
 
-        private async Task LoadSectionsAsync()
+        private async Task LoadProblemsAsync()
         {
             (await _requestsFactory.CreateWallSectionsRequest()
                 .RunAsync<ProblematorJsonParser>())
@@ -123,7 +123,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             }
 
             var day = parser.To<DayTicks>();
-            Ticks = new ObservableCollection<Problem>(_problems
+            TickedProblems = new ObservableCollection<Problem>(_problems
                 .Where(x => day.Ticks.Any(tick => 
                     string.Equals(x.Id, tick.ProblemId, StringComparison.OrdinalIgnoreCase)))
                 .ToList());
@@ -281,7 +281,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
                 Tags = null;
                 ClearTaggedProblems();
 
-                await LoadSectionsAsync();
+                await LoadProblemsAsync();
                 await LoadTicksForDay(Day);
             }
 
@@ -345,7 +345,12 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
                         CreateTick(x, tries, Day.Date, ascentType))
                     .RunAsync<ProblematorJsonParser>()));
 
-            Debug.Assert(GetFailedRequests(responses).Count() == 0); // TODO: add error handling
+            var failedRequests = GetFailedRequests(responses);
+            if (failedRequests.Count() != 0)
+            {
+                _eventAggregator.PublishErrorMessageOnCurrentThread(
+                    "There were errors saving some or all ticks!");
+            }
         }
 
         public IEnumerable<IRequest> GetFailedRequests(
@@ -370,7 +375,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
 
         public void Handle(Problem message)
         {
-            Ticks.Remove(message);
+            TickedProblems.Remove(message);
         }
     }
 }
