@@ -2,13 +2,18 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using HttpApiClient;
 using Mvvm.WinRT.Messages;
 
 namespace Wontstop.Climb.Ui.Uwp.Utils
 {
     public static class ProblematorJsonParserExtensions
     {
+        /// <summary>
+        /// Deserializes Problemator response.
+        /// </summary>
+        /// <typeparam name="T">The type of the instance.</typeparam>
+        /// <param name="parser">Parser associated with the response.</param>
+        /// <returns>An instance.</returns>
         public static T To<T>(this ProblematorJsonParser parser)
         {
             return parser.GetData().ToObject<T>();
@@ -17,25 +22,29 @@ namespace Wontstop.Climb.Ui.Uwp.Utils
         private const string ErrorKey = "error";
         private const string ErrorValue = "true";
 
-        public static bool IsError(this ProblematorJsonParser parser)
-        {
-            return string.Equals(
-                ErrorValue, 
-                parser.GetValue(ErrorKey), 
-                StringComparison.OrdinalIgnoreCase);
-        }
-
         private const string ErrorMessageKey = "message";
 
+        /// <summary>
+        /// Retrieves Problemator error message from a response.
+        /// </summary>
+        /// <param name="parser">Parser associated with the response.</param>
+        /// <returns>Error message or empty in case response doesn't contain error.</returns>
         public static string GetErrorMessage(this ProblematorJsonParser parser)
         {
             return parser.GetValue(ErrorMessageKey);
         }
 
-        public static bool PublishMessageOnError(
+        /// <summary>
+        /// Publishes error message from a Problemator response containing internal error.
+        /// </summary>
+        /// <param name="parser">Parser associated with the response.</param>
+        /// <param name="eventAggregator">Aggregator instance used to publish error.</param>
+        /// <returns>True if the response contains an internal error that was published, otherwise false.
+        /// </returns>
+        public static bool PublishMessageOnInternalServerError(
             this ProblematorJsonParser parser, IEventAggregator eventAggregator)
         {
-            var isError = parser.IsInternalError();
+            var isError = parser.ContainsServerInternalError();
             if (isError)
             {
                 eventAggregator.PublishErrorMessageOnCurrentThread(parser.GetErrorMessage());
@@ -44,20 +53,18 @@ namespace Wontstop.Climb.Ui.Uwp.Utils
             return isError;
         }
 
-        public static bool IsInternalError(this ProblematorJsonParser parser)
+        /// <summary>
+        /// Determines if a successfull HTTP response contains Problemator error. 
+        /// </summary>
+        /// <param name="parser">Parser associated with the response.</param>
+        /// <returns>True if the response contains an internal error, otherwise false.</returns>
+        public static bool ContainsServerInternalError(this ProblematorJsonParser parser)
         {
-            return string.Equals(
-                ErrorValue,
-                parser.GetValue(ErrorKey),
-                StringComparison.OrdinalIgnoreCase);
-        }
-
-        public static Response<ProblematorJsonParser> PublishErrorOnFailure(
-            this Response<ProblematorJsonParser> response, IEventAggregator eventAggregator)
-        {
-            return response
-                .OnRequestFailure(x => eventAggregator.PublishOnCurrentThread(x.Exception))
-                .OnResponseFailure(x => eventAggregator.PublishErrorMessageOnCurrentThread(x.GetContent()));
+            return parser.IsResponseSuccessfull() &&
+                string.Equals(
+                    ErrorValue,
+                    parser.GetValue(ErrorKey),
+                    StringComparison.OrdinalIgnoreCase);
         }
     }
 }

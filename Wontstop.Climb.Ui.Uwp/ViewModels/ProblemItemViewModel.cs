@@ -84,12 +84,12 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             (await _requestFactory.CreateDeleteTickRequest(Problem.Tick.Id)
                 .RunAsync<ProblematorJsonParser>())
                     .OnSuccess(HandleRemoveResponse)
-                    .PublishErrorOnFailure(_eventAggregator);
+                    .PublishErrorOnHttpFailure(_eventAggregator);
         }
 
         private void HandleRemoveResponse(ProblematorJsonParser parser)
         {
-            if (parser.PublishMessageOnError(_eventAggregator))
+            if (parser.PublishMessageOnInternalServerError(_eventAggregator))
             {
                 return;
             }

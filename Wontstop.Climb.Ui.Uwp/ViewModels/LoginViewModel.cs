@@ -63,29 +63,23 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             (await _requestsFactory.CreateLoginRequest(Gyms[SelectedGym], Email, Password)
                 .RunAsync<ProblematorJsonParser>())
                     .OnSuccess(HandleResponse)
-                    .OnRequestFailure(x =>
-                        _eventAggregator.PublishOnCurrentThread(x.Exception))
-                    .OnResponseFailure(x =>
-                        _eventAggregator.PublishOnCurrentThread(new ErrorMessage(x.GetContent())));
+                    .PublishErrorOnHttpFailure(_eventAggregator);
 
             Busy = false;
         }
 
         private void HandleResponse(ProblematorJsonParser parser)
         {
-            if (parser.IsError())
+            if (parser.PublishMessageOnInternalServerError(_eventAggregator))
             {
-                _eventAggregator.PublishOnCurrentThread(
-                    new ErrorMessage(parser.GetErrorMessage()));
+                return;
             }
-            else
-            {
-                var context = parser.To<UserContext>();
-                _requestsFactory.SetUserContext(context);
-                _storageService.SaveLocal(Settings.ContextKey, context);
 
-                _navigationService.Navigate(typeof (MainPage));
-            }
+            var context = parser.To<UserContext>();
+            _requestsFactory.SetUserContext(context);
+            _storageService.SaveLocal(Settings.ContextKey, context);
+
+            _navigationService.Navigate(typeof (MainPage));
         }
     }
 }

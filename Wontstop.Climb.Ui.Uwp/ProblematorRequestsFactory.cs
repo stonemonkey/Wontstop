@@ -211,6 +211,8 @@ namespace Wontstop.Climb.Ui.Uwp
             return new GetRequest(config, _responseLogger);
         }
 
+        public string ProblemIdParamKey => "problemid";
+
         /// <summary>
         /// Creates request for updating a problem tick.
         /// </summary>
@@ -224,7 +226,7 @@ namespace Wontstop.Climb.Ui.Uwp
 
             var urn = $"{Server}/savetick";
             var config = new Config(urn, IsSecure);
-            config.AddParam("problemid", tick.ProblemId);
+            config.AddParam(ProblemIdParamKey, tick.ProblemId);
             config.AddParam("grade_opinion", tick.GradeOpinionId);
             config.AddParam("tries", tick.Tries.ToString());
             config.AddParam("ascent_type", tick.AscentType.ToString());
