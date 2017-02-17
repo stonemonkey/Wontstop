@@ -33,6 +33,8 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
 
         public IList<Problem> SuggestedProblems { get; set; }
 
+        public IList<DateTime> TickDates { get; private set; }
+
         public ObservableCollection<Problem> TickedProblems { get; private set; }
 
         private readonly ITimeService _timeService;
@@ -77,6 +79,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
 
             await LoadProblemsAsync();
             await LoadTicksForDay(Day);
+            await LoadTickDatesAsync();
 
             Busy = false;
             Empty = (_problems == null) || !_problems.Any();
@@ -128,7 +131,25 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
                     string.Equals(x.Id, tick.ProblemId, StringComparison.OrdinalIgnoreCase)))
                 .ToList());
         }
-        
+
+        private async Task LoadTickDatesAsync()
+        {
+            (await _requestsFactory.CreateTickDatesRequest()
+                .RunAsync<ProblematorJsonParser>())
+                    .OnSuccess(HandleTickDatesResponse)
+                    .PublishErrorOnHttpFailure(_eventAggregator);
+        }
+
+        private void HandleTickDatesResponse(ProblematorJsonParser parser)
+        {
+            if (parser.PublishMessageOnInternalServerError(_eventAggregator))
+            {
+                return;
+            }
+
+            TickDates = parser.To<IList<DateTime>>();
+        }
+
         private RelayCommand _unloadComand;
         public RelayCommand UnloadCommand => _unloadComand ??
             (_unloadComand = new RelayCommand(Unload));

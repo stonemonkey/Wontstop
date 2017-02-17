@@ -260,5 +260,21 @@ namespace Wontstop.Climb.Ui.Uwp
 
             return new GetRequest(config, _responseLogger);
         }
+
+        /// <summary>
+        /// Creates request for fetching dates for which ticks have been added.
+        /// </summary>
+        /// <returns>GET request.</returns>
+        public GetRequest CreateTickDatesRequest()
+        {
+            var urn = $"{Server}/tickarchive_tickdates";
+            var config = new Config(urn, IsSecure);
+            AddApiAuthTokenParam(config);
+            AddClientTimestampParam(config);
+            AddUserAgentHeader(config);
+            AddApplicationKindHeader(config);
+
+            return new GetRequest(config, _responseLogger);
+        }
     }
 }
