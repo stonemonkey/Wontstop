@@ -4,9 +4,8 @@
     "Microsoft.Xaml.Behaviors.Uwp.Managed": "2.0.0",
     "PropertyChanged.Fody": "1.52.1",
     "SimpleInjector": "3.3.2",
-    "WindowsStateTriggers": "1.1.0",
-    "WinRTXamlToolkit.Controls.DataVisualization.UWP": "2.0.0",
-    "WinRTXamlToolkit.UWP": "2.0.0"
+    "WinRTXamlToolkit.Controls.DataVisualization.UWP": "2.3.0",
+    "WinRTXamlToolkit.UWP": "2.3.0"
   },
   "frameworks": {
     "uap10.0": {}

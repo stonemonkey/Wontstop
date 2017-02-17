@@ -10,7 +10,6 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:maps="using:Windows.UI.Xaml.Controls.Maps"
-    xmlns:windowsStateTriggers="using:WindowsStateTriggers"
     xmlns:attached="using:Wontstop.Ui.Uwp.AttachedProperties"
     xmlns:stateTriggers="using:Common.Uwp.StateTriggers"
     xmlns:controls="using:WinRTXamlToolkit.Controls"
@@ -50,7 +49,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             <VisualStateGroup>
                 <VisualState x:Name="BusyState">
                     <VisualState.StateTriggers>
-                        <windowsStateTriggers:EqualsStateTrigger Value="{Binding Busy}" EqualTo="True"/>
+                        <stateTriggers:EqualsStateTrigger Value="{Binding Busy}" EqualTo="True"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="PagePanel.Opacity" Value="0.5"/>

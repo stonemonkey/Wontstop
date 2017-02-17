@@ -6,7 +6,7 @@
     "Newtonsoft.Json": "9.0.1",
     "PropertyChanged.Fody": "1.52.1",
     "SimpleInjector": "3.3.2",
-    "WinRTXamlToolkit.UWP": "2.2.0"
+    "WinRTXamlToolkit.UWP": "2.3.0"
   },
   "frameworks": {
     "uap10.0": {}

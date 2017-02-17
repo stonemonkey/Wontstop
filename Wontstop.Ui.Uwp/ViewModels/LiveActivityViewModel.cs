@@ -49,7 +49,7 @@ namespace Wontstop.Ui.Uwp.ViewModels
 
             try
             {
-                // ...
+                await Task.FromResult(true);
             }
             catch (Exception exception)
             {
@@ -163,9 +163,9 @@ namespace Wontstop.Ui.Uwp.ViewModels
 
         private RelayCommand _stopComand;
         public RelayCommand StopCommand => _stopComand ??
-            (_stopComand = new RelayCommand(async () => await StopActivityAsync()));
+            (_stopComand = new RelayCommand(StopActivity));
 
-        private async Task StopActivityAsync()
+        private void StopActivity()
         {
             Activity.Stop();
 

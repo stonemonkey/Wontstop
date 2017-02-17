@@ -9,10 +9,10 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
-    xmlns:windowsStateTriggers="using:WindowsStateTriggers"
     xmlns:maps="using:Windows.UI.Xaml.Controls.Maps"
     xmlns:attachedProperties="using:Wontstop.Ui.Uwp.AttachedProperties"
     xmlns:behaviours="using:Common.Uwp.Behaviours"
+    xmlns:stateTriggers="using:Common.Uwp.StateTriggers"
     mc:Ignorable="d"
     DataContext="{Binding LiveActivityViewModel, Source={StaticResource ViewModelLocator}}">
        
@@ -30,7 +30,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             <VisualStateGroup>
                 <VisualState x:Name="BusyState">
                     <VisualState.StateTriggers>
-                        <windowsStateTriggers:EqualsStateTrigger Value="{Binding Busy}" EqualTo="True"/>
+                        <stateTriggers:EqualsStateTrigger Value="{Binding Busy}" EqualTo="True"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="PagePanel.Opacity" Value="0.5"/>

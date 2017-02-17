@@ -120,6 +120,7 @@
     <Compile Include="StateTriggers\AdaptiveTrigger.cs" />
     <Compile Include="StateTriggers\CompositeStateTrigger.cs" />
     <Compile Include="StateTriggers\DeviceFamilyTrigger.cs" />
+    <Compile Include="StateTriggers\EqualsStateTrigger.cs" />
     <Compile Include="StateTriggers\ITriggerValue.cs" />
     <Compile Include="StateTriggers\StateTriggerValueBase.cs" />
     <Compile Include="StateTriggers\WeakEventListener.cs" />

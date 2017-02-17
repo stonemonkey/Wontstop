@@ -106,7 +106,7 @@ namespace Wontstop.Ui.Uwp.ViewModels
 
         private RelayCommand _addNewCommand;
         public RelayCommand AddNewCommand => _addNewCommand ??
-            (_showMultiSelectionCommand = new RelayCommand(AddNew));
+            (_addNewCommand = new RelayCommand(AddNew));
 
         private void AddNew()
         {
