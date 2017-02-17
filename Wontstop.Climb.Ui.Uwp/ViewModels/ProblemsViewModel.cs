@@ -14,7 +14,6 @@ using Wontstop.Climb.Ui.Uwp.Utils;
 using Mvvm.WinRT;
 using System.Collections.ObjectModel;
 using HttpApiClient.Requests;
-using System.Diagnostics;
 
 namespace Wontstop.Climb.Ui.Uwp.ViewModels
 {
@@ -30,6 +29,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
 
         private static bool _isDaySaved;
         public static DateTimeOffset Day { get; set; }
+        private static DateTime SelectedDay => Day.Date;
 
         public IList<Problem> SuggestedProblems { get; set; }
 
@@ -78,8 +78,8 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             ClearTaggedProblems();
 
             await LoadProblemsAsync();
-            await LoadTicksForDay(Day);
             await LoadTickDatesAsync();
+            await LoadTicksForDay(SelectedDay);
 
             Busy = false;
             Empty = (_problems == null) || !_problems.Any();
@@ -110,9 +110,9 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
                 .ToList();
         }
 
-        private async Task LoadTicksForDay(DateTimeOffset day)
+        private async Task LoadTicksForDay(DateTime day)
         {
-            (await _requestsFactory.CreateDayTicksRequest(day.Date)
+            (await _requestsFactory.CreateDayTicksRequest(day)
                 .RunAsync<ProblematorJsonParser>())
                     .OnSuccess(HandleTicksResponse)
                     .PublishErrorOnHttpFailure(_eventAggregator);
@@ -198,7 +198,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
 
             SuggestedProblems = _problems
                 .Where(x => 
-                    IsAvailaleAt(x, Day.Date) &&
+                    IsAvailaleAt(x, SelectedDay) &&
                     x.TagShort.StartsWith(lastTag, StringComparison.OrdinalIgnoreCase))
                 .ToList();
         }
@@ -219,7 +219,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             PublishTags();
         }
 
-        private IList<Problem> _taggedProblems = new List<Problem>();
+        private readonly IList<Problem> _taggedProblems = new List<Problem>();
 
         private void ClearTaggedProblems() // TODO: clear tagged problems when Tags is cleared
         {
@@ -233,11 +233,8 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
                 return;
             }
 
-            var problem = _problems
-                .Where(x =>
-                    IsAvailaleAt(x, Day.Date) &&
-                    x.TagShort.Equals(tag, StringComparison.OrdinalIgnoreCase))
-                .First();
+            var problem = _problems.First(x => 
+                IsAvailaleAt(x, SelectedDay) && x.TagShort.Equals(tag, StringComparison.OrdinalIgnoreCase));
 
             _taggedProblems.Add(problem);
         }
@@ -301,7 +298,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
                 }
 
                 await LoadProblemsAsync();
-                await LoadTicksForDay(Day);
+                await LoadTicksForDay(SelectedDay);
             }
 
             Busy = false;
@@ -316,7 +313,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
                 return await SaveTicksForTodayAsync(Tags);
             }
 
-            return await SaveTicksForDayAsync(Day, DefaultNoTries, DefaultAscentType);
+            return await SaveTicksForDayAsync(SelectedDay, DefaultNoTries, DefaultAscentType);
         }
 
         private bool ShowErrorForInexistentTags()
@@ -354,14 +351,14 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
 
         private bool IsSelectedDayToday()
         {
-            return Day.Date == _timeService.Now.Date;
+            return SelectedDay == _timeService.Now.Date;
         }
 
         private async Task<bool> SaveTicksForTodayAsync(string tags)
         {
             var successfull = false;
 
-            var response = (await _requestsFactory.CreateSaveTicksRequest(tags.ToUpper())
+            (await _requestsFactory.CreateSaveTicksRequest(tags.ToUpper())
                 .RunAsync<ProblematorJsonParser>())
                     .PublishErrorOnHttpFailure(_eventAggregator)
                     .OnSuccess(x => successfull = x.PublishMessageOnInternalServerError(_eventAggregator));
@@ -369,13 +366,13 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             return successfull;
         }
 
-        private async Task<bool> SaveTicksForDayAsync(DateTimeOffset day, int tries, int ascentType)
+        private async Task<bool> SaveTicksForDayAsync(DateTime day, int tries, int ascentType)
         {
             var problems = GetTaggedProblems();
 
             var responses = await Task.WhenAll(problems
                 .Select(x => _requestsFactory.CreateUpdateTickRequest(
-                        CreateTick(x, tries, Day.Date, ascentType))
+                        CreateTick(x, tries, day, ascentType))
                     .RunAsync<ProblematorJsonParser>()));
 
             return !ShowErrorForUnsavedTicks(responses);
@@ -383,7 +380,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
 
         private bool ShowErrorForUnsavedTicks(IEnumerable<Response<ProblematorJsonParser>> responses)
         {
-            var failedRequests = GetFailedRequests(responses);
+            var failedRequests = GetFailedRequests(responses).ToList();
             if (!failedRequests.Any())
             {
                 return false;
@@ -410,7 +407,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
                 .Select(x => x.Request);
         }
 
-        private Tick CreateTick(Problem problem, int tries, DateTime timestamp, int ascentType)
+        private static Tick CreateTick(Problem problem, int tries, DateTime timestamp, int ascentType)
         {
             return new Tick
             {
