@@ -107,6 +107,7 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Behaviours\HighlightDaysBehavior.cs" />
     <Compile Include="Behaviours\ScrollToItemBehavior.cs" />
     <Compile Include="Behaviours\ShowBackButtonBehavior.cs" />
     <Compile Include="Controls\EdgeTappedListView.cs" />

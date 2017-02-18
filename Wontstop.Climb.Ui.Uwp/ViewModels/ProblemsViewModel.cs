@@ -29,11 +29,11 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
 
         private static bool _isDaySaved;
         public static DateTimeOffset Day { get; set; }
-        private static DateTime SelectedDay => Day.Date;
+        private static DateTime SelectedDate => Day.Date;
 
         public IList<Problem> SuggestedProblems { get; set; }
 
-        public IList<DateTime> TickDates { get; private set; }
+        public IList<DateTimeOffset> TickDates { get; private set; }
 
         public ObservableCollection<Problem> TickedProblems { get; private set; }
 
@@ -79,7 +79,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
 
             await LoadProblemsAsync();
             await LoadTickDatesAsync();
-            await LoadTicksForDay(SelectedDay);
+            await LoadTicks(SelectedDate);
 
             Busy = false;
             Empty = (_problems == null) || !_problems.Any();
@@ -110,7 +110,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
                 .ToList();
         }
 
-        private async Task LoadTicksForDay(DateTime day)
+        private async Task LoadTicks(DateTime day)
         {
             (await _requestsFactory.CreateDayTicksRequest(day)
                 .RunAsync<ProblematorJsonParser>())
@@ -147,7 +147,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
                 return;
             }
 
-            TickDates = parser.To<IList<DateTime>>();
+            TickDates = parser.To<IList<DateTimeOffset>>();
         }
 
         private RelayCommand _unloadComand;
@@ -198,7 +198,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
 
             SuggestedProblems = _problems
                 .Where(x => 
-                    IsAvailaleAt(x, SelectedDay) &&
+                    IsAvailaleAt(x, SelectedDate) &&
                     x.TagShort.StartsWith(lastTag, StringComparison.OrdinalIgnoreCase))
                 .ToList();
         }
@@ -234,7 +234,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             }
 
             var problem = _problems.First(x => 
-                IsAvailaleAt(x, SelectedDay) && x.TagShort.Equals(tag, StringComparison.OrdinalIgnoreCase));
+                IsAvailaleAt(x, SelectedDate) && x.TagShort.Equals(tag, StringComparison.OrdinalIgnoreCase));
 
             _taggedProblems.Add(problem);
         }
@@ -298,7 +298,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
                 }
 
                 await LoadProblemsAsync();
-                await LoadTicksForDay(SelectedDay);
+                await LoadTicks(SelectedDate);
             }
 
             Busy = false;
@@ -313,7 +313,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
                 return await SaveTicksForTodayAsync(Tags);
             }
 
-            return await SaveTicksForDayAsync(SelectedDay, DefaultNoTries, DefaultAscentType);
+            return await SaveTicksAsync(SelectedDate, DefaultNoTries, DefaultAscentType);
         }
 
         private bool ShowErrorForInexistentTags()
@@ -351,7 +351,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
 
         private bool IsSelectedDayToday()
         {
-            return SelectedDay == _timeService.Now.Date;
+            return SelectedDate == _timeService.Now.Date;
         }
 
         private async Task<bool> SaveTicksForTodayAsync(string tags)
@@ -366,7 +366,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             return successfull;
         }
 
-        private async Task<bool> SaveTicksForDayAsync(DateTime day, int tries, int ascentType)
+        private async Task<bool> SaveTicksAsync(DateTime day, int tries, int ascentType)
         {
             var problems = GetTaggedProblems();
 

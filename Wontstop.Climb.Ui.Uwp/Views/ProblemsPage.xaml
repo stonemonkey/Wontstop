@@ -11,6 +11,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:views="using:Wontstop.Climb.Ui.Uwp.Views"
     xmlns:attached="using:Mvvm.WinRT.AttachedProperties"
+    xmlns:behaviours="using:Common.Uwp.Behaviours"
     xmlns:stateTriggers="using:Common.Uwp.StateTriggers"
     mc:Ignorable="d" 
     DataContext="{Binding ProblemsViewModel, Source={StaticResource ViewModelLocator}}">
@@ -230,6 +231,8 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 Grid.Column="1"
                 Margin="12,0" Date="{Binding Day, Mode=TwoWay}">
                 <interactivity:Interaction.Behaviors>
+                    <behaviours:HighlightDaysBehavior 
+                        HighlightedDays="{Binding TickDates}" HighlightedDayBackground="Red"/>
                     <core:EventTriggerBehavior EventName="DateChanged">
                         <core:InvokeCommandAction Command="{Binding DateChangedCommand}"/>
                     </core:EventTriggerBehavior>
@@ -263,11 +266,6 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                                 Command="{Binding TagsChangedCommand}"
                                 InputConverter="{StaticResource AutoSuggestBoxTextChangedEventArgsToBoolConverter}"/>
                         </core:EventTriggerBehavior>
-                        <!--<core:EventTriggerBehavior EventName="QuerySubmitted">
-                            <core:InvokeCommandAction 
-                                Command="{Binding TagsSelectedCommand}"
-                                InputConverter="{StaticResource AutoSuggestBoxQuerySubmittedEventArgsToStringConverter}"/>
-                        </core:EventTriggerBehavior>-->
                         <core:EventTriggerBehavior EventName="SuggestionChosen">
                             <core:InvokeCommandAction 
                                 Command="{Binding SuggestionChosenCommand}"
