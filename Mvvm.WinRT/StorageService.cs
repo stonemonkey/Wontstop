@@ -7,17 +7,12 @@ using Newtonsoft.Json;
 namespace Mvvm.WinRT
 {
     /// <summary>
-    /// Provides wrappers over WinRT storage data removing boiler plate code otherwise needed for 
+    /// Provides wrappers over WinRT settings storage removing boiler plate code otherwise needed for 
     /// CRUD operations.
     /// </summary>
     public class StorageService : IStorageService
     {
-        private readonly ApplicationData _applicationData;
-
-        public StorageService()
-        {
-            _applicationData = ApplicationData.Current;
-        }
+        private readonly ApplicationData _applicationData = ApplicationData.Current;
 
         #region Local settings
 
@@ -76,7 +71,7 @@ namespace Mvvm.WinRT
             }
         }
 
-        public void RemoveRoaming(string key)
+        public void DeleteRoaming(string key)
         {
             if (RoamingExists(key))
             {

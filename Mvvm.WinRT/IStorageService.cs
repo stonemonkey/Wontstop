@@ -4,7 +4,7 @@
 namespace Mvvm.WinRT
 {
     /// <summary>
-    /// Service handling storage CRUD.
+    /// Service handling settings storage CRUD.
     /// </summary>
     public interface IStorageService
     {
@@ -15,7 +15,7 @@ namespace Mvvm.WinRT
 
         T ReadRoaming<T>(string key);
         void SaveRoaming<T>(string key, T value);
-        void RemoveRoaming(string key);
+        void DeleteRoaming(string key);
         bool RoamingExists(string key);
     }
 }
