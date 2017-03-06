@@ -7,7 +7,6 @@ using Mvvm.WinRT.AttachedProperties;
 using Mvvm.WinRT.Commands;
 using Mvvm.WinRT.Messages;
 using PropertyChanged;
-using System;
 using System.Threading.Tasks;
 using Wontstop.Climb.Ui.Uwp.Dtos;
 using Wontstop.Climb.Ui.Uwp.Utils;
@@ -16,18 +15,18 @@ using Wontstop.Climb.Ui.Uwp.Views;
 namespace Wontstop.Climb.Ui.Uwp.ViewModels
 {
     [ImplementPropertyChanged]
-    public class ProblemItemViewModel
+    public class TickItemViewModel
     {
         public bool Busy { get; private set; }
      
         [Model]
-        public Problem Problem { get; set; }
+        public Tick Tick { get; set; }
 
         private readonly IEventAggregator _eventAggregator;
         private readonly INavigationService _navigationService;
         private readonly ProblematorRequestsFactory _requestFactory;
 
-        public ProblemItemViewModel(
+        public TickItemViewModel(
             IEventAggregator eventAggregator,
             INavigationService navigationService,
             ProblematorRequestsFactory requestFactory)
@@ -35,7 +34,6 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             _eventAggregator = eventAggregator;
             _navigationService = navigationService;
             _requestFactory = requestFactory;
-
         }
 
         private RelayCommand _loadComand;
@@ -62,7 +60,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
 
         private void EditTick()
         {
-            _navigationService.Navigate(typeof (ProblemDetailesPage), Problem);
+            _navigationService.Navigate(typeof (ProblemDetailesPage), Tick.ProblemId);
         }
 
         private RelayCommand _deleteTickCommand;
@@ -81,7 +79,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
 
         private async Task RemoveTickAsync()
         {
-            (await _requestFactory.CreateDeleteTickRequest(Problem.Tick.Id)
+            (await _requestFactory.CreateDeleteTickRequest(Tick.Id)
                 .RunAsync<ProblematorJsonParser>())
                     .OnSuccess(HandleRemoveResponse)
                     .PublishErrorOnHttpFailure(_eventAggregator);
@@ -94,7 +92,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
                 return;
             }
 
-            _eventAggregator.PublishOnCurrentThread(Problem);
+            _eventAggregator.PublishOnCurrentThread(Tick);
         }
     }
 }

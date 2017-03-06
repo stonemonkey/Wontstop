@@ -63,10 +63,10 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             </Setter>
         </Style>
 
-        <DataTemplate x:Key="ProblemDataTemplate">
-            <Grid x:Name="ProblemItemPanel">
-                <views:ProblemItemView 
-                    attached:ViewModel.Model="{Binding DataContext, ElementName=ProblemItemPanel}"/>
+        <DataTemplate x:Key="TickDataTemplate">
+            <Grid x:Name="TickItemPanel">
+                <views:TickItemView 
+                    attached:ViewModel.Model="{Binding DataContext, ElementName=TickItemPanel}"/>
             </Grid>
         </DataTemplate>
 
@@ -100,7 +100,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         Grid.Column="2"
                         Margin="8,0,0,0"
                         VerticalAlignment="Center"
-                        Text="{Binding GradeFont}"/>
+                        Text="{Binding Grade}"/>
                     <TextBlock x:Name="TagTextBlock"
                         Grid.Column="3"
                         Margin="8,0,0,0"
@@ -285,8 +285,8 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 Margin="0,4,0,0"
                 SelectionMode="None"
                 HorizontalAlignment="Stretch"
-                ItemsSource="{Binding TickedProblems}"
-                ItemTemplate="{StaticResource ProblemDataTemplate}"
+                ItemsSource="{Binding Ticks}"
+                ItemTemplate="{StaticResource TickDataTemplate}"
                 HeaderTemplate="{StaticResource EmptyDataTemplate}">
             </ListView>
             <!--<ListView x:Name="SectionsList"

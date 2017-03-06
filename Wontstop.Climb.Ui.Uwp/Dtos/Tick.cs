@@ -11,6 +11,9 @@ namespace Wontstop.Climb.Ui.Uwp.Dtos
     /// </summary>
     public class Tick
     {
+        [JsonProperty(PropertyName = "routetype")]
+        public string RouteType { get; set; }
+
         [JsonProperty(PropertyName = "id")]
         public string Id { get; set; }
 
@@ -40,5 +43,20 @@ namespace Wontstop.Climb.Ui.Uwp.Dtos
 
         [JsonProperty(PropertyName = "a_dislike")]
         public int Dislike { get; set; }
+
+        [JsonProperty(PropertyName = "gradeid")]
+        public string GradeId { get; set; }
+
+        [JsonProperty(PropertyName = "gradename")]
+        public string Grade { get; set; }
+
+        [JsonProperty(PropertyName = "tag")]
+        public string Tag { get; set; }
+
+        [JsonIgnore]
+        public string TagShort => Tag?.Substring(7);
+
+        [JsonProperty(PropertyName = "colour")]
+        public string ColorName { get; set; }
     }
 }

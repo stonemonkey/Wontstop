@@ -18,7 +18,7 @@ using HttpApiClient.Requests;
 namespace Wontstop.Climb.Ui.Uwp.ViewModels
 {
     [ImplementPropertyChanged]
-    public class ProblemsViewModel : IHandle<Problem>
+    public class ProblemsViewModel : IHandle<Tick>
     {
         public string Title => "Ticks";
 
@@ -35,7 +35,8 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
 
         public IList<DateTimeOffset> TickDates { get; private set; }
 
-        public ObservableCollection<Problem> TickedProblems { get; private set; }
+        public ObservableCollection<Tick> Ticks { get; private set; }
+        //public ObservableCollection<Problem> TickedProblems { get; private set; }
 
         private readonly ITimeService _timeService;
         private readonly IEventAggregator _eventAggregator;
@@ -126,10 +127,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             }
 
             var day = parser.To<DayTicks>();
-            TickedProblems = new ObservableCollection<Problem>(_problems
-                .Where(x => day.Ticks.Any(tick => 
-                    string.Equals(x.Id, tick.ProblemId, StringComparison.OrdinalIgnoreCase)))
-                .ToList());
+            Ticks = new ObservableCollection<Tick>(day.Ticks);
         }
 
         private async Task LoadTickDatesAsync()
@@ -419,9 +417,9 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             };
         }
 
-        public void Handle(Problem message)
+        public void Handle(Tick message)
         {
-            TickedProblems.Remove(message);
+            Ticks.Remove(message);
         }
     }
 }

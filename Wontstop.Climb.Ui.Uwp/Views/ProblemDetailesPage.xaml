@@ -37,7 +37,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             <TextBlock 
                 Grid.Row="0"
                 HorizontalAlignment="Center"
-                Text="{Binding Problem.GradeFont}" FontSize="48"/>
+                Text="{Binding Problem.Grade}" FontSize="48"/>
             <TextBlock
                 Grid.Row="1"
                 HorizontalAlignment="Center"

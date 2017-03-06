@@ -118,7 +118,7 @@
     <Compile Include="Utils\ProblematorJsonParserExtensions.cs" />
     <Compile Include="Dtos\Problem.cs" />
     <Compile Include="ViewModels\ProblemDetailesViewModel.cs" />
-    <Compile Include="ViewModels\ProblemItemViewModel.cs" />
+    <Compile Include="ViewModels\TickItemViewModel.cs" />
     <Compile Include="ViewModels\ProblemsViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
@@ -128,8 +128,8 @@
     <Compile Include="Views\ProblemDetailesPage.xaml.cs">
       <DependentUpon>ProblemDetailesPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ProblemItemView.xaml.cs">
-      <DependentUpon>ProblemItemView.xaml</DependentUpon>
+    <Compile Include="Views\TickItemView.xaml.cs">
+      <DependentUpon>TickItemView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ProblemsPage.xaml.cs">
       <DependentUpon>ProblemsPage.xaml</DependentUpon>
@@ -167,7 +167,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\ProblemItemView.xaml">
+    <Page Include="Views\TickItemView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
