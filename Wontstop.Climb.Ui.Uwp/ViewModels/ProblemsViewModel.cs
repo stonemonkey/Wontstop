@@ -36,7 +36,6 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
         public IList<DateTimeOffset> TickDates { get; private set; }
 
         public ObservableCollection<Tick> Ticks { get; private set; }
-        //public ObservableCollection<Problem> TickedProblems { get; private set; }
 
         private readonly ITimeService _timeService;
         private readonly IEventAggregator _eventAggregator;

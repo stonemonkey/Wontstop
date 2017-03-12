@@ -182,7 +182,6 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         </stateTriggers:CompositeStateTrigger>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <!--<Setter Target="TitleBarPanel.HorizontalAlignment" Value="Stretch"/>-->
                         <Setter Target="TitleTextBlock.Style" Value="{ThemeResource BodyTextBlockStyle}"/>
                         <Setter Target="TitleTextBlock.Margin" Value="{StaticResource MenuItemCompactPanelThickness}"/>
                     </VisualState.Setters>
@@ -329,7 +328,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 </ListView.ItemTemplate>
             </ListView>-->
             <Grid x:Name="EmptyStatePanel"
-                Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2"
+                Grid.Row="0" Grid.RowSpan="2"
                 Visibility="{Binding Empty, Converter={StaticResource BoolToVisibilityConverter}}">
                 <TextBlock x:Name="EmptyState"
                     TextAlignment="Center"

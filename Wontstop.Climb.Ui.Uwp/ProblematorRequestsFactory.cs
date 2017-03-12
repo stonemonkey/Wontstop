@@ -62,9 +62,14 @@ namespace Wontstop.Climb.Ui.Uwp
 
         #region Parameter helpers
 
-        protected void AddLocationParam(ConfigBase config, string gymId = null)
+        protected void AddLocationParam(ConfigBase config, string location)
         {
-            config.AddParam("problematorlocation", gymId ?? _context.GymId);
+            if (string.IsNullOrEmpty(location))
+            {
+                throw new ArgumentException(_invalidArgumentMessage, nameof(location));
+            }
+
+            config.AddParam("problematorlocation", location);
         }
 
         protected void AddGymIdParam(ConfigBase config)
@@ -111,15 +116,15 @@ namespace Wontstop.Climb.Ui.Uwp
         /// <summary>
         /// Creates request for authenticating an existent user.
         /// </summary>
-        /// <param name="gymId">Gym id.</param>
+        /// <param name="location">Gym id.</param>
         /// <param name="email">Account name.</param>
         /// <param name="password">Account password.</param>
         /// <returns>GET request.</returns>
-        public GetRequest CreateLoginRequest(string gymId, string email, string password)
+        public GetRequest CreateLoginRequest(string location, string email, string password)
         {
-            if (string.IsNullOrWhiteSpace(gymId))
+            if (string.IsNullOrWhiteSpace(location))
             {
-                throw new ArgumentException(_invalidArgumentMessage, nameof(gymId));
+                throw new ArgumentException(_invalidArgumentMessage, nameof(location));
             }
             if (string.IsNullOrWhiteSpace(email))
             {
@@ -135,7 +140,7 @@ namespace Wontstop.Climb.Ui.Uwp
             config.AddParam("username", email);
             config.AddParam("password", password);
             config.AddParam("authenticate", "true");
-            AddLocationParam(config, gymId);
+            AddLocationParam(config, location);
             AddClientTimestampParam(config);
             AddUserAgentHeader(config);
             AddApplicationKindHeader(config);
@@ -273,6 +278,28 @@ namespace Wontstop.Climb.Ui.Uwp
         {
             var urn = $"{Server}/tickarchive_tickdates";
             var config = new Config(urn, IsSecure);
+            AddApiAuthTokenParam(config);
+            AddClientTimestampParam(config);
+            AddUserAgentHeader(config);
+            AddApplicationKindHeader(config);
+
+            return new GetRequest(config, _responseLogger);
+        }
+
+        /// <summary>
+        /// Creates request for fetching dashboard data. It includes statistics, user setings and 
+        /// application settings (gyms, grades).
+        /// </summary>
+        /// <returns>GET request.</returns>
+        public GetRequest CreateDashboardRequest()
+        {
+            var urn = $"{Server}/dashinfo";
+            var config = new Config(urn, IsSecure);
+            var location = _context?.GymId;
+            if (location != null)
+            {
+                AddLocationParam(config, location);
+            }
             AddApiAuthTokenParam(config);
             AddClientTimestampParam(config);
             AddUserAgentHeader(config);
