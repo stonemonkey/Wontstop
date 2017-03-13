@@ -22,15 +22,6 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
         public string Email { get; set; }
         public string Password { get; set; }
 
-        public string SelectedGym { get; set; }
-
-        public IDictionary<string, string> Gyms { get; } = new Dictionary<string, string>
-        {
-            { "Telefonplan", "8" },
-            { "Solna", "102" },
-            { "Akalla", "103" },
-        }; 
-
         private readonly IStorageService _storageService;
         private readonly IEventAggregator _eventAggregator;
         private readonly INavigationService _navigationService;
@@ -53,14 +44,13 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             (_loginComand = new RelayCommand(
                 async () => await LoginAsync(), 
                 () => !string.IsNullOrWhiteSpace(Email) && 
-                      !string.IsNullOrWhiteSpace(Password) &&
-                      !string.IsNullOrWhiteSpace(SelectedGym)));
+                      !string.IsNullOrWhiteSpace(Password)));
 
         protected virtual async Task LoginAsync()
         {
             Busy = true;
 
-            (await _requestsFactory.CreateLoginRequest(Gyms[SelectedGym], Email, Password)
+            (await _requestsFactory.CreateLoginRequest(Email, Password)
                 .RunAsync<ProblematorJsonParser>())
                     .OnSuccess(HandleResponse)
                     .PublishErrorOnHttpFailure(_eventAggregator);

@@ -116,16 +116,12 @@ namespace Wontstop.Climb.Ui.Uwp
         /// <summary>
         /// Creates request for authenticating an existent user.
         /// </summary>
-        /// <param name="location">Gym id.</param>
         /// <param name="email">Account name.</param>
         /// <param name="password">Account password.</param>
+        /// <param name="location">Gym id (optional).</param>
         /// <returns>GET request.</returns>
-        public GetRequest CreateLoginRequest(string location, string email, string password)
+        public GetRequest CreateLoginRequest(string email, string password, string location = null)
         {
-            if (string.IsNullOrWhiteSpace(location))
-            {
-                throw new ArgumentException(_invalidArgumentMessage, nameof(location));
-            }
             if (string.IsNullOrWhiteSpace(email))
             {
                 throw new ArgumentException(_invalidArgumentMessage, nameof(email));
@@ -140,7 +136,10 @@ namespace Wontstop.Climb.Ui.Uwp
             config.AddParam("username", email);
             config.AddParam("password", password);
             config.AddParam("authenticate", "true");
-            AddLocationParam(config, location);
+            if (location != null)
+            {
+                AddLocationParam(config, location);
+            }
             AddClientTimestampParam(config);
             AddUserAgentHeader(config);
             AddApplicationKindHeader(config);

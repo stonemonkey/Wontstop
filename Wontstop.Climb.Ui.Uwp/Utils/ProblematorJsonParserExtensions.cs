@@ -13,10 +13,16 @@ namespace Wontstop.Climb.Ui.Uwp.Utils
         /// </summary>
         /// <typeparam name="T">The type of the instance.</typeparam>
         /// <param name="parser">Parser associated with the response.</param>
-        /// <returns>An instance.</returns>
+        /// <returns>An instance or default(T) in case of an empty Json.</returns>
         public static T To<T>(this ProblematorJsonParser parser)
         {
-            return parser.GetData().ToObject<T>();
+            var jToken = parser.GetData();
+            if (jToken.IsNullOrEmpty())
+            {
+                return default(T);
+            }
+                        
+            return jToken.ToObject<T>();
         }
 
         private const string ErrorKey = "error";

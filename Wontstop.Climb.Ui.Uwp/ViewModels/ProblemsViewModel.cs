@@ -100,8 +100,9 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
                 return;
             }
 
-            var sections = parser.To<IDictionary<string, WallSection>>()
-                .Values.ToList();
+            var sections = (parser.To<IDictionary<string, WallSection>>() ?? 
+                    new Dictionary<string, WallSection>())
+                .Values;
             _problems = sections
                 .SelectMany(x => x.Problems)
                 .ToList();
