@@ -53,12 +53,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 VerticalAlignment="Center"
                 PlaceholderText="password"
                 Password="{Binding Password, Mode=TwoWay}"/>
-            <!--<ComboBox
-                Grid.Row="2"
-                HorizontalAlignment="Stretch"
-                PlaceholderText="select gym"
-                ItemsSource="{Binding Gyms.Keys}"
-                SelectedItem="{Binding SelectedGym, Mode=TwoWay}"/>-->
+
             <Button x:Name="LoginButton" 
                 Grid.Row="3"
                 Margin="20"

@@ -306,5 +306,22 @@ namespace Wontstop.Climb.Ui.Uwp
 
             return new GetRequest(config, _responseLogger);
         }
+
+        /// <summary>
+        /// Creates request for changing default gym.
+        /// </summary>
+        /// <returns>GET request.</returns>
+        public GetRequest CreateChangeGymRequest(string gymId)
+        {
+            var urn = $"{Server}/changegym";
+            var config = new Config(urn, IsSecure);
+            config.AddParam("id", gymId);
+            AddApiAuthTokenParam(config);
+            AddClientTimestampParam(config);
+            AddUserAgentHeader(config);
+            AddApplicationKindHeader(config);
+
+            return new GetRequest(config, _responseLogger);
+        }
     }
 }

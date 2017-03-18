@@ -27,6 +27,9 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
 
         public string Tags { get; set; }
 
+        public string SelectedLocation { get; set; }
+        public IDictionary<string, string> Locations { get; set; }
+
         private static bool _isDaySaved;
         public static DateTimeOffset Day { get; set; }
         private static DateTime SelectedDate => Day.Date;
@@ -38,15 +41,18 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
         public ObservableCollection<Tick> Ticks { get; private set; }
 
         private readonly ITimeService _timeService;
+        private readonly IStorageService _storageService;
         private readonly IEventAggregator _eventAggregator;
         private readonly ProblematorRequestsFactory _requestsFactory;
 
         public ProblemsViewModel(
             ITimeService timeService,
+            IStorageService storageService,
             IEventAggregator eventAggregator,
             ProblematorRequestsFactory requestsFactory)
         {
             _timeService = timeService;
+            _storageService = storageService;
             _eventAggregator = eventAggregator;
             _requestsFactory = requestsFactory;
 
@@ -61,8 +67,12 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
         public RelayCommand LoadCommand => _loadComand ??
             (_loadComand = new RelayCommand(async () => await LoadAsync()));
 
+        private UserContext _context;
+
         protected virtual async Task LoadAsync()
         {
+            _context = _storageService.ReadLocal<UserContext>(Settings.ContextKey);
+
             await RefreshAsync();
 
             _eventAggregator.Subscribe(this);
@@ -77,12 +87,35 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
 
             ClearTaggedProblems();
 
+            await LoadDashboardAsync();
             await LoadProblemsAsync();
             await LoadTickDatesAsync();
             await LoadTicks(SelectedDate);
 
             Busy = false;
             Empty = (_problems == null) || !_problems.Any();
+        }
+
+        private async Task LoadDashboardAsync()
+        {
+            (await _requestsFactory.CreateDashboardRequest()
+                    .RunAsync<ProblematorJsonParser>())
+                .OnSuccess(HandleDashboardResponse)
+                .PublishErrorOnHttpFailure(_eventAggregator);
+        }
+
+        private void HandleDashboardResponse(ProblematorJsonParser parser)
+        {
+            if (parser.PublishMessageOnInternalServerError(_eventAggregator))
+            {
+                return;
+            }
+
+            var dashboard = parser.To<Dashboard>();
+            Locations = dashboard.Locations.ToDictionary(x => x.Name, x => x.Id);
+            SelectedLocation = dashboard.Locations
+                .SingleOrDefault(x => string.Equals(x.Id,_context.GymId, StringComparison.Ordinal))?
+                .Name;
         }
 
         private async Task LoadProblemsAsync()
@@ -157,10 +190,42 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             _eventAggregator.Unsubscribe(this);
         }
 
-        private RelayCommand _dateChangedComand;
+        private RelayCommand _changeLocationComand;
 
-        public RelayCommand DateChangedCommand => _dateChangedComand ??
-            (_dateChangedComand = new RelayCommand(async () => await RefreshAsync(), () => !Busy));
+        public RelayCommand ChangeLocationCommand => _changeLocationComand ??
+            (_changeLocationComand = new RelayCommand(
+                async () => await ChangeLocationAsync(), () => !Busy));
+
+        private async Task ChangeLocationAsync()
+        {
+            var gymId = Locations[SelectedLocation];
+            if (gymId == _context.GymId)
+            {
+                return;
+            }
+
+            (await _requestsFactory.CreateChangeGymRequest(gymId)
+                    .RunAsync<ProblematorJsonParser>())
+                .OnSuccess(x => HandleChangeGymRequest(x, gymId))
+                .PublishErrorOnHttpFailure(_eventAggregator);
+
+            await RefreshAsync();
+        }
+
+        private void HandleChangeGymRequest(ProblematorJsonParser parser, string gymId)
+        {
+            var context = parser.To<UserContext>();
+            _context.GymId = gymId;
+            _context.Jwt = context.Jwt;
+            _context.Message = context.Message;
+            _requestsFactory.SetUserContext(_context);
+            _storageService.SaveLocal(Settings.ContextKey, _context);
+        }
+
+        private RelayCommand _changeDateComand;
+
+        public RelayCommand ChangeDateCommand => _changeDateComand ??
+            (_changeDateComand = new RelayCommand(async () => await RefreshAsync(), () => !Busy));
 
         private RelayCommand _publisTagsComand;
         public RelayCommand PublishTagsCommand => _publisTagsComand ??

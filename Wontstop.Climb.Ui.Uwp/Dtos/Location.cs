@@ -1,6 +1,9 @@
 // Copyright (c) Costin Morariu. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Net;
+using Windows.Foundation;
 using Newtonsoft.Json;
 
 namespace Wontstop.Climb.Ui.Uwp.Dtos
@@ -11,8 +14,8 @@ namespace Wontstop.Climb.Ui.Uwp.Dtos
         public string Id { get; set; }
 
         [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
-
+        public string NameUrlEncoded { get; set; }
+        
         [JsonProperty(PropertyName = "latitude")]
         public string Latitude { get; set; }
 
@@ -27,5 +30,8 @@ namespace Wontstop.Climb.Ui.Uwp.Dtos
 
         [JsonProperty(PropertyName = "city")]
         public string City { get; set; }
+
+        [JsonIgnore]
+        public string Name => WebUtility.HtmlDecode(NameUrlEncoded);
     }
 }
