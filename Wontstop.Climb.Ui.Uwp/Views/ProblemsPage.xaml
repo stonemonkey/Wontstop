@@ -11,8 +11,8 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:views="using:Wontstop.Climb.Ui.Uwp.Views"
     xmlns:attached="using:Mvvm.WinRT.AttachedProperties"
-    xmlns:behaviours="using:Common.Uwp.Behaviours"
     xmlns:stateTriggers="using:Common.Uwp.StateTriggers"
+    xmlns:dtos="using:Wontstop.Climb.Ui.Uwp.Dtos"
     mc:Ignorable="d" 
     DataContext="{Binding ProblemsViewModel, Source={StaticResource ViewModelLocator}}">
 
@@ -27,9 +27,9 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
             <Setter Property="MinWidth" Value="{ThemeResource ListViewItemMinWidth}"/>
             <Setter Property="MinHeight" Value="{ThemeResource ListViewItemMinHeight}"/>
-            <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
-            <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
-            <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
+            <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}"/>
+            <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}"/>
+            <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -63,97 +63,10 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             </Setter>
         </Style>
 
-        <DataTemplate x:Key="TickDataTemplate">
-            <Grid x:Name="TickItemPanel">
-                <views:TickItemView 
-                    attached:ViewModel.Model="{Binding DataContext, ElementName=TickItemPanel}"/>
-            </Grid>
-        </DataTemplate>
-
-        <DataTemplate x:Key="SuggestedProblemDataTemplate">
-            <Grid x:Name="SuggestedProblemItemPanel"
-                Background="Transparent">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid x:Name="ProblemControlPanel"
-                    Grid.Row="0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <SymbolIcon x:Name="DoneSymbolIcon"
-                        Grid.Column="0"
-                        Margin="0,0,8,0"
-                        VerticalAlignment="Center"
-                        Symbol="Accept"
-                        Visibility="{Binding Tick, Converter={StaticResource ObjectToVisibilityConverter}}"/>
-                    <Ellipse x:Name="ColorElipse"
-                        Grid.Column="1"
-                        Width="16" Height="16"
-                        Fill="{Binding ColorName, Converter={StaticResource StringToColorConverter}}"/>
-                    <TextBlock x:Name="GradeTextBlock"
-                        Grid.Column="2"
-                        Margin="8,0,0,0"
-                        VerticalAlignment="Center"
-                        Text="{Binding Grade}"/>
-                    <TextBlock x:Name="TagTextBlock"
-                        Grid.Column="3"
-                        Margin="8,0,0,0"
-                        VerticalAlignment="Center"
-                        Text="{Binding TagShort}"/>
-                    <TextBlock x:Name="RemovedTextBlock"
-                        Grid.Column="4"
-                        Margin="8,0,0,0"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Right"
-                        Text="removed"
-                        Foreground="Red"
-                        Visibility="{Binding Visible, Converter={StaticResource IntOneToVisibilityConverter}, ConverterParameter=True}"/>
-                </Grid>
-                <StackPanel x:Name="TickPanel"
-                    Grid.Row="1"
-                    Margin="0,2"
-                    Orientation="Horizontal"
-                    Visibility="{Binding Tick, Converter={StaticResource ObjectToVisibilityConverter}}">
-                    <TextBlock Text="Ticked" 
-                        Foreground="Gray"
-                        Style="{ThemeResource CaptionTextBlockStyle}"/>
-                    <TextBlock x:Name="LoggedDateTextBlock"
-                        Margin="4,0,0,0"
-                        Foreground="Gray"
-                        VerticalAlignment="Center"
-                        Style="{ThemeResource CaptionTextBlockStyle}"
-                        Text="{Binding Tick.Timestamp, Converter={StaticResource DateTimeToDateStringConverter}}"/>
-                    <TextBlock Text="|" 
-                        Margin="4,0,0,0"
-                        Foreground="Gray"
-                        Style="{ThemeResource CaptionTextBlockStyle}"/>
-                    <TextBlock x:Name="TriesCountTextBlock"
-                        Margin="4,0,0,0"
-                        Foreground="Gray"
-                        VerticalAlignment="Center"
-                        Text="{Binding Tick.Tries}"
-                        Style="{ThemeResource CaptionTextBlockStyle}"/>
-                    <TextBlock x:Name="OneTryLabelTextBlock"
-                        Text="try"
-                        Margin="4,0,0,0"
-                        Foreground="Gray"
-                        VerticalAlignment="Center"
-                        Style="{ThemeResource CaptionTextBlockStyle}"
-                        Visibility="{Binding Tick.Tries, Converter={StaticResource IntOneToBoolConverter}, ConverterParameter=False}"/>
-                    <TextBlock x:Name="ManyTriesLabelTextBlock"
-                        Text="tries"
-                        Margin="4,0,0,0"
-                        Foreground="Gray"
-                        VerticalAlignment="Center"
-                        Style="{ThemeResource CaptionTextBlockStyle}"
-                        Visibility="{Binding Tick.Tries, Converter={StaticResource IntOneToBoolConverter}, ConverterParameter=True}"/>
-                </StackPanel>
+        <DataTemplate x:Key="ProblemDataTemplate">
+            <Grid x:Name="ProblemItemPanel">
+                <views:ProblemItemView 
+                    attached:ViewModel.Model="{Binding DataContext, ElementName=ProblemItemPanel}"/>
             </Grid>
         </DataTemplate>
     </Page.Resources>
@@ -218,6 +131,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBlock x:Name="TitleTextBlock"
                 Grid.Column="0"
@@ -225,91 +139,26 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 VerticalAlignment="Center"
                 Text="{Binding Title}"
                 Style="{ThemeResource SubheaderTextBlockStyle}"/>
+            <ComboBox x:Name="GymComboBox"
+                Margin="12,6,12,6"
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Stretch"
+                PlaceholderText="select gym"
+                ItemsSource="{Binding Locations.Keys}"
+                SelectedItem="{Binding SelectedLocation, Mode=TwoWay}">
+                <interactivity:Interaction.Behaviors>
+                    <core:EventTriggerBehavior EventName="SelectionChanged">
+                        <core:InvokeCommandAction Command="{Binding ChangeLocationCommand}"/>
+                    </core:EventTriggerBehavior>
+                </interactivity:Interaction.Behaviors>
+            </ComboBox>
         </Grid>
 
         <Grid x:Name="ContentPanel"
             Grid.Row="1"
             HorizontalAlignment="Stretch">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <Grid x:Name="ParametersPanel" HorizontalAlignment="Right">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <ComboBox
-                    Margin="12,8"
-                    Grid.Column="0"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Stretch"
-                    PlaceholderText="select gym"
-                    ItemsSource="{Binding Locations.Keys}"
-                    SelectedItem="{Binding SelectedLocation, Mode=TwoWay}">
-                    <interactivity:Interaction.Behaviors>
-                        <core:EventTriggerBehavior EventName="SelectionChanged">
-                            <core:InvokeCommandAction Command="{Binding ChangeLocationCommand}"/>
-                        </core:EventTriggerBehavior>
-                    </interactivity:Interaction.Behaviors>
-                </ComboBox>
-                <CalendarDatePicker x:Name="TicksDatePicker"
-                    Grid.Column="1"
-                    Margin="12,0" Date="{Binding Day, Mode=TwoWay}">
-                    <interactivity:Interaction.Behaviors>
-                        <behaviours:HighlightDaysBehavior 
-                            HighlightedDays="{Binding TickDates}" HighlightedDayBackground="Red"/>
-                        <core:EventTriggerBehavior EventName="DateChanged">
-                            <core:InvokeCommandAction Command="{Binding ChangeDateCommand}"/>
-                        </core:EventTriggerBehavior>
-                    </interactivity:Interaction.Behaviors>
-                </CalendarDatePicker>
-            </Grid>
-            <Grid x:Name="SuggestionsPanel"
-                Grid.Row="1"
-                Background="Transparent">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <AutoSuggestBox x:Name="TicksSuggestBox"
-                    Margin="12,8"
-                    Text="{Binding Tags, Mode=TwoWay}"
-                    ItemsSource="{Binding SuggestedProblems}"
-                    ItemTemplate="{StaticResource SuggestedProblemDataTemplate}"
-                    PlaceholderText="type some tags (e.g. A1001,B2001)">
-                    <interactivity:Interaction.Behaviors>
-                        <core:EventTriggerBehavior EventName="TextChanged">
-                            <core:InvokeCommandAction 
-                                Command="{Binding TagsChangedCommand}"
-                                InputConverter="{StaticResource AutoSuggestBoxTextChangedEventArgsToBoolConverter}"/>
-                        </core:EventTriggerBehavior>
-                        <core:EventTriggerBehavior EventName="SuggestionChosen">
-                            <core:InvokeCommandAction 
-                                Command="{Binding SuggestionChosenCommand}"
-                                InputConverter="{StaticResource AutoSuggestBoxSuggestionChosenEventArgsToStringConverter}"/>
-                        </core:EventTriggerBehavior>
-                    </interactivity:Interaction.Behaviors>
-                </AutoSuggestBox>
-                <Button x:Name="TickButton"
-                    Grid.Column="1"
-                    Margin="0,0,12,0"
-                    Command="{Binding TickCommand}">
-                    <SymbolIcon Symbol="Save"/>
-                </Button>
-            </Grid>
-            <ListView x:Name="TicksList"
-                Grid.Row="2"
-                Margin="0,4,0,0"
-                SelectionMode="None"
-                HorizontalAlignment="Stretch"
-                ItemsSource="{Binding Ticks}"
-                ItemTemplate="{StaticResource TickDataTemplate}"
-                HeaderTemplate="{StaticResource EmptyDataTemplate}">
-            </ListView>
-            <!--<ListView x:Name="SectionsList"
-                Grid.Row="2"
+            <ListView x:Name="SectionsList"
                 Margin="0,4,0,0"
                 SelectionMode="None"
                 HorizontalAlignment="Stretch"
@@ -328,11 +177,11 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                                 IsChecked="False"
                                 Content="{Binding FullName}"
                                 HorizontalAlignment="Stretch">
-                                <interactivity:Interaction.Behaviors>
+                                <!--<interactivity:Interaction.Behaviors>
                                     <core:EventTriggerBehavior EventName="Checked">
                                         <core:InvokeCommandAction Command="{Binding DataContext.PublishTagsCommand, ElementName=SectionsList}"/>
                                     </core:EventTriggerBehavior>
-                                </interactivity:Interaction.Behaviors>
+                                </interactivity:Interaction.Behaviors>-->
                             </ToggleButton>
                             <ListView x:Name="ProblemsList"
                                 Grid.Row="1"
@@ -346,9 +195,8 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
-            </ListView>-->
+            </ListView>
             <Grid x:Name="EmptyStatePanel"
-                Grid.Row="0" Grid.RowSpan="3"
                 Visibility="{Binding Empty, Converter={StaticResource BoolToVisibilityConverter}}">
                 <TextBlock x:Name="EmptyState"
                     TextAlignment="Center"

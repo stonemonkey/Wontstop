@@ -11,8 +11,8 @@
     <AssemblyName>Wontstop.Climb.Ui.Uwp</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion>10.0.14393.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.10586.0</TargetPlatformMinVersion>
+    <TargetPlatformVersion>10.0.15063.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.14393.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -128,6 +128,8 @@
     <Compile Include="Utils\ProblematorJsonParserExtensions.cs" />
     <Compile Include="Dtos\Problem.cs" />
     <Compile Include="ViewModels\ProblemDetailesViewModel.cs" />
+    <Compile Include="ViewModels\ProblemItemViewModel.cs" />
+    <Compile Include="ViewModels\TicksViewModel.cs" />
     <Compile Include="ViewModels\TickItemViewModel.cs" />
     <Compile Include="ViewModels\ProblemsViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
@@ -137,6 +139,12 @@
     <Compile Include="Dtos\WallSection.cs" />
     <Compile Include="Views\ProblemDetailesPage.xaml.cs">
       <DependentUpon>ProblemDetailesPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ProblemItemView.xaml.cs">
+      <DependentUpon>ProblemItemView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TicksPage.xaml.cs">
+      <DependentUpon>TicksPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TickItemView.xaml.cs">
       <DependentUpon>TickItemView.xaml</DependentUpon>
@@ -174,6 +182,14 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="Views\ProblemDetailesPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ProblemItemView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\TicksPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

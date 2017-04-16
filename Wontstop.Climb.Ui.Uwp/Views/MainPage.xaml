@@ -53,18 +53,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        
-        <!--<Grid x:Name="TitleBarPanel" 
-            VerticalAlignment="Top"
-            Height="{StaticResource TopBarHeight}"
-            Margin="{StaticResource MenuItemCompactPanelThickness}">
-            <TextBlock x:Name="TitleTextBlock"
-                Padding="16,0,0,0"
-                VerticalAlignment="Center"
-                Text="{Binding ActivePage.DataContext.Title}"
-                Style="{ThemeResource SubheaderTextBlockStyle}"/>
-        </Grid>-->
-        
+               
         <SplitView x:Name="AppSplitView"
             IsTabStop="False"
             IsPaneOpen="False"
@@ -80,21 +69,31 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <controls:MenuItemButton x:Name="ProblemsButton"
+                    <controls:MenuItemButton x:Name="TicksButton"
                         Grid.Row="1"
                         Label="Ticks"
+                        Click="OnClickTickssButton"
+                        Style="{StaticResource AppBarMenuItemStyle}"
+                        IsSelected="{Binding ActivePage, Converter={StaticResource PageTypeNameToBoolConverter}, ConverterParameter=TicksPage}">
+                        <SymbolIcon Symbol="Accept"/>
+                    </controls:MenuItemButton>
+                    
+                    <controls:MenuItemButton x:Name="ProblemsButton"
+                        Grid.Row="2"
+                        Label="Problems"
                         Click="OnClickProblemsButton"
                         Style="{StaticResource AppBarMenuItemStyle}"
-                        IsSelected="{Binding ActivePage, Converter={StaticResource PageTypeNameToBoolConverter}, ConverterParameter=HistoryPage}">
+                        IsSelected="{Binding ActivePage, Converter={StaticResource PageTypeNameToBoolConverter}, ConverterParameter=ProblemsPage}">
                         <SymbolIcon Symbol="AllApps"/>
                     </controls:MenuItemButton>
-                                                          
+                    
                     <controls:MenuItemButton x:Name="LogoutButton"
-                        Grid.Row="3"
+                        Grid.Row="4"
                         Label="Logout"
                         Command="{Binding LogoutCommand}"
                         Style="{StaticResource AppBarMenuItemStyle}"

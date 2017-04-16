@@ -23,19 +23,12 @@ namespace Wontstop.Climb.Ui.Uwp.Views
             }
         }
 
-        //private readonly Thickness _menuItemCompactPanelThickness;
-        //private readonly Thickness _menuItemExpandedPanelThickness;
-
         public MainPage()
         {
             InitializeComponent();
 
+            TicksButton.DataContext = this;
             ProblemsButton.DataContext = this;
-
-            //_menuItemCompactPanelThickness = 
-            //    (Thickness) Application.Current.Resources["MenuItemCompactPanelThickness"];
-            //_menuItemExpandedPanelThickness = 
-            //    (Thickness) Application.Current.Resources["MenuItemExpandedPanelThickness"];
         }
 
         private static Page _lastActivePage;
@@ -44,7 +37,7 @@ namespace Wontstop.Climb.Ui.Uwp.Views
         {
             if (_lastActivePage == null)
             {
-                Activate<ProblemsPage>();
+                Activate<TicksPage>();
             }
             else
             {
@@ -67,6 +60,11 @@ namespace Wontstop.Climb.Ui.Uwp.Views
         private void OnAppContentFrameNavigated(object sender, NavigationEventArgs e)
         {
             ActivePage = (Page) e.Content;
+        }
+
+        private void OnClickTickssButton(object sender, RoutedEventArgs e)
+        {
+            Activate<TicksPage>();
         }
 
         private void OnClickProblemsButton(object sender, RoutedEventArgs e)

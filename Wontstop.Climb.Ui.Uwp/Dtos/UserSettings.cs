@@ -36,5 +36,8 @@ namespace Wontstop.Climb.Ui.Uwp.Dtos
 
         [JsonProperty(PropertyName = "_")]
         public string UnixTimestamp { get; set; }
+
+        [JsonIgnore]
+        public int AscentType => int.Parse(SportTickAscentType);
     }
 }
