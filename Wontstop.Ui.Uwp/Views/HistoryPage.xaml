@@ -10,9 +10,9 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:local="using:RunKeeper.WinRT.HealthGraph.Activities"
-    xmlns:controls="using:Common.Uwp.Controls"
-    xmlns:stateTriggers="using:Common.Uwp.StateTriggers"
-    xmlns:behaviours1="using:Common.Uwp.Behaviours"
+    xmlns:stateTriggers="using:MvvmToolkit.Uwp.StateTriggers"
+    xmlns:controls="using:MvvmToolkit.Uwp.Controls"
+    xmlns:behaviours="using:MvvmToolkit.Uwp.Behaviours"
     mc:Ignorable="d"
     DataContext="{Binding HistoryViewModel, Source={StaticResource ViewModelLocator}}">
     
@@ -210,7 +210,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                             </GroupStyle>
                         </ListView.GroupStyle>
                         <interactivity:Interaction.Behaviors>
-                            <behaviours1:ScrollToItemBehavior/>
+                            <behaviours:ScrollToItemBehavior/>
                             <core:EventTriggerBehavior EventName="ItemClickOnSingleSelection">
                                 <core:InvokeCommandAction 
                                     Command="{Binding ItemClickCommand}"

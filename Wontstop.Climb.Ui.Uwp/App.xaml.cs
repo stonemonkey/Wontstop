@@ -11,7 +11,8 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using Mvvm.WinRT;
+using MvvmToolkit;
+using MvvmToolkit.WinRT;
 using Wontstop.Climb.Ui.Uwp.Dtos;
 using Wontstop.Climb.Ui.Uwp.Views;
 

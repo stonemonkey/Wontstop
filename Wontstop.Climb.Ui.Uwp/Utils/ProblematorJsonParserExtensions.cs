@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using Mvvm.WinRT.Messages;
+using MvvmToolkit.Messages;
 
 namespace Wontstop.Climb.Ui.Uwp.Utils
 {

@@ -6,13 +6,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using HttpApiClient;
-using Mvvm.WinRT.Commands;
-using Mvvm.WinRT.Messages;
 using PropertyChanged;
 using Wontstop.Climb.Ui.Uwp.Dtos;
 using Wontstop.Climb.Ui.Uwp.Utils;
-using Mvvm.WinRT;
 using System.Collections.ObjectModel;
+using MvvmToolkit;
+using MvvmToolkit.Commands;
+using MvvmToolkit.Messages;
 
 namespace Wontstop.Climb.Ui.Uwp.ViewModels
 {

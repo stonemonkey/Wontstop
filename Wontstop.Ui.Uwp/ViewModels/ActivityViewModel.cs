@@ -4,9 +4,9 @@
 using System;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Navigation;
-using Mvvm.WinRT;
-using Mvvm.WinRT.Commands;
-using Mvvm.WinRT.Messages;
+using MvvmToolkit;
+using MvvmToolkit.Commands;
+using MvvmToolkit.Messages;
 using PropertyChanged;
 using RunKeeper.WinRT.HealthGraph.Activities;
 

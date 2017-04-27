@@ -11,8 +11,8 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:maps="using:Windows.UI.Xaml.Controls.Maps"
     xmlns:attachedProperties="using:Wontstop.Ui.Uwp.AttachedProperties"
-    xmlns:behaviours="using:Common.Uwp.Behaviours"
-    xmlns:stateTriggers="using:Common.Uwp.StateTriggers"
+    xmlns:behaviours="using:MvvmToolkit.Uwp.Behaviours"
+    xmlns:stateTriggers="using:MvvmToolkit.Uwp.StateTriggers"
     mc:Ignorable="d"
     DataContext="{Binding LiveActivityViewModel, Source={StaticResource ViewModelLocator}}">
        

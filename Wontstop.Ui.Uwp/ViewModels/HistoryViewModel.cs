@@ -4,9 +4,9 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Mvvm.WinRT;
-using Mvvm.WinRT.Commands;
-using Mvvm.WinRT.Messages;
+using MvvmToolkit;
+using MvvmToolkit.Commands;
+using MvvmToolkit.Messages;
 using PropertyChanged;
 using RunKeeper.WinRT.HealthGraph.Activities;
 using RunKeeper.WinRT.HealthGraph.User;

@@ -5,15 +5,15 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     x:Class="Wontstop.Climb.Ui.Uwp.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:commonConverters="using:Common.Uwp.Converters"
     xmlns:uwp="using:Wontstop.Climb.Ui.Uwp"
     xmlns:localConverters="using:Wontstop.Climb.Ui.Uwp.Converters"
+    xmlns:converters="using:MvvmToolkit.Uwp.Converters"
     RequestedTheme="Dark">
 
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="ms-appx:///Common.Uwp/Generic.xaml"/>
+                <ResourceDictionary Source="ms-appx:///MvvmToolkit.Uwp/Generic.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <uwp:ViewModelLocator x:Key="ViewModelLocator"/>
@@ -30,10 +30,10 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             <localConverters:DateTimeToDateStringConverter x:Key="DateTimeToDateStringConverter"/>
             <localConverters:DateTimeToTimeStringConverter x:Key="DateTimeToTimeStringConverter"/>
 
-            <commonConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-            <commonConverters:PageTypeNameToBoolConverter x:Key="PageTypeNameToBoolConverter"/>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <converters:PageTypeNameToBoolConverter x:Key="PageTypeNameToBoolConverter"/>
             
-            <commonConverters:ItemClickEventArgsToClickedItemObjectConverter x:Key="ItemClickEventArgsToClickedItemObjectConverter"/>
+            <converters:ItemClickEventArgsToClickedItemObjectConverter x:Key="ItemClickEventArgsToClickedItemObjectConverter"/>
             
             <localConverters:AutoSuggestBoxTextChangedEventArgsToBoolConverter x:Key="AutoSuggestBoxTextChangedEventArgsToBoolConverter"/>
             <localConverters:AutoSuggestBoxQuerySubmittedEventArgsToStringConverter x:Key="AutoSuggestBoxQuerySubmittedEventArgsToStringConverter"/>

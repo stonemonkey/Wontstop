@@ -4,8 +4,9 @@
 using System.Diagnostics;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Mvvm.WinRT;
-using Mvvm.WinRT.Messages;
+using MvvmToolkit;
+using MvvmToolkit.Messages;
+using MvvmToolkit.WinRT;
 using RunKeeper.WinRT.HealthGraph.Activities;
 using RunKeeper.WinRT.HealthGraph.Infrastructure;
 using RunKeeper.WinRT.HealthGraph.User;

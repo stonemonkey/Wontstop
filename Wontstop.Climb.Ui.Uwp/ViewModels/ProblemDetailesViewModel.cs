@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Costin Morariu. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Mvvm.WinRT;
-using Mvvm.WinRT.Commands;
 using PropertyChanged;
 using Windows.UI.Xaml.Navigation;
+using MvvmToolkit;
+using MvvmToolkit.Commands;
 using Wontstop.Climb.Ui.Uwp.Dtos;
 
 namespace Wontstop.Climb.Ui.Uwp.ViewModels

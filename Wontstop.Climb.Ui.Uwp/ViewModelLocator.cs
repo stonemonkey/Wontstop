@@ -4,8 +4,9 @@
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using HttpApiClient.Requests;
-using Mvvm.WinRT;
-using Mvvm.WinRT.Messages;
+using MvvmToolkit;
+using MvvmToolkit.Messages;
+using MvvmToolkit.WinRT;
 using SimpleInjector;
 using Wontstop.Climb.Ui.Uwp.ViewModels;
 

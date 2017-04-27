@@ -7,8 +7,8 @@ using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.ExtendedExecution;
 using Windows.Devices.Geolocation;
 using Windows.UI.Core;
-using Mvvm.WinRT.Commands;
-using Mvvm.WinRT.Messages;
+using MvvmToolkit.Commands;
+using MvvmToolkit.Messages;
 using PropertyChanged;
 using RunKeeper.WinRT.HealthGraph.Activities;
 

@@ -3,8 +3,8 @@
 
 using System.Threading.Tasks;
 using HttpApiClient.Parsers;
-using Mvvm.WinRT;
-using Mvvm.WinRT.Commands;
+using MvvmToolkit;
+using MvvmToolkit.Commands;
 using Wontstop.Climb.Ui.Uwp.Views;
 
 namespace Wontstop.Climb.Ui.Uwp.ViewModels

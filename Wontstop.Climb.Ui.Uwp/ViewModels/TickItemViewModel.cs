@@ -2,12 +2,12 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using HttpApiClient;
-using Mvvm.WinRT;
-using Mvvm.WinRT.AttachedProperties;
-using Mvvm.WinRT.Commands;
-using Mvvm.WinRT.Messages;
 using PropertyChanged;
 using System.Threading.Tasks;
+using MvvmToolkit;
+using MvvmToolkit.Commands;
+using MvvmToolkit.Messages;
+using MvvmToolkit.WinRT.AttachedProperties;
 using Wontstop.Climb.Ui.Uwp.Dtos;
 using Wontstop.Climb.Ui.Uwp.Utils;
 using Wontstop.Climb.Ui.Uwp.Views;

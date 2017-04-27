@@ -188,13 +188,25 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common.Uwp\Common.Uwp.csproj">
+    <ProjectReference Include="..\MvvmToolkit.Uwp\MvvmToolkit.Uwp.csproj">
       <Project>{fcb95431-d99a-46ab-aae0-944f7213da85}</Project>
-      <Name>Common.Uwp</Name>
+      <Name>MvvmToolkit.Uwp</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Mvvm.WinRT\Mvvm.WinRT.csproj">
+    <ProjectReference Include="..\MvvmToolkit.Commands\MvvmToolkit.Commands.csproj">
+      <Project>{02cb1ebc-bd2a-4e24-a7d3-b1d4b6291fc0}</Project>
+      <Name>MvvmToolkit.Commands</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MvvmToolkit.Messages\MvvmToolkit.Messages.csproj">
+      <Project>{4d7518be-08bc-45ef-b00d-ec8e1279cd1b}</Project>
+      <Name>MvvmToolkit.Messages</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MvvmToolkit.WinRT\MvvmToolkit.WinRT.csproj">
       <Project>{bb95914d-a53b-4e7f-900d-d73bfa5ea6d0}</Project>
-      <Name>Mvvm.WinRT</Name>
+      <Name>MvvmToolkit.WinRT</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MvvmToolkit\MvvmToolkit.csproj">
+      <Project>{67f9d3a8-f71e-4428-913f-c37ae82cdb24}</Project>
+      <Name>MvvmToolkit</Name>
     </ProjectReference>
     <ProjectReference Include="..\RunKeeper.HealthGraph\RunKeeper.WinRT.HealthGraph.csproj">
       <Project>{29b26e1b-ed15-4a53-9e69-33cd43cfd4d0}</Project>

@@ -10,9 +10,9 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:views="using:Wontstop.Climb.Ui.Uwp.Views"
-    xmlns:attached="using:Mvvm.WinRT.AttachedProperties"
-    xmlns:behaviours="using:Common.Uwp.Behaviours"
-    xmlns:stateTriggers="using:Common.Uwp.StateTriggers"
+    xmlns:attachedProperties="using:MvvmToolkit.WinRT.AttachedProperties"
+    xmlns:stateTriggers="using:MvvmToolkit.Uwp.StateTriggers"
+    xmlns:behaviours="using:MvvmToolkit.Uwp.Behaviours"
     mc:Ignorable="d" 
     DataContext="{Binding TicksViewModel, Source={StaticResource ViewModelLocator}}">
 
@@ -66,7 +66,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
         <DataTemplate x:Key="TickDataTemplate">
             <Grid x:Name="TickItemPanel">
                 <views:TickItemView 
-                    attached:ViewModel.Model="{Binding DataContext, ElementName=TickItemPanel}"/>
+                    attachedProperties:ViewModel.Model="{Binding DataContext, ElementName=TickItemPanel}"/>
             </Grid>
         </DataTemplate>
 

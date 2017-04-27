@@ -4,9 +4,9 @@
 using System;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using Mvvm.WinRT;
-using Mvvm.WinRT.Messages;
-using Mvvm.WinRT.Utils;
+using MvvmToolkit;
+using MvvmToolkit.Messages;
+using MvvmToolkit.WinRT.Utils;
 
 namespace Wontstop.Ui.Uwp.Views
 {

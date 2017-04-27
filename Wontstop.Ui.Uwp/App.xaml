@@ -7,26 +7,26 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Wontstop.Ui.Uwp"
     xmlns:localConverters="using:Wontstop.Ui.Uwp.Converters"
-    xmlns:commonConverters="using:Common.Uwp.Converters"
+    xmlns:converters="using:MvvmToolkit.Uwp.Converters"
     RequestedTheme="Dark">
 
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Config.xaml"/>
-                <ResourceDictionary Source="ms-appx:///Common.Uwp/Generic.xaml"/>
+                <ResourceDictionary Source="ms-appx:///MvvmToolkit.Uwp/Generic.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             
             <local:ViewModelLocator x:Key="ViewModelLocator"/>
 
             <!--converters-->
             <localConverters:DateTimeToStringConverter x:Key="DateTimeToStringConverter"/>
-            <commonConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-            <commonConverters:PageTypeNameToBoolConverter x:Key="PageTypeNameToBoolConverter"/>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <converters:PageTypeNameToBoolConverter x:Key="PageTypeNameToBoolConverter"/>
             <localConverters:TimeSpanToStringPaceConverter x:Key="TimeSpanToStringPaceConverter"/>
             <localConverters:TimeSpanToStringTimeConverter x:Key="TimeSpanToStringTimeConverter"/>
             <localConverters:DoubleMetersToStringKiloMetersConverter x:Key="DoubleMetersToStringKiloMetersConverter"/>
-            <commonConverters:ItemClickEventArgsToClickedItemObjectConverter x:Key="ItemClickEventArgsToClickedItemObjectConverter"/>
+            <converters:ItemClickEventArgsToClickedItemObjectConverter x:Key="ItemClickEventArgsToClickedItemObjectConverter"/>
 
         </ResourceDictionary>
     </Application.Resources>

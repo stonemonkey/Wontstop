@@ -3,8 +3,8 @@
 
 using System;
 using Windows.UI.Xaml.Data;
-using Common.Uwp.Utils;
 using Windows.UI.Xaml;
+using MvvmToolkit.Uwp.Utils;
 
 namespace Wontstop.Climb.Ui.Uwp.Converters
 {

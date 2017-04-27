@@ -7,7 +7,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:stateTriggers="using:Common.Uwp.StateTriggers"
+    xmlns:stateTriggers="using:MvvmToolkit.Uwp.StateTriggers"
     mc:Ignorable="d"
     DataContext="{Binding LoginViewModel, Source={StaticResource ViewModelLocator}}">
 

@@ -4,8 +4,8 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Mvvm.WinRT.Commands;
-using Mvvm.WinRT.Messages;
+using MvvmToolkit.Commands;
+using MvvmToolkit.Messages;
 using PropertyChanged;
 using RunKeeper.WinRT.HealthGraph.Authorization;
 using RunKeeper.WinRT.HealthGraph.Infrastructure;
