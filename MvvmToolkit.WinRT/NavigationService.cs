@@ -47,7 +47,7 @@ namespace MvvmToolkit.WinRT
 
             _eventAggregator.PublishOnCurrentThread(navigationMessage);
 
-            ActivateViewModel(e, view);
+            ActivateViewModel(e.Parameter, view);
         }
 
         private static void ActivateViewModel(object parameter, Page view)

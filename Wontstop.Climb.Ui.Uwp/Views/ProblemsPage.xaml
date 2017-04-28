@@ -10,9 +10,9 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:views="using:Wontstop.Climb.Ui.Uwp.Views"
-    xmlns:dtos="using:Wontstop.Climb.Ui.Uwp.Dtos"
     xmlns:attachedProperties="using:MvvmToolkit.WinRT.AttachedProperties"
     xmlns:stateTriggers="using:MvvmToolkit.Uwp.StateTriggers"
+    xmlns:dtos="using:Problemator.Core.Dtos"
     mc:Ignorable="d" 
     DataContext="{Binding ProblemsViewModel, Source={StaticResource ViewModelLocator}}">
 

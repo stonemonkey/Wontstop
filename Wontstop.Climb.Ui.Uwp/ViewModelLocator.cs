@@ -8,8 +8,9 @@ using MvvmToolkit;
 using MvvmToolkit.Messages;
 using MvvmToolkit.Services;
 using MvvmToolkit.WinRT;
+using Problemator.Core;
+using Problemator.Core.ViewModels;
 using SimpleInjector;
-using Wontstop.Climb.Ui.Uwp.ViewModels;
 
 namespace Wontstop.Climb.Ui.Uwp
 {

@@ -13,7 +13,8 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using MvvmToolkit;
 using MvvmToolkit.WinRT;
-using Wontstop.Climb.Ui.Uwp.Dtos;
+using Problemator.Core;
+using Problemator.Core.Dtos;
 using Wontstop.Climb.Ui.Uwp.Views;
 
 namespace Wontstop.Climb.Ui.Uwp

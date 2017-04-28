@@ -1,7 +1,7 @@
 ﻿using System;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
-using Wontstop.Climb.Ui.Uwp.Dtos;
+using Problemator.Core.Dtos;
 
 namespace Wontstop.Climb.Ui.Uwp.Converters
 {

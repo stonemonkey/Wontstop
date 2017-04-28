@@ -109,36 +109,8 @@
     <Compile Include="Converters\ObjectToVisibilityConverter.cs" />
     <Compile Include="Converters\StringEqualToVisibilityConverter.cs" />
     <Compile Include="Converters\StringToColorConverter.cs" />
-    <Compile Include="Dtos\AscentsInGyms.cs" />
-    <Compile Include="Dtos\AscentsStatistics.cs" />
-    <Compile Include="Dtos\Climber.cs" />
-    <Compile Include="Dtos\ClimbingStatistics.cs" />
-    <Compile Include="Dtos\Dashboard.cs" />
-    <Compile Include="Dtos\DayTicks.cs" />
-    <Compile Include="Dtos\Grade.cs" />
-    <Compile Include="Dtos\GradeDist.cs" />
-    <Compile Include="Dtos\Location.cs" />
-    <Compile Include="Dtos\Statistics.cs" />
-    <Compile Include="Dtos\Tick.cs" />
-    <Compile Include="Dtos\UserSettings.cs" />
-    <Compile Include="Settings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utils\JsonExtensions.cs" />
-    <Compile Include="Utils\ProblematorJsonParser.cs" />
-    <Compile Include="Utils\ProblematorResponseExtensions.cs" />
     <Compile Include="ViewModelLocator.cs" />
-    <Compile Include="Utils\ProblematorJsonParserExtensions.cs" />
-    <Compile Include="Dtos\Problem.cs" />
-    <Compile Include="ViewModels\ProblemDetailesViewModel.cs" />
-    <Compile Include="ViewModels\ProblemItemViewModel.cs" />
-    <Compile Include="ViewModels\TicksViewModel.cs" />
-    <Compile Include="ViewModels\TickItemViewModel.cs" />
-    <Compile Include="ViewModels\ProblemsViewModel.cs" />
-    <Compile Include="ViewModels\LoginViewModel.cs" />
-    <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="ProblematorRequestsFactory.cs" />
-    <Compile Include="Dtos\UserContext.cs" />
-    <Compile Include="Dtos\WallSection.cs" />
     <Compile Include="Views\ProblemDetailesPage.xaml.cs">
       <DependentUpon>ProblemDetailesPage.xaml</DependentUpon>
     </Compile>
@@ -235,6 +207,10 @@
     <ProjectReference Include="..\MvvmToolkit\MvvmToolkit.csproj">
       <Project>{67f9d3a8-f71e-4428-913f-c37ae82cdb24}</Project>
       <Name>MvvmToolkit</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Problemator.Core\Problemator.Core.csproj">
+      <Project>{c0b764c8-d491-4702-9526-7dc2207a82bf}</Project>
+      <Name>Problemator.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
