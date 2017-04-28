@@ -104,7 +104,7 @@ namespace Wontstop.Ui.Uwp
 
         private static string GetRunKeeperClientId()
         {
-            object runKeeperClientId;
+            object runKeeperClientId = "<not set>";
             Debug.Assert(Application.Current.Resources.TryGetValue(
                 "RunKeeperClientId", out runKeeperClientId),
                 "RunKeeperClientId is missing from app resources!" +
@@ -114,7 +114,7 @@ namespace Wontstop.Ui.Uwp
 
         private static string GetRunKeeperClientSecret()
         {
-            object runKeeperClientSecret;
+            object runKeeperClientSecret = "<not set>";
             Debug.Assert(Application.Current.Resources.TryGetValue(
                 "RunKeeperClientSecret", out runKeeperClientSecret),
                 "RunKeeperClientSecret is missing from app resources!" +

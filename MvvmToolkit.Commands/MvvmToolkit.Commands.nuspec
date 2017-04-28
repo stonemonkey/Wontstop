@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>MvvmToolkit.Commands</id>
+    <version>1.0.0</version>
+    <title>MvvmToolkit.Commands</title>
+    <authors>Costin Morariu</authors>
+    <owners>Costin Morariu</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>MVVM utility library for commands</description>
+    <releaseNotes>First revision</releaseNotes>
+    <copyright>Copyright © 2016</copyright>
+	<projectUrl>https://github.com/stonemonkey/Wontstop</projectUrl>
+	<licenseUrl>https://github.com/stonemonkey/Wontstop/blob/master/LICENSE</licenseUrl>
+  <tags>MVVM</tags>
+  </metadata>
+  <files>
+    <file src="bin\Release\MvvmToolkit.Commands.dll" target="lib\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10" />
+  </files>
+</package>
