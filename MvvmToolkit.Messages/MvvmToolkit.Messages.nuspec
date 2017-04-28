@@ -14,12 +14,12 @@
 	  <licenseUrl>https://github.com/stonemonkey/Wontstop/blob/master/LICENSE</licenseUrl>
     <tags>MVVM</tags>
     <dependencies>
-      <group targetFramework ="portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10">
+      <group targetFramework ="portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10+Xamarin.iOS10+xamarinmac20">
         <dependency id="MvvmToolkit" version="1.0.0"/>
       </group>
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\Release\MvvmToolkit.Messages.dll" target="lib\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10" />
+    <file src="bin\Release\MvvmToolkit.Messages.dll" target="lib\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10+Xamarin.iOS10+xamarinmac20" />
   </files>
 </package>
