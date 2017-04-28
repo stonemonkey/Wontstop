@@ -3,7 +3,7 @@
   <Identity Name="6f42d1a6-7656-4a0d-b75d-b521db4a3eb5" Publisher="CN=costi" Version="1.0.0.0" />
   <mp:PhoneIdentity PhoneProductId="6f42d1a6-7656-4a0d-b75d-b521db4a3eb5" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
-    <DisplayName>Problemator.Ui.Uwp</DisplayName>
+    <DisplayName>Wontstop.Climb</DisplayName>
     <PublisherDisplayName>costi</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -11,11 +11,11 @@
     <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.0.0" MaxVersionTested="10.0.0.0" />
   </Dependencies>
   <Resources>
-    <Resource Language="x-generate"/>
+    <Resource Language="x-generate" />
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="Wontstop.Climb.Ui.Uwp.App">
-      <uap:VisualElements DisplayName="Wontstop.Climb.Ui.Uwp" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" Description="Wontstop.Climb.Ui.Uwp" BackgroundColor="transparent">
+      <uap:VisualElements DisplayName="Wontstop.Climb" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" Description="Demo application for logging indoor climbing routes from Problemator gyms" BackgroundColor="transparent">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png">
         </uap:DefaultTile>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />

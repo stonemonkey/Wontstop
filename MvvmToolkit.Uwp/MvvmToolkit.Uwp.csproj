@@ -133,7 +133,7 @@
     <Compile Include="StateTriggers\WeakEventListener.cs" />
     <Compile Include="Utils\BackButton.cs" />
     <Compile Include="Utils\Converter.cs" />
-    <EmbeddedResource Include="Properties\Common.Uwp.rd.xml" />
+    <EmbeddedResource Include="Properties\MvvmToolkit.Uwp.rd.xml" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Generic.xaml">
