@@ -53,6 +53,10 @@
       <Project>{4d7518be-08bc-45ef-b00d-ec8e1279cd1b}</Project>
       <Name>MvvmToolkit.Messages</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MvvmToolkit.Services\MvvmToolkit.Services.csproj">
+      <Project>{7941069d-8137-4503-b9ab-942f0e4258b1}</Project>
+      <Name>MvvmToolkit.Services</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MvvmToolkit\MvvmToolkit.csproj">
       <Project>{67f9d3a8-f71e-4428-913f-c37ae82cdb24}</Project>
       <Name>MvvmToolkit</Name>

@@ -150,6 +150,10 @@
       <Project>{4d7518be-08bc-45ef-b00d-ec8e1279cd1b}</Project>
       <Name>MvvmToolkit.Messages</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MvvmToolkit.Services\MvvmToolkit.Services.csproj">
+      <Project>{7941069d-8137-4503-b9ab-942f0e4258b1}</Project>
+      <Name>MvvmToolkit.Services</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MvvmToolkit.WinRT\MvvmToolkit.WinRT.csproj">
       <Project>{bb95914d-a53b-4e7f-900d-d73bfa5ea6d0}</Project>
       <Name>MvvmToolkit.WinRT</Name>

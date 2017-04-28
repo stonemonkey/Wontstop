@@ -188,6 +188,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MvvmToolkit.Services\MvvmToolkit.Services.csproj">
+      <Project>{7941069d-8137-4503-b9ab-942f0e4258b1}</Project>
+      <Name>MvvmToolkit.Services</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MvvmToolkit.Uwp\MvvmToolkit.Uwp.csproj">
       <Project>{fcb95431-d99a-46ab-aae0-944f7213da85}</Project>
       <Name>MvvmToolkit.Uwp</Name>

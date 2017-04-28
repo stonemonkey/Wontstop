@@ -6,7 +6,7 @@ using System;
 namespace MvvmToolkit
 {
     /// <summary>
-    /// Provides wrappers over time getters so that we get rid of hard dependencier usefull to sync 
+    /// Provides wrappers over time getters so that we get rid of hard dependencies. Usefull to sync 
     /// later the time with backend or test time dependent code.
     /// </summary>
     public class TimeService : ITimeService
