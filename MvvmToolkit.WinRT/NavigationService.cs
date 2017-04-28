@@ -5,6 +5,7 @@ using System;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using MvvmToolkit.Messages;
+using MvvmToolkit.Services;
 
 namespace MvvmToolkit.WinRT
 {
@@ -58,7 +59,7 @@ namespace MvvmToolkit.WinRT
         /// <summary>
         /// Initiates navigation towards specified Page type.
         /// </summary>
-        /// <param name="pageType">The type of the page to navigate</param>
+        /// <param name="pageType">The type of the page to navigate.</param>
         public void Navigate(Type pageType)
         {
             DeactivatePreviousViewModel();
@@ -66,14 +67,33 @@ namespace MvvmToolkit.WinRT
         }
 
         /// <summary>
-        /// Initiates navigation towards specified Page type
+        /// Initiates navigation towards specified Page name.
         /// </summary>
-        /// <param name="pageType">The type of the page to navigate</param>
-        /// <param name="parameter">The parameter instance transmitted to the page</param>
+        /// <param name="pageType">The assembly-qualifiedname of the page to navigate to.</param>
+        public void Navigate(string pageType)
+        {
+            Navigate(Type.GetType(pageType));
+        }
+
+        /// <summary>
+        /// Initiates navigation towards specified Page type.
+        /// </summary>
+        /// <param name="pageType">The type of the page to navigate.</param>
+        /// <param name="parameter">The parameter instance transmitted to the page.</param>
         public void Navigate(Type pageType, object parameter)
         {
             DeactivatePreviousViewModel();
             _frame.Navigate(pageType, parameter);
+        }
+
+        /// <summary>
+        /// Initiates navigation towards specified Page name.
+        /// </summary>
+        /// <param name="pageType">The assembly-qualifiedname of the page to navigate to.</param>
+        /// <param name="parameter">The parameter instance transmitted to the page.</param>
+        public void Navigate(string pageType, object parameter)
+        {
+            Navigate(Type.GetType(pageType), parameter);
         }
 
         private void DeactivatePreviousViewModel()

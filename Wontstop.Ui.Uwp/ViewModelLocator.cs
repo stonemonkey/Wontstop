@@ -6,6 +6,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using MvvmToolkit;
 using MvvmToolkit.Messages;
+using MvvmToolkit.Services;
 using MvvmToolkit.WinRT;
 using RunKeeper.WinRT.HealthGraph.Activities;
 using RunKeeper.WinRT.HealthGraph.Infrastructure;

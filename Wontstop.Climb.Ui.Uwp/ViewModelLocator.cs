@@ -6,6 +6,7 @@ using Windows.UI.Xaml.Controls;
 using HttpApiClient.Requests;
 using MvvmToolkit;
 using MvvmToolkit.Messages;
+using MvvmToolkit.Services;
 using MvvmToolkit.WinRT;
 using SimpleInjector;
 using Wontstop.Climb.Ui.Uwp.ViewModels;

@@ -4,13 +4,12 @@
 using HttpApiClient;
 using PropertyChanged;
 using System.Threading.Tasks;
-using MvvmToolkit;
 using MvvmToolkit.Attributes;
 using MvvmToolkit.Commands;
 using MvvmToolkit.Messages;
+using MvvmToolkit.Services;
 using Wontstop.Climb.Ui.Uwp.Dtos;
 using Wontstop.Climb.Ui.Uwp.Utils;
-using Wontstop.Climb.Ui.Uwp.Views;
 
 namespace Wontstop.Climb.Ui.Uwp.ViewModels
 {
@@ -60,7 +59,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
 
         private void EditTick()
         {
-            _navigationService.Navigate(typeof (ProblemDetailesPage), Tick.ProblemId);
+            _navigationService.Navigate("Wontstop.Climb.Ui.Uwp.Views.ProblemDetailesPage, Wontstop.Climb.Ui.Uwp", Tick.ProblemId);
         }
 
         private RelayCommand _deleteTickCommand;

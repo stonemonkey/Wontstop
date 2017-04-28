@@ -3,7 +3,7 @@
 
 using System;
 
-namespace MvvmToolkit
+namespace MvvmToolkit.Services
 {
     /// <summary>
     /// Service handling Page navigation.
@@ -11,7 +11,9 @@ namespace MvvmToolkit
     public interface INavigationService
     {
         void Navigate(Type pageType);
+        void Navigate(string pageType);
         void Navigate(Type pageType, object parameter);
+        void Navigate(string pageType, object parameter);
 
         bool CanGoBack { get; }
         void GoBack();

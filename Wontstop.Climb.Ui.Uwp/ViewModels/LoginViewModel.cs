@@ -6,10 +6,10 @@ using HttpApiClient;
 using MvvmToolkit;
 using MvvmToolkit.Commands;
 using MvvmToolkit.Messages;
+using MvvmToolkit.Services;
 using PropertyChanged;
 using Wontstop.Climb.Ui.Uwp.Dtos;
 using Wontstop.Climb.Ui.Uwp.Utils;
-using Wontstop.Climb.Ui.Uwp.Views;
 
 namespace Wontstop.Climb.Ui.Uwp.ViewModels
 {
@@ -68,7 +68,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
             _requestsFactory.SetUserContext(context);
             _storageService.SaveLocal(Settings.ContextKey, context);
 
-            _navigationService.Navigate(typeof (MainPage));
+            _navigationService.Navigate("Wontstop.Climb.Ui.Uwp.Views.MainPage, Wontstop.Climb.Ui.Uwp");
         }
     }
 }

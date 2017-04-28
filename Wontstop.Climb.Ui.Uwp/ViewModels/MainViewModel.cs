@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using HttpApiClient.Parsers;
 using MvvmToolkit;
 using MvvmToolkit.Commands;
-using Wontstop.Climb.Ui.Uwp.Views;
+using MvvmToolkit.Services;
 
 namespace Wontstop.Climb.Ui.Uwp.ViewModels
 {
@@ -51,7 +51,7 @@ namespace Wontstop.Climb.Ui.Uwp.ViewModels
 
             _storageService.DeleteLocal(Settings.ContextKey);
 
-            _navigationService.Navigate(typeof(LoginPage));
+            _navigationService.Navigate("Wontstop.Climb.Ui.Uwp.Views.LoginPage, Wontstop.Climb.Ui.Uwp");
 
             Busy = false;
         }

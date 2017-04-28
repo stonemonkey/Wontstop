@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using MvvmToolkit;
 using MvvmToolkit.Commands;
 using MvvmToolkit.Messages;
+using MvvmToolkit.Services;
 using PropertyChanged;
 using RunKeeper.WinRT.HealthGraph.Activities;
 using RunKeeper.WinRT.HealthGraph.User;
