@@ -1,14 +1,13 @@
-﻿using System;
+﻿// Copyright (c) Costin Morariu. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 using System.Linq;
 using System.Reflection;
 using Windows.UI.Xaml;
+using MvvmToolkit.Attributes;
 
 namespace MvvmToolkit.WinRT.AttachedProperties
 {
-    public class Model : Attribute
-    {
-    }
-
     public class ViewModel
     {
         public static readonly DependencyProperty ModelProperty =
@@ -40,7 +39,7 @@ namespace MvvmToolkit.WinRT.AttachedProperties
             var viewModel = element.DataContext;
             var type = viewModel.GetType();
             var property = type.GetRuntimeProperties()
-                .Single(x => x.GetCustomAttributes<Model>(true).Any());
+                .Single(x => x.GetCustomAttributes<ModelAttribute>(true).Any());
             if (property.PropertyType == e.NewValue.GetType())
             {
                 property.SetValue(viewModel, e.NewValue);

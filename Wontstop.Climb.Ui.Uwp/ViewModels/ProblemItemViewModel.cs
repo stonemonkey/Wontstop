@@ -4,9 +4,9 @@
 using HttpApiClient;
 using PropertyChanged;
 using System.Threading.Tasks;
+using MvvmToolkit.Attributes;
 using MvvmToolkit.Commands;
 using MvvmToolkit.Messages;
-using MvvmToolkit.WinRT.AttachedProperties;
 using Wontstop.Climb.Ui.Uwp.Dtos;
 using Wontstop.Climb.Ui.Uwp.Utils;
 
