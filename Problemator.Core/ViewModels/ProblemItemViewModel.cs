@@ -6,6 +6,7 @@ using HttpApiClient;
 using MvvmToolkit.Attributes;
 using MvvmToolkit.Commands;
 using MvvmToolkit.Messages;
+using MvvmToolkit.Services;
 using Problemator.Core.Dtos;
 using Problemator.Core.Utils;
 using PropertyChanged;
@@ -33,13 +34,17 @@ namespace Problemator.Core.ViewModels
         }
 
         private readonly IEventAggregator _eventAggregator;
+        private readonly INavigationService _navigationService;
         private readonly ProblematorRequestsFactory _requestFactory;
+
 
         public ProblemItemViewModel(
             IEventAggregator eventAggregator,
+            INavigationService navigationService,
             ProblematorRequestsFactory requestFactory)
         {
             _eventAggregator = eventAggregator;
+            _navigationService = navigationService;
             _requestFactory = requestFactory;
         }
 
@@ -113,78 +118,15 @@ namespace Problemator.Core.ViewModels
             _eventAggregator.PublishOnCurrentThread(Problem.Tick);
         }
 
-        //private RelayCommand _tickComand;
+        private RelayCommand _openDetailsComand;
 
-        //public RelayCommand TickCommand => _tickComand ??
-        //    (_tickComand = new RelayCommand(
-        //        async () => await TickAsync(), () => !Busy));
+        public RelayCommand OpenDetailsCommand => _openDetailsComand ??
+            (_openDetailsComand = new RelayCommand(OpenDetails, () => !Busy));
 
-        //// TODO: resolve tries and ascent type
-        //private const int DefaultNoTries = 1;
-        //private const int DefaultAscentType = 0;
-
-        //private async Task TickAsync()
-        //{
-        //    Busy = true;
-
-        //    //await SaveTickAsync();
-
-        //    await LoadProblemsAsync();
-        //    await LoadTicks(SelectedDate);
-
-        //    Busy = false;
-        //    Empty = _problems == null || !_problems.Any();
-        //}
-
-        //private async Task<bool> SaveTickAsync(Problem problem)
-        //{
-        //    if (IsSelectedDayToday())
-        //    {
-        //        return await SaveTickForTodayAsync(problem.TagShort);
-        //    }
-
-        //    return await SaveTickForDateAsync(SelectedDate, DefaultNoTries, DefaultAscentType, problem);
-        //}
-
-        //private bool IsSelectedDayToday()
-        //{
-        //    return SelectedDate == _timeService.Now.Date;
-        //}
-
-        //private async Task<bool> SaveTickForTodayAsync(string tag)
-        //{
-        //    var successfull = false;
-
-        //    (await _requestsFactory.CreateSaveTicksRequest(tag.ToUpper())
-        //        .RunAsync<ProblematorJsonParser>())
-        //            .PublishErrorOnHttpFailure(_eventAggregator)
-        //            .OnSuccess(x => successfull = x.PublishMessageOnInternalServerError(_eventAggregator));
-
-        //    return successfull;
-        //}
-
-        //private async Task<bool> SaveTickForDateAsync(DateTime day, int tries, int ascentType, Problem problem)
-        //{
-        //    var successfull = false;
-
-        //    (await _requestsFactory.CreateUpdateTickRequest(CreateTick(problem, tries, day, ascentType))
-        //        .RunAsync<ProblematorJsonParser>())
-        //            .PublishErrorOnHttpFailure(_eventAggregator)
-        //            .OnSuccess(x => successfull = x.PublishMessageOnInternalServerError(_eventAggregator));
-
-        //    return successfull;
-        //}
-
-        //private static Tick CreateTick(Problem problem, int tries, DateTime timestamp, int ascentType)
-        //{
-        //    return new Tick
-        //    {
-        //        Tries = tries,
-        //        Timestamp = timestamp,
-        //        ProblemId = problem.Id,
-        //        AscentType = ascentType,
-        //        GradeOpinionId = problem.GradeId,
-        //    };
-        //}
+        private void OpenDetails()
+        {
+            _navigationService.Navigate(
+                "Wontstop.Climb.Ui.Uwp.Views.ProblemDetailesPage, Wontstop.Climb.Ui.Uwp", Problem);
+        }
     }
 }

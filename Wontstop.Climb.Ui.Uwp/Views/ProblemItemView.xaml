@@ -12,8 +12,9 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     mc:Ignorable="d"
     DataContext="{Binding ProblemItemViewModel, Source={StaticResource ViewModelLocator}}">
 
-    <Border x:Name="ProblemItemBorder"
-        HorizontalAlignment="Stretch">
+    <Button x:Name="ProblemItemButton"
+        HorizontalAlignment="Stretch"
+        Command="{Binding OpenDetailsCommand}">
         <Grid x:Name="ProblemItemPanel"
             Background="Transparent">
             <Grid.RowDefinitions>
@@ -155,5 +156,5 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 <core:InvokeCommandAction Command="{Binding UnloadCommand}"/>
             </core:EventTriggerBehavior>
         </interactivity:Interaction.Behaviors>
-    </Border>
+    </Button>
 </UserControl>

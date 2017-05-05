@@ -11,18 +11,8 @@ namespace Problemator.Core.ViewModels
     [ImplementPropertyChanged]
     public class ProblemDetailesViewModel : IActivable
     {
-        public int TriesCount
-        {
-            get
-            {
-                return Problem.Tick.Tries;
-            }
-            set
-            {
-                Problem.Tick.Tries = value;
-            }
-        }
-
+        public int TriesCount { get; set; }
+     
         public Problem Problem { get; private set; }
 
         public void Activate(object parameter)
@@ -42,6 +32,7 @@ namespace Problemator.Core.ViewModels
         }
 
         private RelayCommand _decrementTriesCountComand;
+
         public RelayCommand DecrementCommand => _decrementTriesCountComand ??
             (_decrementTriesCountComand = new RelayCommand(DecrementTriesCount, () => TriesCount > 1));
 
