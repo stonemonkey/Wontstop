@@ -289,7 +289,6 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         </core:EventTriggerBehavior>
                     </interactivity:Interaction.Behaviors>
                 </AutoSuggestBox>
-
             </Grid>
             <ListView x:Name="TicksList"
                 Grid.Row="2"
@@ -311,68 +310,13 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             </Grid>
         </Grid>
 
-        <Grid x:Name="ContextPanel" 
+        <views:TickDetailsView
             Grid.Row="2"
-            HorizontalAlignment="Stretch"
-            Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}"
-            Visibility="{Binding CanTick, Converter={StaticResource BoolToVisibilityConverter}}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            
-            <ComboBox x:Name="AscentTypeComboBox"
-                Grid.Row="0" Grid.Column="0"
-                Margin="12,12,12,8"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Stretch"
-                PlaceholderText="ascent type"
-                ItemsSource="{Binding AscentTypes.Values}"
-                SelectedIndex="{Binding SelectedAscentIdx, Mode=TwoWay}">
-            </ComboBox>
-            
-            <StackPanel x:Name="TriesCountPanel"
-                Grid.Row="0" Grid.Column="1" 
-                Margin="12,8,12,8"
-                Orientation="Horizontal"
-                HorizontalAlignment="Right">
-                <Button x:Name="DecrementTriesButton"
-                    Command="{Binding DecrementTriesCommand}">
-                    <TextBlock 
-                        Text="&#59192;"
-                        VerticalAlignment="Center"
-                        FontFamily="Segoe MDL2 Assets"/>
-                </Button>
-                <TextBlock  
-                    Width="24"
-                    TextAlignment="Center"
-                    VerticalAlignment="Center"
-                    Text="{Binding NoTries, Mode=TwoWay}"/>
-                <Button x:Name="IncrementTriesButton"
-                    Command="{Binding IncrementTicksCommand}">
-                    <TextBlock 
-                        Text="&#59152;"
-                        VerticalAlignment="Center"
-                        FontFamily="Segoe MDL2 Assets"/>
-                </Button>
-            </StackPanel>
-
-            <Button x:Name="TickButton"
-                Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
-                Margin="12,4,12,20"
-                Content="Tick"
-                HorizontalAlignment="Stretch"
-                Command="{Binding TickCommand}">
-            </Button>
-        </Grid>
-
+            DataContext="{Binding Details}"
+            Visibility="{Binding DataContext.CanTick, ElementName=TicksPagePanel, Converter={StaticResource BoolToVisibilityConverter}}"/>
+        
         <ProgressRing x:Name="BusyProgress"
-            Grid.Row="0" Grid.RowSpan="2"
+            Grid.Row="0" Grid.RowSpan="3"
             IsActive="True"
             Visibility="Collapsed"
             Width="{StaticResource ProgressSize}" 

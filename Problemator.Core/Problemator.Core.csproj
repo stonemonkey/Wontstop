@@ -50,6 +50,7 @@
     <Compile Include="Dtos\UserContext.cs" />
     <Compile Include="Dtos\UserSettings.cs" />
     <Compile Include="Dtos\WallSection.cs" />
+    <Compile Include="Messages\TickProblemsMesage.cs" />
     <Compile Include="ProblematorRequestsFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="ViewModels\ProblemDetailesViewModel.cs" />
     <Compile Include="ViewModels\ProblemItemViewModel.cs" />
     <Compile Include="ViewModels\ProblemsViewModel.cs" />
+    <Compile Include="ViewModels\TickDetailsViewModel.cs" />
     <Compile Include="ViewModels\TickItemViewModel.cs" />
     <Compile Include="ViewModels\TicksViewModel.cs" />
   </ItemGroup>

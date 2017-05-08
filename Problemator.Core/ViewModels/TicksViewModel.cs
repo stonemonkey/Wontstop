@@ -7,18 +7,18 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using HttpApiClient;
-using HttpApiClient.Requests;
 using MvvmToolkit;
 using MvvmToolkit.Commands;
 using MvvmToolkit.Messages;
 using Problemator.Core.Dtos;
+using Problemator.Core.Messages;
 using Problemator.Core.Utils;
 using PropertyChanged;
 
 namespace Problemator.Core.ViewModels
 {
     [ImplementPropertyChanged]
-    public class TicksViewModel : IHandle<Tick>
+    public class TicksViewModel : IHandle<Tick>, IHandle<BusyMessage>, IHandle<TickProblemsMesage>
     {
         public string Title => "Ticks";
 
@@ -28,28 +28,21 @@ namespace Problemator.Core.ViewModels
 
         public string Tags { get; set; }
 
-        public int NoTries { get; set; } = 1;
-
         public string SelectedLocation { get; set; }
         public IDictionary<string, string> Locations { get; set; }
-
-        public int SelectedAscentIdx { get; set; }
-        public IDictionary<int, string> AscentTypes { get; private set; } =
-            new Dictionary<int, string>
-            {
-                { 0, "lead" },
-                { 1, "toprope" },
-            };
 
         private static bool _isDaySaved;
         public static DateTimeOffset Day { get; set; }
         private static DateTime SelectedDate => Day.Date;
+
+        public TickDetailsViewModel Details { get; }
 
         public IList<Problem> SuggestedProblems { get; set; }
 
         public IList<DateTimeOffset> TickDates { get; private set; }
 
         public ObservableCollection<Tick> Ticks { get; private set; }
+    
 
         private readonly ITimeService _timeService;
         private readonly IStorageService _storageService;
@@ -60,12 +53,16 @@ namespace Problemator.Core.ViewModels
             ITimeService timeService,
             IStorageService storageService,
             IEventAggregator eventAggregator,
+            TickDetailsViewModel tickDetailsViewModel,
             ProblematorRequestsFactory requestsFactory)
         {
             _timeService = timeService;
             _storageService = storageService;
             _eventAggregator = eventAggregator;
             _requestsFactory = requestsFactory;
+
+            Details = tickDetailsViewModel;
+            Details.Problems = _taggedProblems;
 
             if (!_isDaySaved)
             {
@@ -95,6 +92,7 @@ namespace Problemator.Core.ViewModels
         private async Task RefreshAsync()
         {
             Busy = true;
+            Details.SelectedDate = SelectedDate;
 
             ClearTaggedProblems();
 
@@ -104,7 +102,7 @@ namespace Problemator.Core.ViewModels
             await LoadTicks(SelectedDate);
 
             Busy = false;
-            Empty = _problems == null || !_problems.Any();
+            UpdateEmpty();
         }
 
         private async Task LoadDashboardAsync()
@@ -123,7 +121,7 @@ namespace Problemator.Core.ViewModels
             }
 
             var dashboard = parser.To<Dashboard>();
-            SelectedAscentIdx = dashboard.UserSettings.AscentType;
+            Details.SelectedAscentIdx = dashboard.UserSettings.AscentType;
             Locations = dashboard.Locations.ToDictionary(x => x.Name, x => x.Id);
             SelectedLocation = dashboard.Locations
                 .SingleOrDefault(x => string.Equals(x.Id,_context.GymId, StringComparison.Ordinal))?
@@ -190,7 +188,7 @@ namespace Problemator.Core.ViewModels
                 return;
             }
 
-            TickDates = parser.To<IList<DateTimeOffset>>();
+            TickDates = parser.To<IList<DateTimeOffset>>(); 
         }
 
         private RelayCommand _unloadComand;
@@ -258,11 +256,12 @@ namespace Problemator.Core.ViewModels
 
         private void TagsChanged(bool byUser)
         {
-            CanTick = !Busy && !string.IsNullOrWhiteSpace(Tags);
-            if (!byUser || !CanTick)
+            if (!byUser || Busy || string.IsNullOrWhiteSpace(Tags))
             {
+                CanTick = false;
                 return;
             }
+            CanTick = AreAllTagsValid();
 
             var lastTag = GetLastTagFrom(Tags);
             if (lastTag.Length < TagMinLength)
@@ -302,7 +301,7 @@ namespace Problemator.Core.ViewModels
 
         private readonly IList<Problem> _taggedProblems = new List<Problem>();
 
-        private void ClearTaggedProblems() // TODO: clear tagged problems when Tags is cleared
+        private void ClearTaggedProblems()
         {
             _taggedProblems.Clear();
         }
@@ -318,15 +317,6 @@ namespace Problemator.Core.ViewModels
                 IsAvailaleAt(x, SelectedDate) && x.TagShort.Equals(tag, StringComparison.OrdinalIgnoreCase));
 
             _taggedProblems.Add(problem);
-        }
-
-        private List<Problem> GetTaggedProblems()
-        {
-            var tags = SplitTags();
-
-            return _taggedProblems
-                .Where(x => tags.Any(tag => string.Equals(tag, x.TagShort, StringComparison.OrdinalIgnoreCase)))
-                .ToList();
         }
 
         private bool IsAvailaleAt(Problem problem, DateTime date)
@@ -356,74 +346,16 @@ namespace Problemator.Core.ViewModels
             return lastTag;
         }
 
-        private RelayCommand _tickComand;
-
-        public RelayCommand TickCommand => _tickComand ??
-            (_tickComand = new RelayCommand(
-                async () => await TickAsync(), () => CanTick));
-
-        private async Task TickAsync()
+        private void UpdateEmpty()
         {
-            Busy = true;
-
-            if (!ShowErrorForInexistentTags())
-            {
-                if (await SaveTaggedTicksAsync())
-                {
-                    Tags = null;
-                    ClearTaggedProblems();
-                }
-
-                await LoadProblemsAsync();
-                await LoadTicks(SelectedDate);
-            }
-
-            Busy = false;
-            SuggestedProblems = null;
-            Empty = (_problems == null) || !_problems.Any();
+            Empty = _problems == null || !_problems.Any();
         }
 
-        private async Task<bool> SaveTaggedTicksAsync()
-        {
-            // saving ticks for today is more efficient since the API provides bulk operation
-            // although it doesn't provide a way to specify ascent type an number of tries using defaults
-            //if (IsSelectedDayToday())
-            //{
-            //    return await SaveTicksForTodayAsync(Tags);
-            //}
-
-            return await SaveTicksAsync(SelectedDate, NoTries, SelectedAscentIdx);
-        }
-
-        //private bool IsSelectedDayToday()
-        //{
-        //    return SelectedDate == _timeService.Now.Date;
-        //}
-
-        //private async Task<bool> SaveTicksForTodayAsync(string tags)
-        //{
-        //    var successfull = false;
-
-        //    (await _requestsFactory.CreateSaveTicksRequest(tags.ToUpper())
-        //        .RunAsync<ProblematorJsonParser>())
-        //            .PublishErrorOnHttpFailure(_eventAggregator)
-        //            .OnSuccess(x => successfull = x.PublishMessageOnInternalServerError(_eventAggregator));
-
-        //    return successfull;
-        //}
-
-        private bool ShowErrorForInexistentTags()
+        private bool AreAllTagsValid()
         {
             var inexisten = GetInexistenTags();
-            if (inexisten.Any())
-            {
-                _eventAggregator.PublishErrorMessageOnCurrentThread(
-                    $"Unable to find: {string.Join(TicksSeparator, inexisten)}");
 
-                return true;
-            }
-
-            return false;
+            return !inexisten.Any();
         }
 
         private List<string> GetInexistenTags()
@@ -445,77 +377,34 @@ namespace Problemator.Core.ViewModels
                 .Split(new[] { TicksSeparator }, StringSplitOptions.RemoveEmptyEntries);
         }
 
-        private async Task<bool> SaveTicksAsync(DateTime day, int tries, int ascentType)
+        public async void Handle(TickProblemsMesage message)
         {
-            var problems = GetTaggedProblems();
-
-            var responses = await Task.WhenAll(problems
-                .Select(x => _requestsFactory.CreateUpdateTickRequest(
-                        CreateTick(x, tries, day, ascentType))
-                    .RunAsync<ProblematorJsonParser>()));
-
-            return !ShowErrorForUnsavedTicks(responses);
-        }
-
-        private bool ShowErrorForUnsavedTicks(IEnumerable<Response<ProblematorJsonParser>> responses)
-        {
-            var failedRequests = GetFailedRequests(responses).ToList();
-            if (!failedRequests.Any())
+            if (message.Successfull)
             {
-                return false;
+                Tags = null;
+                ClearTaggedProblems();
+            }
+            else
+            {
+                ShowErrorForFailedToTickTags(message.FailedToTickTags);
             }
 
-            var ids = failedRequests.Select(x =>
-                x.Config.Params[_requestsFactory.ProblemIdParamKey]);
+            await LoadProblemsAsync();
+            await LoadTicks(SelectedDate);
 
-            var tags = _problems.Where(x => ids.Any(id =>
-                    string.Equals(x.Id, id, StringComparison.OrdinalIgnoreCase)))
-                .Select(x => x.TagShort);
+            UpdateEmpty();
+            SuggestedProblems = null;
+        }
 
+        private void ShowErrorForFailedToTickTags(IEnumerable<string> tags)
+        {
             _eventAggregator.PublishErrorMessageOnCurrentThread(
                 $"Unable to save: {string.Join(TicksSeparator, tags)}");
-
-            return true;
         }
 
-        public IEnumerable<IRequest> GetFailedRequests(
-            IEnumerable<Response<ProblematorJsonParser>> responses)
+        public void Handle(BusyMessage message)
         {
-            return responses
-                .Where(x => x.Failed())
-                .Select(x => x.Request);
-        }
-
-        private static Tick CreateTick(Problem problem, int tries, DateTime timestamp, int ascentType)
-        {
-            return new Tick
-            {
-                Tries = tries,
-                Timestamp = timestamp,
-                ProblemId = problem.Id,
-                AscentType = ascentType,
-                GradeOpinionId = problem.GradeId,
-            };
-        }
-
-        private RelayCommand _decrementTriesCommand;
-
-        public RelayCommand DecrementTriesCommand => _decrementTriesCommand ??
-            (_decrementTriesCommand = new RelayCommand(DecrementTries, () => NoTries > 1));
-
-        private void DecrementTries()
-        {
-            NoTries--;
-        }
-
-        private RelayCommand _incrementTriesCommand;
-
-        public RelayCommand IncrementTicksCommand => _incrementTriesCommand ??
-            (_incrementTriesCommand = new RelayCommand(IncrementTicks, () => NoTries < 50));
-
-        private void IncrementTicks()
-        {
-            NoTries++;
+            Busy = message.Show;
         }
 
         public void Handle(Tick message)
