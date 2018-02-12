@@ -9,8 +9,8 @@ using Windows.ApplicationModel.Core;
 using Windows.Devices.Geolocation;
 using Windows.System.Threading;
 using Windows.UI.Core;
-using PropertyChanged;
 using RunKeeper.WinRT.HealthGraph.Infrastructure;
+using System.ComponentModel;
 
 namespace RunKeeper.WinRT.HealthGraph.Activities
 {
@@ -22,9 +22,10 @@ namespace RunKeeper.WinRT.HealthGraph.Activities
         }
     }
 
-    [AddINotifyPropertyChangedInterface]
-    public class Activity
+    public class Activity : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public bool Live { get; private set; }
         public string Type { get; private set; }
         public TimeSpan Duration { get; private set; }

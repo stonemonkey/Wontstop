@@ -2,20 +2,21 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using MvvmToolkit.Commands;
 using MvvmToolkit.Messages;
-using PropertyChanged;
 using RunKeeper.WinRT.HealthGraph.Authorization;
 using RunKeeper.WinRT.HealthGraph.Infrastructure;
 using RunKeeper.WinRT.HealthGraph.User;
 
 namespace Wontstop.Ui.Uwp.ViewModels
 {
-    [AddINotifyPropertyChangedInterface]
-    public class AccountViewModel : IHandle<BusyMessage>
+    public class AccountViewModel : IHandle<BusyMessage>, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public string Title => "Profile";
 
         public bool Busy { get; set; }

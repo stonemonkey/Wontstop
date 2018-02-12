@@ -1,6 +1,7 @@
 // Copyright (c) Costin Morariu. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.ComponentModel;
 using System.Threading.Tasks;
 using HttpApiClient.Parsers;
 using MvvmToolkit;
@@ -9,8 +10,10 @@ using MvvmToolkit.Services;
 
 namespace Problemator.Core.ViewModels
 {
-    public class MainViewModel
+    public class MainViewModel : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public bool Busy { get; set; }
 
         private readonly IStorageService _storageService;

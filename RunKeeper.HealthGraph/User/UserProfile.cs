@@ -2,15 +2,16 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
-using PropertyChanged;
 using RunKeeper.WinRT.HealthGraph.Infrastructure;
 
 namespace RunKeeper.WinRT.HealthGraph.User
 {
-    [AddINotifyPropertyChangedInterface]
-    public class UserProfile
+    public class UserProfile : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public string Name { get; private set; }
 
         public string Location { get; private set; }

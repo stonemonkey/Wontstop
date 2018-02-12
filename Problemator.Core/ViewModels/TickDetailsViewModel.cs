@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using HttpApiClient;
@@ -12,13 +13,13 @@ using MvvmToolkit.Messages;
 using Problemator.Core.Dtos;
 using Problemator.Core.Messages;
 using Problemator.Core.Utils;
-using PropertyChanged;
 
 namespace Problemator.Core.ViewModels
 {
-    [AddINotifyPropertyChangedInterface]
-    public class TickDetailsViewModel
-    {   
+    public class TickDetailsViewModel : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public DateTime SelectedDate { get; set; }
 
         public IList<Problem> Problems { get; set; }

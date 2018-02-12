@@ -7,14 +7,15 @@ using Windows.UI.Xaml.Navigation;
 using MvvmToolkit;
 using MvvmToolkit.Commands;
 using MvvmToolkit.Messages;
-using PropertyChanged;
 using RunKeeper.WinRT.HealthGraph.Activities;
+using System.ComponentModel;
 
 namespace Wontstop.Ui.Uwp.ViewModels
 {
-    [AddINotifyPropertyChangedInterface]
-    public class ActivityViewModel : IActivable, IHandle<BusyMessage>
+    public class ActivityViewModel : IActivable, IHandle<BusyMessage>, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public bool Busy { get; private set; }
 
         public Activity Activity { get; }

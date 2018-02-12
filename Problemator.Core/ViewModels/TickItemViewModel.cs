@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Costin Morariu. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.ComponentModel;
 using System.Threading.Tasks;
 using HttpApiClient;
 using MvvmToolkit.Attributes;
@@ -9,13 +10,13 @@ using MvvmToolkit.Messages;
 using MvvmToolkit.Services;
 using Problemator.Core.Dtos;
 using Problemator.Core.Utils;
-using PropertyChanged;
 
 namespace Problemator.Core.ViewModels
 {
-    [AddINotifyPropertyChangedInterface]
-    public class TickItemViewModel
+    public class TickItemViewModel : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public bool Busy { get; private set; }
      
         [Model]

@@ -219,6 +219,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Fody">
+      <Version>2.4.1</Version>
+    </PackageReference>
     <PackageReference Include="HttpApiClient">
       <Version>1.0.4</Version>
     </PackageReference>
@@ -230,6 +233,9 @@
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>11.0.1-beta3</Version>
+    </PackageReference>
+    <PackageReference Include="PropertyChanged.Fody">
+      <Version>2.2.5</Version>
     </PackageReference>
     <PackageReference Include="SimpleInjector">
       <Version>4.0.12</Version>

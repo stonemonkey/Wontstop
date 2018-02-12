@@ -2,22 +2,22 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-using MvvmToolkit;
 using MvvmToolkit.Commands;
 using MvvmToolkit.Messages;
 using MvvmToolkit.Services;
-using PropertyChanged;
 using RunKeeper.WinRT.HealthGraph.Activities;
 using RunKeeper.WinRT.HealthGraph.User;
 using Wontstop.Ui.Uwp.Views;
 
 namespace Wontstop.Ui.Uwp.ViewModels
 {
-    [AddINotifyPropertyChangedInterface]
-    public class HistoryViewModel : IHandle<BusyMessage>
+    public class HistoryViewModel : IHandle<BusyMessage>, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public string Title => "History";
 
         public bool Busy { get; private set; }

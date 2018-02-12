@@ -5,17 +5,18 @@ using System;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Newtonsoft.Json;
-using PropertyChanged;
 using RunKeeper.WinRT.HealthGraph.Infrastructure;
+using System.ComponentModel;
 
 namespace RunKeeper.WinRT.HealthGraph.Authorization
 {
     /// <summary>
     /// Represents the session with RunKeeper. A session is needed in order to access HealthGraph. 
     /// </summary>
-    [AddINotifyPropertyChangedInterface]
-    public class AuthorizationSession
+    public class AuthorizationSession : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         /// <summary>
         /// Specifies wheather session authorization was successfully performed and localy stored.
         /// </summary>

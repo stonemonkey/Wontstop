@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using HttpApiClient;
@@ -12,13 +13,13 @@ using MvvmToolkit.Commands;
 using MvvmToolkit.Messages;
 using Problemator.Core.Dtos;
 using Problemator.Core.Utils;
-using PropertyChanged;
 
 namespace Problemator.Core.ViewModels
 {
-    [AddINotifyPropertyChangedInterface]
-    public class ProblemsViewModel : IHandle<Tick>
+    public class ProblemsViewModel : IHandle<Tick>, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public string Title => "Problems";
 
         public bool Busy { get; private set; }

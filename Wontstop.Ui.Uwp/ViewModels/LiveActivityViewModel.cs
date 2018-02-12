@@ -9,14 +9,15 @@ using Windows.Devices.Geolocation;
 using Windows.UI.Core;
 using MvvmToolkit.Commands;
 using MvvmToolkit.Messages;
-using PropertyChanged;
 using RunKeeper.WinRT.HealthGraph.Activities;
+using System.ComponentModel;
 
 namespace Wontstop.Ui.Uwp.ViewModels
 {
-    [AddINotifyPropertyChangedInterface]
-    public class LiveActivityViewModel : IHandle<BusyMessage>
+    public class LiveActivityViewModel : IHandle<BusyMessage>, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public bool Busy { get; private set; }
 
         public string Speed { get; private set; }

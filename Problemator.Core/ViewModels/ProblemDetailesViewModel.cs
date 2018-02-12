@@ -1,16 +1,17 @@
 ﻿// Copyright (c) Costin Morariu. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.ComponentModel;
 using MvvmToolkit;
 using MvvmToolkit.Commands;
 using Problemator.Core.Dtos;
-using PropertyChanged;
 
 namespace Problemator.Core.ViewModels
 {
-    [AddINotifyPropertyChangedInterface]
-    public class ProblemDetailesViewModel : IActivable
+    public class ProblemDetailesViewModel : IActivable, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public int TriesCount { get; set; }
      
         public Problem Problem { get; private set; }

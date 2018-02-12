@@ -3,16 +3,17 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-using PropertyChanged;
 using RunKeeper.WinRT.HealthGraph.Infrastructure;
 
 namespace RunKeeper.WinRT.HealthGraph.Activities
 {
-    [AddINotifyPropertyChangedInterface]
-    public class History
+    public class History : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public IList<IGrouping<string, ActivityHistoryItemDto>> Items { get; private set; }
 
         private readonly IModelRepository _serverRepository;

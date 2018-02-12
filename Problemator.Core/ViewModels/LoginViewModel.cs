@@ -1,6 +1,7 @@
 // Copyright (c) Costin Morariu. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.ComponentModel;
 using System.Threading.Tasks;
 using HttpApiClient;
 using MvvmToolkit;
@@ -9,13 +10,13 @@ using MvvmToolkit.Messages;
 using MvvmToolkit.Services;
 using Problemator.Core.Dtos;
 using Problemator.Core.Utils;
-using PropertyChanged;
 
 namespace Problemator.Core.ViewModels
 {
-    [AddINotifyPropertyChangedInterface]
-    public class LoginViewModel
+    public class LoginViewModel : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public bool Busy { get; set; }
 
         public string Email { get; set; }
@@ -39,6 +40,7 @@ namespace Problemator.Core.ViewModels
         }
 
         private RelayCommand _loginComand;
+
         public RelayCommand LoginCommand => _loginComand ??
             (_loginComand = new RelayCommand(
                 async () => await LoginAsync(), 
