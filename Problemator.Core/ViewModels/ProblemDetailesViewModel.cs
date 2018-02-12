@@ -8,7 +8,7 @@ using PropertyChanged;
 
 namespace Problemator.Core.ViewModels
 {
-    [ImplementPropertyChanged]
+    [AddINotifyPropertyChangedInterface]
     public class ProblemDetailesViewModel : IActivable
     {
         public int TriesCount { get; set; }

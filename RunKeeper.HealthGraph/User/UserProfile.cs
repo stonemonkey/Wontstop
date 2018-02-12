@@ -8,7 +8,7 @@ using RunKeeper.WinRT.HealthGraph.Infrastructure;
 
 namespace RunKeeper.WinRT.HealthGraph.User
 {
-    [ImplementPropertyChanged]
+    [AddINotifyPropertyChangedInterface]
     public class UserProfile
     {
         public string Name { get; private set; }

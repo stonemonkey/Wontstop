@@ -10,7 +10,7 @@ using RunKeeper.WinRT.HealthGraph.Infrastructure;
 
 namespace RunKeeper.WinRT.HealthGraph.Activities
 {
-    [ImplementPropertyChanged]
+    [AddINotifyPropertyChangedInterface]
     public class History
     {
         public IList<IGrouping<string, ActivityHistoryItemDto>> Items { get; private set; }

@@ -13,7 +13,7 @@ using PropertyChanged;
 
 namespace Problemator.Core.ViewModels
 {
-    [ImplementPropertyChanged]
+    [AddINotifyPropertyChangedInterface]
     public class TickItemViewModel
     {
         public bool Busy { get; private set; }

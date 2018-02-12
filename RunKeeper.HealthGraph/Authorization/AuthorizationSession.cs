@@ -13,7 +13,7 @@ namespace RunKeeper.WinRT.HealthGraph.Authorization
     /// <summary>
     /// Represents the session with RunKeeper. A session is needed in order to access HealthGraph. 
     /// </summary>
-    [ImplementPropertyChanged]
+    [AddINotifyPropertyChangedInterface]
     public class AuthorizationSession
     {
         /// <summary>

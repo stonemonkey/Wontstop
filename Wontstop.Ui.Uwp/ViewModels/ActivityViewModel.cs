@@ -12,7 +12,7 @@ using RunKeeper.WinRT.HealthGraph.Activities;
 
 namespace Wontstop.Ui.Uwp.ViewModels
 {
-    [ImplementPropertyChanged]
+    [AddINotifyPropertyChangedInterface]
     public class ActivityViewModel : IActivable, IHandle<BusyMessage>
     {
         public bool Busy { get; private set; }

@@ -22,7 +22,7 @@ namespace RunKeeper.WinRT.HealthGraph.Activities
         }
     }
 
-    [ImplementPropertyChanged]
+    [AddINotifyPropertyChangedInterface]
     public class Activity
     {
         public bool Live { get; private set; }

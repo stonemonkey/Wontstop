@@ -17,7 +17,7 @@ using PropertyChanged;
 
 namespace Problemator.Core.ViewModels
 {
-    [ImplementPropertyChanged]
+    [AddINotifyPropertyChangedInterface]
     public class TicksViewModel : IHandle<Tick>, IHandle<BusyMessage>, IHandle<TickProblemsMesage>
     {
         public string Title => "Ticks";

@@ -13,7 +13,7 @@ using RunKeeper.WinRT.HealthGraph.User;
 
 namespace Wontstop.Ui.Uwp.ViewModels
 {
-    [ImplementPropertyChanged]
+    [AddINotifyPropertyChangedInterface]
     public class AccountViewModel : IHandle<BusyMessage>
     {
         public string Title => "Profile";

@@ -13,7 +13,7 @@ using PropertyChanged;
 
 namespace Problemator.Core.ViewModels
 {
-    [ImplementPropertyChanged]
+    [AddINotifyPropertyChangedInterface]
     public class ProblemItemViewModel
     {
         public bool Busy { get; private set; }

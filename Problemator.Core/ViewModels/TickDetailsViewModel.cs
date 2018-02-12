@@ -16,7 +16,7 @@ using PropertyChanged;
 
 namespace Problemator.Core.ViewModels
 {
-    [ImplementPropertyChanged]
+    [AddINotifyPropertyChangedInterface]
     public class TickDetailsViewModel
     {   
         public DateTime SelectedDate { get; set; }

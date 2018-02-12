@@ -1,9 +1,10 @@
 ﻿{
   "supports": {},
   "dependencies": {
+    "Fody": "2.4.1",
     "Microsoft.Net.Http": "2.2.29",
-    "Newtonsoft.Json": "10.0.2",
-    "PropertyChanged.Fody": "1.53.0"
+    "Newtonsoft.Json": "11.0.1-beta3",
+    "PropertyChanged.Fody": "2.2.5"
   },
   "frameworks": {
     ".NETPortable,Version=v4.6,Profile=Profile32": {}

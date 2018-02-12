@@ -15,7 +15,7 @@ using Wontstop.Ui.Uwp.Views;
 
 namespace Wontstop.Ui.Uwp.ViewModels
 {
-    [ImplementPropertyChanged]
+    [AddINotifyPropertyChangedInterface]
     public class HistoryViewModel : IHandle<BusyMessage>
     {
         public string Title => "History";
