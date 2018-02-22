@@ -10,8 +10,10 @@ namespace MvvmToolkit.Services
     /// </summary>
     public interface INavigationService
     {
-        void Navigate(Type pageType);
-        void Navigate(Type pageType, object parameter);
+        void Navigate<TViewModel>();
+        void Navigate(Type viewModelType);
+        void Navigate<TViewModel>(object parameter);
+        void Navigate(Type viewModelType, object parameter);
 
         bool CanGoBack { get; }
         void GoBack();

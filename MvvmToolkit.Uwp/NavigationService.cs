@@ -66,9 +66,23 @@ namespace MvvmToolkit.WinRT
         }
 
         /// <summary>
-        /// Initiates navigation towards specified Page type.
+        /// Initiates navigation towards a Page based on the name of the view model 
+        /// e.g. MainPage for MainViewModel.
         /// </summary>
-        /// <param name="viewModelType">The type of the view model to navigate.</param>
+        /// <exception cref="InvalidOperationException">If no page type or multiple 
+        /// page types found.</exception>
+        public void Navigate<TViewModel>()
+        {
+            Navigate(typeof(TViewModel));
+        }
+
+        /// <summary>
+        /// Initiates navigation towards a Page based on the name of the view model 
+        /// e.g. MainPage for MainViewModel.
+        /// </summary>
+        /// <param name="viewModelType">The type of the view model.</param>
+        /// <exception cref="InvalidOperationException">If no page type or multiple 
+        /// page types found.</exception>
         public void Navigate(Type viewModelType)
         {
             DeactivatePreviousViewModel();
@@ -76,10 +90,25 @@ namespace MvvmToolkit.WinRT
         }
 
         /// <summary>
-        /// Initiates navigation towards specified Page type.
+        /// Initiates navigation towards a Page based on the name of the view model 
+        /// e.g. MainPage for MainViewModel.
         /// </summary>
-        /// <param name="viewModelType">The type of the view model to navigate.</param>
         /// <param name="parameter">The parameter instance transmitted to the page.</param>
+        /// <exception cref="InvalidOperationException">If no page type or multiple 
+        /// page types found.</exception>
+        public void Navigate<TViewModel>(object parameter)
+        {
+            Navigate(typeof(TViewModel), parameter);
+        }
+
+        /// <summary>
+        /// Initiates navigation towards a Page based on the name of the view model 
+        /// e.g. MainPage for MainViewModel.
+        /// </summary>
+        /// <param name="viewModelType">The type of the view model.</param>
+        /// <param name="parameter">The parameter instance transmitted to the page.</param>
+        /// <exception cref="InvalidOperationException">If no page type or multiple 
+        /// page types found.</exception>
         public void Navigate(Type viewModelType, object parameter)
         {
             DeactivatePreviousViewModel();

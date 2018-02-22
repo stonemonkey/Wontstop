@@ -14,6 +14,7 @@ using RunKeeper.WinRT.HealthGraph.User;
 using SimpleInjector;
 using Wontstop.Ui.Uwp.ViewModels;
 using RunKeeperAuth = RunKeeper.WinRT.HealthGraph.Authorization;
+using System.Reflection;
 
 namespace Wontstop.Ui.Uwp
 {
@@ -71,6 +72,7 @@ namespace Wontstop.Ui.Uwp
                 typeof(INavigationService),
                 () => new NavigationService(
                     (Frame) Window.Current.Content,
+                    new[] { Assembly.GetAssembly(GetType()) },
                     Container.GetInstance<IEventAggregator>()));
 
             Container.Register(
