@@ -54,7 +54,7 @@ namespace Problemator.Core.ViewModels
 
             _storageService.DeleteLocal(Settings.ContextKey);
 
-            _navigationService.Navigate("Wontstop.Climb.Ui.Uwp.Views.LoginPage, Wontstop.Climb.Ui.Uwp");
+            _navigationService.Navigate(typeof(LoginViewModel));
 
             Busy = false;
         }

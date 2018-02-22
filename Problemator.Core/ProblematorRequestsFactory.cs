@@ -3,6 +3,7 @@
 
 using System;
 using System.Globalization;
+using HttpApiClient;
 using HttpApiClient.Configurations;
 using HttpApiClient.Requests;
 using MvvmToolkit;

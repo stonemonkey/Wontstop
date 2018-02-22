@@ -3,7 +3,6 @@
 
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using HttpApiClient.Requests;
 using MvvmToolkit;
 using MvvmToolkit.Messages;
 using MvvmToolkit.Services;
@@ -11,6 +10,8 @@ using MvvmToolkit.WinRT;
 using Problemator.Core;
 using Problemator.Core.ViewModels;
 using SimpleInjector;
+using HttpApiClient;
+using System.Reflection;
 
 namespace Wontstop.Climb.Ui.Uwp
 {
@@ -68,6 +69,7 @@ namespace Wontstop.Climb.Ui.Uwp
                 typeof(INavigationService),
                 () => new NavigationService(
                     (Frame) Window.Current.Content,
+                    new [] { Assembly.GetAssembly(GetType()) },
                     Container.GetInstance<IEventAggregator>()));
 
             Container.RegisterSingleton<ProblematorRequestsFactory>();

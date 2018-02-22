@@ -6,6 +6,9 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using MvvmToolkit.Messages;
 using MvvmToolkit.Services;
+using System.Reflection;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace MvvmToolkit.WinRT
 {
@@ -15,25 +18,31 @@ namespace MvvmToolkit.WinRT
     public class NavigationService : INavigationService
     {
         private readonly Frame _frame;
+        private readonly Assembly[] _pageAssemblies;
         private readonly IEventAggregator _eventAggregator;
 
         /// <summary>
         /// Initializes new instance with the frame and the messaging aggregator.
         /// </summary>
         /// <param name="frame">Frame instance used to perform navigation operations.</param>
+        /// <param name="pageAssemblies">Assemblies used to lookup pages.</param>
         /// <param name="eventAggregator">Messaging aggregator instance used to publish navigation 
         /// messages.</param>
-        public NavigationService(Frame frame, IEventAggregator eventAggregator)
+        public NavigationService(
+            Frame frame, 
+            Assembly[] pageAssemblies, 
+            IEventAggregator eventAggregator)
         {
             _frame = frame;
+            _pageAssemblies = pageAssemblies;
             _eventAggregator = eventAggregator;
             _frame.Navigated += OnFrameNavigated;
         }
 
         private void OnFrameNavigated(object sender, NavigationEventArgs e)
         {
-            var view = e.Content as Page;
-            if (view == null)
+            var page = e.Content as Page;
+            if (page == null)
             {
                 return;
             }
@@ -47,7 +56,7 @@ namespace MvvmToolkit.WinRT
 
             _eventAggregator.PublishOnCurrentThread(navigationMessage);
 
-            ActivateViewModel(e.Parameter, view);
+            ActivateViewModel(e.Parameter, page);
         }
 
         private static void ActivateViewModel(object parameter, Page view)
@@ -59,41 +68,47 @@ namespace MvvmToolkit.WinRT
         /// <summary>
         /// Initiates navigation towards specified Page type.
         /// </summary>
-        /// <param name="pageType">The type of the page to navigate.</param>
-        public void Navigate(Type pageType)
+        /// <param name="viewModelType">The type of the view model to navigate.</param>
+        public void Navigate(Type viewModelType)
         {
             DeactivatePreviousViewModel();
-            _frame.Navigate(pageType);
-        }
-
-        /// <summary>
-        /// Initiates navigation towards specified Page name.
-        /// </summary>
-        /// <param name="pageType">The assembly-qualifiedname of the page to navigate to.</param>
-        public void Navigate(string pageType)
-        {
-            Navigate(Type.GetType(pageType));
+            _frame.Navigate(GetViewType(viewModelType));
         }
 
         /// <summary>
         /// Initiates navigation towards specified Page type.
         /// </summary>
-        /// <param name="pageType">The type of the page to navigate.</param>
+        /// <param name="viewModelType">The type of the view model to navigate.</param>
         /// <param name="parameter">The parameter instance transmitted to the page.</param>
-        public void Navigate(Type pageType, object parameter)
+        public void Navigate(Type viewModelType, object parameter)
         {
             DeactivatePreviousViewModel();
-            _frame.Navigate(pageType, parameter);
+            _frame.Navigate(GetViewType(viewModelType), parameter);
         }
 
-        /// <summary>
-        /// Initiates navigation towards specified Page name.
-        /// </summary>
-        /// <param name="pageType">The assembly-qualifiedname of the page to navigate to.</param>
-        /// <param name="parameter">The parameter instance transmitted to the page.</param>
-        public void Navigate(string pageType, object parameter)
+        private Type GetViewType(Type viewModelType)
         {
-            Navigate(Type.GetType(pageType), parameter);
+            var viewModelTypeName = viewModelType.Name;
+            var viewTypeName = viewModelTypeName.Replace("ViewModel", "Page");
+
+            var _types = new List<Type>();
+            foreach (var assembly in _pageAssemblies)
+            {
+                _types.AddRange(assembly.GetTypes()
+                    .Where(t => string.Equals(t.Name, viewTypeName, StringComparison.OrdinalIgnoreCase)));
+            }
+            if (_types.Count() == 0)
+            {
+                throw new InvalidOperationException(
+                    $"Couldn't find page '{viewTypeName}' for view model '{viewModelTypeName}'!");
+            }
+            if (_types.Count() > 1)
+            {
+                throw new InvalidOperationException(
+                    $"Found multiple pages '{viewTypeName}' for view model '{viewModelTypeName}'!");
+            }
+
+            return _types.Single();
         }
 
         private void DeactivatePreviousViewModel()

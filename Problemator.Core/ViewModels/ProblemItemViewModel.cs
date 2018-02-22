@@ -126,8 +126,7 @@ namespace Problemator.Core.ViewModels
 
         private void OpenDetails()
         {
-            _navigationService.Navigate(
-                "Wontstop.Climb.Ui.Uwp.Views.ProblemDetailesPage, Wontstop.Climb.Ui.Uwp", Problem);
+            _navigationService.Navigate(typeof(ProblemDetailesViewModel), Problem);
         }
     }
 }

@@ -2,6 +2,7 @@
   "supports": {},
   "dependencies": {
     "Fody": "2.4.1",
+    "Microsoft.Bcl.Build": "1.0.21",
     "Microsoft.Net.Http": "2.2.29",
     "Newtonsoft.Json": "11.0.1-beta3",
     "PropertyChanged.Fody": "2.2.5"

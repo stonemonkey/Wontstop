@@ -70,7 +70,7 @@ namespace Problemator.Core.ViewModels
             _requestsFactory.SetUserContext(context);
             _storageService.SaveLocal(Settings.ContextKey, context);
 
-            _navigationService.Navigate("Wontstop.Climb.Ui.Uwp.Views.MainPage, Wontstop.Climb.Ui.Uwp");
+            _navigationService.Navigate(typeof(MainViewModel));
         }
     }
 }

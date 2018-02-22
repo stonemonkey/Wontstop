@@ -60,7 +60,7 @@ namespace Problemator.Core.ViewModels
 
         private void EditTick()
         {
-            _navigationService.Navigate("Wontstop.Climb.Ui.Uwp.Views.ProblemDetailesPage, Wontstop.Climb.Ui.Uwp", Tick.ProblemId);
+            _navigationService.Navigate(typeof(ProblemDetailesViewModel), Tick.ProblemId);
         }
 
         private RelayCommand _deleteTickCommand;
