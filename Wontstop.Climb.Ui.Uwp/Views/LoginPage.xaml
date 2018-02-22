@@ -35,7 +35,9 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <Grid x:Name="LoginPanel"
+        <Grid x:Name="ProblematorLoginPanel"
+            Margin="16"
+            Width="260"
             VerticalAlignment="Center"
             HorizontalAlignment="Center">
             <Grid.RowDefinitions>
@@ -44,21 +46,28 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
+            <TextBlock x:Name="LoginTitleTextBlock"
+                Margin="0,0,0,32"
+                TextAlignment="Center"
+                TextWrapping="WrapWholeWords"
+                Text="Login with Problemator credentials"
+                Style="{ThemeResource SubtitleTextBlockStyle}"/>
             <TextBox x:Name="EmailTextBox"
+                Grid.Row="1"
+                Margin="0,0,0,8"
                 VerticalAlignment="Center"
-                PlaceholderText="e-mail"
+                PlaceholderText="enter e-mail"
                 Text="{Binding Email, Mode=TwoWay}"/>
             <PasswordBox x:Name="PasswordBox"
-                Grid.Row="1"
+                Grid.Row="2"
+                Margin="0,0,0,20"
                 VerticalAlignment="Center"
-                PlaceholderText="password"
+                PlaceholderText="enter password"
                 Password="{Binding Password, Mode=TwoWay}"/>
-
             <Button x:Name="LoginButton" 
                 Grid.Row="3"
-                Margin="20"
                 VerticalAlignment="Top"
-                HorizontalAlignment="Center"
+                HorizontalAlignment="Stretch"
                 MinWidth="{StaticResource ProfileSize}"
                 Content="Login"
                 Command="{Binding LoginCommand}"/>
