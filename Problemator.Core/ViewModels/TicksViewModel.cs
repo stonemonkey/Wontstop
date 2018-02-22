@@ -19,6 +19,8 @@ namespace Problemator.Core.ViewModels
 {
     public class TicksViewModel : IHandle<Tick>, IHandle<BusyMessage>, IHandle<TickProblemsMesage>, INotifyPropertyChanged
     {
+        #pragma warning disable CS0067
+        // Is used by Fody to add NotifyPropertyChanged on properties.
         public event PropertyChangedEventHandler PropertyChanged;
 
         public string Title => "Ticks";

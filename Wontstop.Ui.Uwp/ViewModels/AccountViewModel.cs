@@ -15,6 +15,8 @@ namespace Wontstop.Ui.Uwp.ViewModels
 {
     public class AccountViewModel : IHandle<BusyMessage>, INotifyPropertyChanged
     {
+        #pragma warning disable CS0067
+        // Is used by Fody to add NotifyPropertyChanged on properties.
         public event PropertyChangedEventHandler PropertyChanged;
 
         public string Title => "Profile";

@@ -15,6 +15,8 @@ namespace Problemator.Core.ViewModels
 {
     public class TickItemViewModel : INotifyPropertyChanged
     {
+        #pragma warning disable CS0067
+        // Is used by Fody to add NotifyPropertyChanged on properties.
         public event PropertyChangedEventHandler PropertyChanged;
 
         public bool Busy { get; private set; }
@@ -60,7 +62,7 @@ namespace Problemator.Core.ViewModels
 
         private void EditTick()
         {
-            _navigationService.Navigate(typeof(ProblemDetailesViewModel), Tick.ProblemId);
+            _navigationService.Navigate<ProblemDetailesViewModel>(Tick.ProblemId);
         }
 
         private RelayCommand _deleteTickCommand;

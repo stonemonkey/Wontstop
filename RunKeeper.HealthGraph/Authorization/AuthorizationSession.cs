@@ -15,6 +15,8 @@ namespace RunKeeper.WinRT.HealthGraph.Authorization
     /// </summary>
     public class AuthorizationSession : INotifyPropertyChanged
     {
+        #pragma warning disable CS0067
+        // Is used by Fody to add NotifyPropertyChanged on properties.
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>

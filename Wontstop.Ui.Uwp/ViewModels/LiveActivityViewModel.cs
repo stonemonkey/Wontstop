@@ -16,6 +16,8 @@ namespace Wontstop.Ui.Uwp.ViewModels
 {
     public class LiveActivityViewModel : IHandle<BusyMessage>, INotifyPropertyChanged
     {
+        #pragma warning disable CS0067
+        // Is used by Fody to add NotifyPropertyChanged on properties.
         public event PropertyChangedEventHandler PropertyChanged;
 
         public bool Busy { get; private set; }

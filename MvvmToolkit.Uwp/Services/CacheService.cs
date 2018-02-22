@@ -78,6 +78,7 @@ namespace MvvmToolkit.Uwp.Services
             else
             {
                 // do not await
+                #pragma warning disable CS4014
                 DeleteAsync(AddCacheFolder(key));
             }
 

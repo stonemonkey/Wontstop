@@ -10,6 +10,8 @@ namespace RunKeeper.WinRT.HealthGraph.User
 {
     public class UserProfile : INotifyPropertyChanged
     {
+        #pragma warning disable CS0067
+        // Is used by Fody to add NotifyPropertyChanged on properties.
         public event PropertyChangedEventHandler PropertyChanged;
 
         public string Name { get; private set; }

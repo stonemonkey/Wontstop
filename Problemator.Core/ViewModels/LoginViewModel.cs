@@ -15,6 +15,8 @@ namespace Problemator.Core.ViewModels
 {
     public class LoginViewModel : INotifyPropertyChanged
     {
+        #pragma warning disable CS0067
+        // Is used by Fody to add NotifyPropertyChanged on properties.
         public event PropertyChangedEventHandler PropertyChanged;
 
         public bool Busy { get; set; }
@@ -70,7 +72,7 @@ namespace Problemator.Core.ViewModels
             _requestsFactory.SetUserContext(context);
             _storageService.SaveLocal(Settings.ContextKey, context);
 
-            _navigationService.Navigate(typeof(MainViewModel));
+            _navigationService.Navigate<MainViewModel>();
         }
     }
 }

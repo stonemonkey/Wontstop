@@ -10,12 +10,13 @@ using MvvmToolkit.Messages;
 using MvvmToolkit.Services;
 using RunKeeper.WinRT.HealthGraph.Activities;
 using RunKeeper.WinRT.HealthGraph.User;
-using Wontstop.Ui.Uwp.Views;
 
 namespace Wontstop.Ui.Uwp.ViewModels
 {
     public class HistoryViewModel : IHandle<BusyMessage>, INotifyPropertyChanged
     {
+        #pragma warning disable CS0067
+        // Is used by Fody to add NotifyPropertyChanged on properties.
         public event PropertyChangedEventHandler PropertyChanged;
 
         public string Title => "History";
@@ -102,7 +103,7 @@ namespace Wontstop.Ui.Uwp.ViewModels
         {
             _lastOpenedItemId = item.ResourcePath;
 
-            _navigationService.Navigate(typeof(ActivityPage), _lastOpenedItemId);
+            _navigationService.Navigate<ActivityViewModel>(_lastOpenedItemId);
         }
 
         private RelayCommand _addNewCommand;
@@ -111,7 +112,7 @@ namespace Wontstop.Ui.Uwp.ViewModels
 
         private void AddNew()
         {
-            _navigationService.Navigate(typeof(LiveActivityPage), _lastOpenedItemId);
+            _navigationService.Navigate<LiveActivityViewModel>(_lastOpenedItemId);
         }
 
         private RelayCommand _showMultiSelectionCommand;
