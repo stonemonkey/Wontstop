@@ -28,6 +28,7 @@ namespace Problemator.Core.ViewModels
         public bool Busy { get; private set; }
         public bool Empty { get; private set; }
         public bool CanTick { get; private set; }
+        public bool NoProblemsAvailable { get; private set; }
 
         public string Tags { get; set; }
 
@@ -45,7 +46,6 @@ namespace Problemator.Core.ViewModels
         public IList<DateTimeOffset> TickDates { get; private set; }
 
         public ObservableCollection<Tick> Ticks { get; private set; }
-    
 
         private readonly ITimeService _timeService;
         private readonly IStorageService _storageService;
@@ -106,6 +106,7 @@ namespace Problemator.Core.ViewModels
 
             Busy = false;
             UpdateEmpty();
+            UpdateAreProblemsAvailable();
         }
 
         private async Task LoadDashboardAsync()
@@ -351,7 +352,12 @@ namespace Problemator.Core.ViewModels
 
         private void UpdateEmpty()
         {
-            Empty = _problems == null || !_problems.Any();
+            Empty = Ticks == null || !Ticks.Any();
+        }
+
+        private void UpdateAreProblemsAvailable()
+        {
+            NoProblemsAvailable = _problems == null || !_problems.Any();
         }
 
         private bool AreAllTagsValid()

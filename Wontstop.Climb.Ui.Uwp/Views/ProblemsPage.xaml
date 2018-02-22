@@ -202,7 +202,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     TextAlignment="Center"
                     VerticalAlignment="Center"
                     Style="{ThemeResource SubtitleTextBlockStyle}"
-                    Text="We couldn't find any problem for the gym you signed in."/>
+                    Text="We couldn't find any problem for the selected gym."/>
             </Grid>
         </Grid>
         

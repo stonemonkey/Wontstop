@@ -270,12 +270,20 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
+                <TextBlock x:Name="NoProblemsTextBlock"
+                    Margin="24,8"
+                    Foreground="Red"
+                    TextWrapping="Wrap"
+                    VerticalAlignment="Center"
+                    Text="We couldn't find any problem for the selected gym."
+                    Visibility="{Binding NoProblemsAvailable, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=False}"/>
                 <AutoSuggestBox x:Name="TicksSuggestBox"
                     Margin="12,8"
                     Text="{Binding Tags, Mode=TwoWay}"
                     ItemsSource="{Binding SuggestedProblems}"
                     ItemTemplate="{StaticResource SuggestedProblemDataTemplate}"
-                    PlaceholderText="type some tags (e.g. A1001,B2001)">
+                    PlaceholderText="type some tags (e.g. A1001,B2001)"
+                    Visibility="{Binding NoProblemsAvailable, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}">
                     <interactivity:Interaction.Behaviors>
                         <core:EventTriggerBehavior EventName="TextChanged">
                             <core:InvokeCommandAction 
@@ -306,7 +314,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     TextAlignment="Center"
                     VerticalAlignment="Center"
                     Style="{ThemeResource SubtitleTextBlockStyle}"
-                    Text="We couldn't find any problem for the gym you signed in."/>
+                    Text="We couldn't find any tick for the selected date."/>
             </Grid>
         </Grid>
 
