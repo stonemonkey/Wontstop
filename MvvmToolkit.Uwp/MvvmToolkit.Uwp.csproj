@@ -105,6 +105,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AttachedProperties\ContextMenu.cs" />
+    <Compile Include="AttachedProperties\KeyPresedToCommand.cs" />
     <Compile Include="AttachedProperties\ViewModel.cs" />
     <Compile Include="Behaviours\HighlightDaysBehavior.cs" />
     <Compile Include="Behaviours\ScrollToItemBehavior.cs" />

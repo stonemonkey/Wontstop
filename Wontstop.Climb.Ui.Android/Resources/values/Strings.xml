@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="app_name">Wontstop.Climb.Ui.Android</string>
+  <string name="app_name">Wontstop Climbing</string>
+  <string name="drawer_open">Open</string>
+  <string name="drawer_close">Close</string>
+  <string name="menu_refresh">Refresh</string>
+
+  <string name="login_username_hint">Username</string>
+  <string name="login_password_hint">Password</string>
+  <string name="login_button_text">Login</string>
+
+  <string name="fragment1">You are on Fragment 1</string>
+  <string name="fragment2">You are on Fragment 2</string>
 </resources>
