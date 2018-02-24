@@ -12,25 +12,20 @@ using MvvmToolkit;
 using MvvmToolkit.Commands;
 using MvvmToolkit.Messages;
 using Problemator.Core.Dtos;
-using Problemator.Core.Messages;
 using Problemator.Core.Utils;
 
 namespace Problemator.Core.ViewModels
 {
-    public class TicksViewModel : IHandle<Tick>, IHandle<BusyMessage>, IHandle<TickProblemsMesage>, INotifyPropertyChanged
+    public class ProblemsChildViewModel : IHandle<Tick>, INotifyPropertyChanged
     {
         #pragma warning disable CS0067
         // Is used by Fody to add NotifyPropertyChanged on properties.
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public string Title => "Ticks";
+        public string Title => "Problems";
 
         public bool Busy { get; private set; }
         public bool Empty { get; private set; }
-        public bool CanTick { get; private set; }
-        public bool NoProblemsAvailable { get; private set; }
-
-        public string Tags { get; set; }
 
         public string SelectedLocation { get; set; }
         public IDictionary<string, string> Locations { get; set; }
@@ -39,33 +34,26 @@ namespace Problemator.Core.ViewModels
         public static DateTimeOffset Day { get; set; }
         private static DateTime SelectedDate => Day.Date;
 
-        public TickDetailsViewModel Details { get; }
-
-        public IList<Problem> SuggestedProblems { get; set; }
-
         public IList<DateTimeOffset> TickDates { get; private set; }
 
         public ObservableCollection<Tick> Ticks { get; private set; }
+        public ObservableCollection<WallSection> Sections { get; private set; }
 
         private readonly ITimeService _timeService;
         private readonly IStorageService _storageService;
         private readonly IEventAggregator _eventAggregator;
         private readonly ProblematorRequestsFactory _requestsFactory;
 
-        public TicksViewModel(
+        public ProblemsChildViewModel(
             ITimeService timeService,
             IStorageService storageService,
             IEventAggregator eventAggregator,
-            TickDetailsViewModel tickDetailsViewModel,
             ProblematorRequestsFactory requestsFactory)
         {
             _timeService = timeService;
             _storageService = storageService;
             _eventAggregator = eventAggregator;
             _requestsFactory = requestsFactory;
-
-            Details = tickDetailsViewModel;
-            Details.Problems = _taggedProblems;
 
             if (!_isDaySaved)
             {
@@ -89,15 +77,11 @@ namespace Problemator.Core.ViewModels
             _eventAggregator.Subscribe(this);
         }
 
-        private List<string> _tags;
         private List<Problem> _problems;
 
         private async Task RefreshAsync()
         {
             Busy = true;
-            Details.SelectedDate = SelectedDate;
-
-            ClearTaggedProblems();
 
             await LoadDashboardAsync();
             await LoadProblemsAsync();
@@ -105,8 +89,7 @@ namespace Problemator.Core.ViewModels
             await LoadTicks(SelectedDate);
 
             Busy = false;
-            UpdateEmpty();
-            UpdateAreProblemsAvailable();
+            Empty = _problems == null || !_problems.Any();
         }
 
         private async Task LoadDashboardAsync()
@@ -125,7 +108,6 @@ namespace Problemator.Core.ViewModels
             }
 
             var dashboard = parser.To<Dashboard>();
-            Details.SelectedAscentIdx = dashboard.UserSettings.AscentType;
             Locations = dashboard.Locations.ToDictionary(x => x.Name, x => x.Id);
             SelectedLocation = dashboard.Locations
                 .SingleOrDefault(x => string.Equals(x.Id,_context.GymId, StringComparison.Ordinal))?
@@ -147,14 +129,11 @@ namespace Problemator.Core.ViewModels
                 return;
             }
 
-            var sections = new ObservableCollection<WallSection>((parser.To<IDictionary<string, WallSection>>() ?? 
+            Sections = new ObservableCollection<WallSection>((parser.To<IDictionary<string, WallSection>>() ?? 
                     new Dictionary<string, WallSection>())
                 .Values);
-            _problems = sections
+            _problems = Sections
                 .SelectMany(x => x.Problems)
-                .ToList();
-            _tags = _problems
-                .Select(x => x.TagShort)
                 .ToList();
         }
 
@@ -192,7 +171,7 @@ namespace Problemator.Core.ViewModels
                 return;
             }
 
-            TickDates = parser.To<IList<DateTimeOffset>>(); 
+            TickDates = parser.To<IList<DateTimeOffset>>();
         }
 
         private RelayCommand _unloadComand;
@@ -241,184 +220,11 @@ namespace Problemator.Core.ViewModels
         public RelayCommand ChangeDateCommand => _changeDateComand ??
             (_changeDateComand = new RelayCommand(async () => await RefreshAsync(), () => !Busy));
 
-        private RelayCommand _publisTagsComand;
-        public RelayCommand PublishTagsCommand => _publisTagsComand ??
-            (_publisTagsComand = new RelayCommand(PublishTags));
-
-        private void PublishTags()
-        {
-            _eventAggregator.PublishOnCurrentThread(Tags ?? string.Empty);
-        }
-
-        private RelayCommand<bool> _tagsChangedComand;
-
-        public RelayCommand<bool> TagsChangedCommand => _tagsChangedComand ??
-            (_tagsChangedComand = new RelayCommand<bool>(
-                TagsChanged));
-
-        private const int TagMinLength = 2;
-
-        private void TagsChanged(bool byUser)
-        {
-            if (!byUser || Busy || string.IsNullOrWhiteSpace(Tags))
-            {
-                CanTick = false;
-                return;
-            }
-            CanTick = AreAllTagsValid();
-
-            var lastTag = GetLastTagFrom(Tags);
-            if (lastTag.Length < TagMinLength)
-            {
-                SuggestedProblems = null;
-                return;
-            }
-            if (_tags.Contains(lastTag))
-            {
-                AddTaggedProblem(lastTag);
-                PublishTags();
-                return;
-            }
-
-            SuggestedProblems = _problems
-                .Where(x => 
-                    IsAvailaleAt(x, SelectedDate) &&
-                    x.TagShort.StartsWith(lastTag, StringComparison.OrdinalIgnoreCase))
-                .ToList();
-        }
-
-        private RelayCommand<string> _suggestionChosenComand;
-
-        public RelayCommand<string> SuggestionChosenCommand => _suggestionChosenComand ??
-            (_suggestionChosenComand = new RelayCommand<string>(
-                SuggestionChosen, tag => !Busy && !string.IsNullOrWhiteSpace(tag)));
-
-        private void SuggestionChosen(string tag)
-        {
-            var lastTag = GetLastTagFrom(Tags);
-            var tags = Tags.Substring(0, Tags.Length - lastTag.Length);
-            Tags = tags + tag;
-
-            AddTaggedProblem(tag);
-            PublishTags();
-        }
-
-        private readonly IList<Problem> _taggedProblems = new List<Problem>();
-
-        private void ClearTaggedProblems()
-        {
-            _taggedProblems.Clear();
-        }
-
-        private void AddTaggedProblem(string tag)
-        {
-            if (_taggedProblems.Any(x => string.Equals(tag, x.TagShort, StringComparison.OrdinalIgnoreCase)))
-            {
-                return;
-            }
-
-            var problem = _problems.First(x => 
-                IsAvailaleAt(x, SelectedDate) && x.TagShort.Equals(tag, StringComparison.OrdinalIgnoreCase));
-
-            _taggedProblems.Add(problem);
-        }
-
-        private bool IsAvailaleAt(Problem problem, DateTime date)
-        {
-            if (problem.Removed == null)
-            {
-                return true;
-            }
-
-            var removed = DateTime.Parse(problem.Removed);
-
-            return removed > date;
-        }
-
-        private const string TicksSeparator = ",";
-
-        private static string GetLastTagFrom(string text)
-        {
-            var lastTag = text.Replace(" ", null);
-
-            var lastTagSeparatorIdx = lastTag.LastIndexOf(TicksSeparator, StringComparison.Ordinal);
-            if (lastTagSeparatorIdx >= 0)
-            {
-                lastTag = lastTag.Remove(0, lastTagSeparatorIdx + 1);
-            }
-
-            return lastTag;
-        }
-
-        private void UpdateEmpty()
-        {
-            Empty = Ticks == null || !Ticks.Any();
-        }
-
-        private void UpdateAreProblemsAvailable()
-        {
-            NoProblemsAvailable = _problems == null || !_problems.Any();
-        }
-
-        private bool AreAllTagsValid()
-        {
-            var inexisten = GetInexistenTags();
-
-            return !inexisten.Any();
-        }
-
-        private List<string> GetInexistenTags()
-        {
-            if (Tags == null)
-            {
-                return new List<string>();
-            }
-
-            var tags = SplitTags();
-
-            return tags.Where(x => !_tags.Contains(x))
-                .ToList();
-        }
-
-        private string[] SplitTags()
-        {
-            return Tags.Replace(" ", null)
-                .Split(new[] { TicksSeparator }, StringSplitOptions.RemoveEmptyEntries);
-        }
-
-        public async void Handle(TickProblemsMesage message)
-        {
-            if (message.Successfull)
-            {
-                Tags = null;
-                ClearTaggedProblems();
-            }
-            else
-            {
-                ShowErrorForFailedToTickTags(message.FailedToTickTags);
-            }
-
-            await LoadProblemsAsync();
-            await LoadTicks(SelectedDate);
-
-            UpdateEmpty();
-            SuggestedProblems = null;
-        }
-
-        private void ShowErrorForFailedToTickTags(IEnumerable<string> tags)
-        {
-            _eventAggregator.PublishErrorMessageOnCurrentThread(
-                $"Unable to save: {string.Join(TicksSeparator, tags)}");
-        }
-
-        public void Handle(BusyMessage message)
-        {
-            Busy = message.Show;
-        }
-
-        public void Handle(Tick message)
+        public async void Handle(Tick message)
         {
             Ticks.Remove(message);
+
+            await RefreshAsync();
         }
     }
 }

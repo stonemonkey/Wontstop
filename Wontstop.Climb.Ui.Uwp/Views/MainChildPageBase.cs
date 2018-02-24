@@ -9,14 +9,12 @@ using MvvmToolkit.WinRT.Utils;
 
 namespace Wontstop.Climb.Ui.Uwp.Views
 {
-    public sealed partial class TicksPage : Page, IHandle<ErrorMessage>
+    public abstract class MainChildPageBase : Page, IHandle<ErrorMessage>, IHandle<NavigationMessage>
     {
         private readonly IEventAggregator _eventAggregator;
 
-        public TicksPage()
+        public MainChildPageBase()
         {
-            InitializeComponent();
-
             _eventAggregator = ServiceLocator.Get<IEventAggregator>();
         }
 
@@ -35,6 +33,11 @@ namespace Wontstop.Climb.Ui.Uwp.Views
         public async void Handle(ErrorMessage message)
         {
             await message.ShowErrorAsync();
+        }
+
+        public void Handle(NavigationMessage message)
+        {
+            _eventAggregator.Unsubscribe(this);
         }
     }
 }

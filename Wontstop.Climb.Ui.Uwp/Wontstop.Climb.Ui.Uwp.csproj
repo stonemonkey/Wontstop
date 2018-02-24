@@ -110,6 +110,7 @@
     <Compile Include="Converters\StringToColorConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModelLocator.cs" />
+    <Compile Include="Views\MainChildPageBase.cs" />
     <Compile Include="Views\ProblemDetailesPage.xaml.cs">
       <DependentUpon>ProblemDetailesPage.xaml</DependentUpon>
     </Compile>
@@ -119,14 +120,14 @@
     <Compile Include="Views\TickDetailsView.xaml.cs">
       <DependentUpon>TickDetailsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\TicksPage.xaml.cs">
-      <DependentUpon>TicksPage.xaml</DependentUpon>
+    <Compile Include="Views\TicksChildPage.xaml.cs">
+      <DependentUpon>TicksChildPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TickItemView.xaml.cs">
       <DependentUpon>TickItemView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ProblemsPage.xaml.cs">
-      <DependentUpon>ProblemsPage.xaml</DependentUpon>
+    <Compile Include="Views\ProblemsChildPage.xaml.cs">
+      <DependentUpon>ProblemsChildPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
@@ -170,7 +171,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\TicksPage.xaml">
+    <Page Include="Views\TicksChildPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -178,7 +179,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ProblemsPage.xaml">
+    <Page Include="Views\ProblemsChildPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

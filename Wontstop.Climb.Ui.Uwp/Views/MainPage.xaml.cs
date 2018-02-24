@@ -37,7 +37,7 @@ namespace Wontstop.Climb.Ui.Uwp.Views
         {
             if (_lastActivePage == null)
             {
-                Activate<TicksPage>();
+                Activate<TicksChildPage>();
             }
             else
             {
@@ -62,14 +62,14 @@ namespace Wontstop.Climb.Ui.Uwp.Views
             ActivePage = (Page) e.Content;
         }
 
-        private void OnClickTickssButton(object sender, RoutedEventArgs e)
+        private void OnClickTicksButton(object sender, RoutedEventArgs e)
         {
-            Activate<TicksPage>();
+            Activate<TicksChildPage>();
         }
 
         private void OnClickProblemsButton(object sender, RoutedEventArgs e)
         {
-            Activate<ProblemsPage>();
+            Activate<ProblemsChildPage>();
         }
 
         private void Activate<T>()

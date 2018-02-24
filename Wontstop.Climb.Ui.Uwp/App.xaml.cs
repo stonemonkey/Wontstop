@@ -12,7 +12,6 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using MvvmToolkit;
-using MvvmToolkit.WinRT;
 using Problemator.Core;
 using Problemator.Core.Dtos;
 using Wontstop.Climb.Ui.Uwp.Views;

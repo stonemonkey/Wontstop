@@ -61,10 +61,10 @@
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\ProblemDetailesViewModel.cs" />
     <Compile Include="ViewModels\ProblemItemViewModel.cs" />
-    <Compile Include="ViewModels\ProblemsViewModel.cs" />
+    <Compile Include="ViewModels\ProblemsChildViewModel.cs" />
     <Compile Include="ViewModels\TickDetailsViewModel.cs" />
     <Compile Include="ViewModels\TickItemViewModel.cs" />
-    <Compile Include="ViewModels\TicksViewModel.cs" />
+    <Compile Include="ViewModels\TicksChildViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MvvmToolkit.Commands\MvvmToolkit.Commands.csproj">

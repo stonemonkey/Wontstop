@@ -77,9 +77,9 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     <controls:MenuItemButton x:Name="TicksButton"
                         Grid.Row="1"
                         Label="Ticks"
-                        Click="OnClickTickssButton"
+                        Click="OnClickTicksButton"
                         Style="{StaticResource AppBarMenuItemStyle}"
-                        IsSelected="{Binding ActivePage, Converter={StaticResource PageTypeNameToBoolConverter}, ConverterParameter=TicksPage}">
+                        IsSelected="{Binding ActivePage, Converter={StaticResource PageTypeNameToBoolConverter}, ConverterParameter=TicksChildPage}">
                         <SymbolIcon Symbol="Accept"/>
                     </controls:MenuItemButton>
                     
@@ -88,7 +88,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         Label="Problems"
                         Click="OnClickProblemsButton"
                         Style="{StaticResource AppBarMenuItemStyle}"
-                        IsSelected="{Binding ActivePage, Converter={StaticResource PageTypeNameToBoolConverter}, ConverterParameter=ProblemsPage}">
+                        IsSelected="{Binding ActivePage, Converter={StaticResource PageTypeNameToBoolConverter}, ConverterParameter=ProblemsChildPage}">
                         <SymbolIcon Symbol="AllApps"/>
                     </controls:MenuItemButton>
                     
