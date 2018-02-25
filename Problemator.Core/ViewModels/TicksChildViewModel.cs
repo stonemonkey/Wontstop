@@ -125,6 +125,7 @@ namespace Problemator.Core.ViewModels
             }
 
             var dashboard = parser.To<Dashboard>();
+            Details.Grades = dashboard.Grades;
             Details.SelectedAscentIdx = dashboard.UserSettings.AscentType;
             Locations = dashboard.Locations.ToDictionary(x => x.Name, x => x.Id);
             SelectedLocation = dashboard.Locations
@@ -321,6 +322,7 @@ namespace Problemator.Core.ViewModels
                 IsAvailaleAt(x, SelectedDate) && x.TagShort.Equals(tag, StringComparison.OrdinalIgnoreCase));
 
             _taggedProblems.Add(problem);
+            Details.IsSingleSelection = _taggedProblems.Count == 1;
         }
 
         private bool IsAvailaleAt(Problem problem, DateTime date)

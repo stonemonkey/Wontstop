@@ -9,6 +9,14 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
+    <UserControl.Resources>
+        <DataTemplate x:Key="GradeDataTemplate">
+            <Grid x:Name="TickItemPanel">
+                <TextBlock Text="{Binding Value.Name}"/>
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+    
     <Grid x:Name="ContextPanel" 
         HorizontalAlignment="Stretch"
         Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
@@ -16,48 +24,64 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="Auto"/>
-        </Grid.ColumnDefinitions>
+        
+        <Grid x:Name="SingleTickPanel"
+            Visibility="{Binding IsSingleSelection, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-        <ComboBox x:Name="AscentTypeComboBox"
-            Grid.Row="0" Grid.Column="0"
-            Margin="12,12,12,8"
-            VerticalAlignment="Center"
-            HorizontalAlignment="Stretch"
-            PlaceholderText="ascent type"
-            ItemsSource="{Binding AscentTypes.Values}"
-            SelectedIndex="{Binding SelectedAscentIdx, Mode=TwoWay}">
-        </ComboBox>
-
-        <StackPanel x:Name="TriesCountPanel"
-            Grid.Row="0" Grid.Column="1" 
-            Margin="12,8,12,8"
-            Orientation="Horizontal"
-            HorizontalAlignment="Right">
-            <Button x:Name="DecrementTriesButton"
-                Command="{Binding DecrementTriesCommand}">
-                <TextBlock 
-                    Text="&#59192;"
-                    VerticalAlignment="Center"
-                    FontFamily="Segoe MDL2 Assets"/>
-            </Button>
-            <TextBlock  
-                Width="24"
-                TextAlignment="Center"
+            <ComboBox x:Name="AscentTypeComboBox"
+                Grid.Column="0"
+                Margin="12,12,12,8"
                 VerticalAlignment="Center"
-                Text="{Binding NoTries, Mode=TwoWay}"/>
-            <Button x:Name="IncrementTriesButton"
-                Command="{Binding IncrementTicksCommand}">
-                <TextBlock 
-                    Text="&#59152;"
-                    VerticalAlignment="Center"
-                    FontFamily="Segoe MDL2 Assets"/>
-            </Button>
-        </StackPanel>
+                HorizontalAlignment="Stretch"
+                PlaceholderText="ascent type"
+                ItemsSource="{Binding AscentTypes.Values}"
+                SelectedIndex="{Binding SelectedAscentIdx, Mode=TwoWay}">
+            </ComboBox>
 
+            <ComboBox x:Name="GradeOpinionComboBox"
+                Grid.Column="1"
+                Margin="12,12,12,8"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Left"
+                PlaceholderText="grade opinion"
+                ItemsSource="{Binding Grades}"
+                SelectedIndex="{Binding SelectedGradeIdx, Mode=TwoWay}"
+                ItemTemplate="{StaticResource GradeDataTemplate}">
+            </ComboBox>
+
+            <StackPanel x:Name="TriesCountPanel"
+                Grid.Column="3" 
+                Margin="12,8,12,8"
+                Orientation="Horizontal"
+                HorizontalAlignment="Right">
+                <Button x:Name="DecrementTriesButton"
+                    Command="{Binding DecrementTriesCommand}">
+                    <TextBlock 
+                        Text="&#59192;"
+                        VerticalAlignment="Center"
+                        FontFamily="Segoe MDL2 Assets"/>
+                </Button>
+                <TextBlock  
+                    Width="24"
+                    TextAlignment="Center"
+                    VerticalAlignment="Center"
+                    Text="{Binding NoTries, Mode=TwoWay}"/>
+                <Button x:Name="IncrementTriesButton"
+                    Command="{Binding IncrementTicksCommand}">
+                    <TextBlock 
+                        Text="&#59152;"
+                        VerticalAlignment="Center"
+                        FontFamily="Segoe MDL2 Assets"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+        
         <Button x:Name="TickButton"
             Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
             Margin="12,4,12,20"

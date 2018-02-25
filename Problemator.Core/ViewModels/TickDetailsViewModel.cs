@@ -26,6 +26,24 @@ namespace Problemator.Core.ViewModels
 
         public IList<Problem> Problems { get; set; }
 
+        private bool _isSingleSelection;
+        public bool IsSingleSelection
+        {
+            get { return _isSingleSelection; }
+            set
+            {
+                _isSingleSelection = value;
+                if (_isSingleSelection)
+                {
+                    SelectedGradeIdx = GradesIds.IndexOf(Problems.Single().GradeId);
+                }
+            }
+        }
+
+        public int SelectedGradeIdx { get; set; }
+        public IDictionary<string, Grade> Grades { get; set; }
+        private IList<string> GradesIds => Grades?.Keys.ToList();
+
         public int SelectedAscentIdx { get; set; }
         public IDictionary<int, string> AscentTypes { get; private set; } =
             new Dictionary<int, string>
@@ -67,7 +85,8 @@ namespace Problemator.Core.ViewModels
             _eventAggregator.PublishOnCurrentThread(new BusyMessage(false));
         }
 
-        private IEnumerable<string> GetFailedToTickTags(IEnumerable<Response<ProblematorJsonParser>> responses)
+        private IEnumerable<string> GetFailedToTickTags(
+            IEnumerable<Response<ProblematorJsonParser>> responses)
         {
             var failedRequests = GetFailedRequests(responses).ToList();
             if (!failedRequests.Any())
@@ -91,15 +110,20 @@ namespace Problemator.Core.ViewModels
                 .Select(x => x.Request);
         }
 
-        private static Tick CreateTick(Problem problem, int tries, DateTime timestamp, int ascentType)
+        private Tick CreateTick(Problem problem, int tries, DateTime timestamp, int ascentType)
         {
+            var gradeOpinionId = problem.GradeId;
+            if (IsSingleSelection)
+            {
+                gradeOpinionId = GradesIds.ElementAt(SelectedGradeIdx);
+            }
             return new Tick
             {
                 Tries = tries,
                 Timestamp = timestamp,
                 ProblemId = problem.Id,
                 AscentType = ascentType,
-                GradeOpinionId = problem.GradeId,
+                GradeOpinionId = gradeOpinionId,
             };
         }
 
