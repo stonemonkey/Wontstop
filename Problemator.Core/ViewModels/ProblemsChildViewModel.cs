@@ -12,6 +12,7 @@ using MvvmToolkit;
 using MvvmToolkit.Commands;
 using MvvmToolkit.Messages;
 using Problemator.Core.Dtos;
+using Problemator.Core.Models;
 using Problemator.Core.Utils;
 
 namespace Problemator.Core.ViewModels
@@ -36,23 +37,26 @@ namespace Problemator.Core.ViewModels
 
         public IList<DateTimeOffset> TickDates { get; private set; }
 
+        public IList<WallSection> Sections { get; private set; }
         public ObservableCollection<Tick> Ticks { get; private set; }
-        public ObservableCollection<WallSection> Sections { get; private set; }
 
         private readonly ITimeService _timeService;
         private readonly IStorageService _storageService;
         private readonly IEventAggregator _eventAggregator;
+        private readonly Sections _sections;
         private readonly ProblematorRequestsFactory _requestsFactory;
 
         public ProblemsChildViewModel(
             ITimeService timeService,
             IStorageService storageService,
             IEventAggregator eventAggregator,
+            Sections sections,
             ProblematorRequestsFactory requestsFactory)
         {
             _timeService = timeService;
             _storageService = storageService;
             _eventAggregator = eventAggregator;
+            _sections = sections;
             _requestsFactory = requestsFactory;
 
             if (!_isDaySaved)
@@ -77,19 +81,18 @@ namespace Problemator.Core.ViewModels
             _eventAggregator.Subscribe(this);
         }
 
-        private List<Problem> _problems;
-
         private async Task RefreshAsync()
         {
             Busy = true;
 
             await LoadDashboardAsync();
-            await LoadProblemsAsync();
+            await _sections.LoadAsync();
             await LoadTickDatesAsync();
             await LoadTicks(SelectedDate);
 
             Busy = false;
-            Empty = _problems == null || !_problems.Any();
+            Sections = _sections.Get();
+            Empty = !_sections.HasProblems();
         }
 
         private async Task LoadDashboardAsync()
@@ -112,29 +115,6 @@ namespace Problemator.Core.ViewModels
             SelectedLocation = dashboard.Locations
                 .SingleOrDefault(x => string.Equals(x.Id,_context.GymId, StringComparison.Ordinal))?
                 .Name;
-        }
-
-        private async Task LoadProblemsAsync()
-        {
-            (await _requestsFactory.CreateWallSectionsRequest()
-                .RunAsync<ProblematorJsonParser>())
-                    .OnSuccess(HandleWallSectionsResponse)
-                    .PublishErrorOnHttpFailure(_eventAggregator);
-        }
-
-        private void HandleWallSectionsResponse(ProblematorJsonParser parser)
-        {
-            if (parser.PublishMessageOnInternalServerError(_eventAggregator))
-            {
-                return;
-            }
-
-            Sections = new ObservableCollection<WallSection>((parser.To<IDictionary<string, WallSection>>() ?? 
-                    new Dictionary<string, WallSection>())
-                .Values);
-            _problems = Sections
-                .SelectMany(x => x.Problems)
-                .ToList();
         }
 
         private async Task LoadTicks(DateTime day)

@@ -24,6 +24,7 @@ namespace Problemator.Core.Models
 
         private List<string> _tags;
         private List<Problem> _problems;
+        private IDictionary<string, WallSection> _sections;
 
         public bool HasProblems() => _problems != null && _problems.Any();
 
@@ -42,15 +43,16 @@ namespace Problemator.Core.Models
                 return;
             }
 
-            var sections = (parser.To<IDictionary<string, WallSection>>() ?? new Dictionary<string, WallSection>())
-                .Values;
-            _problems = sections
+            _sections = parser.To<IDictionary<string, WallSection>>() ?? new Dictionary<string, WallSection>();
+            _problems = _sections.Values
                 .SelectMany(x => x.Problems)
                 .ToList();
             _tags = _problems
                 .Select(x => x.TagShort)
                 .ToList();
         }
+
+        public IList<WallSection> Get() => _sections.Values.ToList();
 
         public bool ContainProblem(string tag) =>
             _tags.Contains(tag, StringComparer.OrdinalIgnoreCase);
