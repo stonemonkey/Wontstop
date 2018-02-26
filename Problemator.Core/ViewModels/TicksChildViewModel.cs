@@ -13,6 +13,7 @@ using MvvmToolkit.Commands;
 using MvvmToolkit.Messages;
 using Problemator.Core.Dtos;
 using Problemator.Core.Messages;
+using Problemator.Core.Models;
 using Problemator.Core.Utils;
 
 namespace Problemator.Core.ViewModels
@@ -50,18 +51,21 @@ namespace Problemator.Core.ViewModels
         private readonly ITimeService _timeService;
         private readonly IStorageService _storageService;
         private readonly IEventAggregator _eventAggregator;
+        private readonly Sections _sections;
         private readonly ProblematorRequestsFactory _requestsFactory;
 
         public TicksChildViewModel(
             ITimeService timeService,
             IStorageService storageService,
             IEventAggregator eventAggregator,
+            Sections sections,
             TickDetailsViewModel tickDetailsViewModel,
             ProblematorRequestsFactory requestsFactory)
         {
             _timeService = timeService;
             _storageService = storageService;
             _eventAggregator = eventAggregator;
+            _sections = sections;
             _requestsFactory = requestsFactory;
 
             Details = tickDetailsViewModel;
@@ -89,9 +93,6 @@ namespace Problemator.Core.ViewModels
             _eventAggregator.Subscribe(this);
         }
 
-        private List<string> _tags;
-        private List<Problem> _problems;
-
         private async Task RefreshAsync()
         {
             Busy = true;
@@ -100,13 +101,13 @@ namespace Problemator.Core.ViewModels
             ClearTaggedProblems();
 
             await LoadDashboardAsync();
-            await LoadProblemsAsync();
+            await _sections.LoadAsync();
             await LoadTickDatesAsync();
             await LoadTicks(SelectedDate);
 
             Busy = false;
             UpdateEmpty();
-            UpdateAreProblemsAvailable();
+            NoProblemsAvailable = !_sections.HasProblems();
         }
 
         private async Task LoadDashboardAsync()
@@ -131,32 +132,6 @@ namespace Problemator.Core.ViewModels
             SelectedLocation = dashboard.Locations
                 .SingleOrDefault(x => string.Equals(x.Id,_context.GymId, StringComparison.Ordinal))?
                 .Name;
-        }
-
-        private async Task LoadProblemsAsync()
-        {
-            (await _requestsFactory.CreateWallSectionsRequest()
-                .RunAsync<ProblematorJsonParser>())
-                    .OnSuccess(HandleWallSectionsResponse)
-                    .PublishErrorOnHttpFailure(_eventAggregator);
-        }
-
-        private void HandleWallSectionsResponse(ProblematorJsonParser parser)
-        {
-            if (parser.PublishMessageOnInternalServerError(_eventAggregator))
-            {
-                return;
-            }
-
-            var sections = new ObservableCollection<WallSection>((parser.To<IDictionary<string, WallSection>>() ?? 
-                    new Dictionary<string, WallSection>())
-                .Values);
-            _problems = sections
-                .SelectMany(x => x.Problems)
-                .ToList();
-            _tags = _problems
-                .Select(x => x.TagShort)
-                .ToList();
         }
 
         private async Task LoadTicks(DateTime day)
@@ -274,18 +249,14 @@ namespace Problemator.Core.ViewModels
                 SuggestedProblems = null;
                 return;
             }
-            if (_tags.Contains(lastTag))
+            if (_sections.ContainProblem(lastTag))
             {
                 AddTaggedProblem(lastTag);
                 PublishTags();
                 return;
             }
 
-            SuggestedProblems = _problems
-                .Where(x => 
-                    IsAvailaleAt(x, SelectedDate) &&
-                    x.TagShort.StartsWith(lastTag, StringComparison.OrdinalIgnoreCase))
-                .ToList();
+            SuggestedProblems = _sections.GetAvailableProblems(lastTag, SelectedDate);
         }
 
         private RelayCommand<string> _suggestionChosenComand;
@@ -318,23 +289,8 @@ namespace Problemator.Core.ViewModels
                 return;
             }
 
-            var problem = _problems.First(x => 
-                IsAvailaleAt(x, SelectedDate) && x.TagShort.Equals(tag, StringComparison.OrdinalIgnoreCase));
-
-            _taggedProblems.Add(problem);
+            _taggedProblems.Add(_sections.GetFirstAvailableProblem(tag, SelectedDate));
             Details.IsSingleSelection = _taggedProblems.Count == 1;
-        }
-
-        private bool IsAvailaleAt(Problem problem, DateTime date)
-        {
-            if (problem.Removed == null)
-            {
-                return true;
-            }
-
-            var removed = DateTime.Parse(problem.Removed);
-
-            return removed > date;
         }
 
         private const string TicksSeparator = ",";
@@ -357,11 +313,6 @@ namespace Problemator.Core.ViewModels
             Empty = Ticks == null || !Ticks.Any();
         }
 
-        private void UpdateAreProblemsAvailable()
-        {
-            NoProblemsAvailable = _problems == null || !_problems.Any();
-        }
-
         private bool AreAllTagsValid()
         {
             var inexisten = GetInexistenTags();
@@ -378,7 +329,7 @@ namespace Problemator.Core.ViewModels
 
             var tags = SplitTags();
 
-            return tags.Where(x => !_tags.Contains(x))
+            return tags.Where(x => !_sections.ContainProblem(x))
                 .ToList();
         }
 
@@ -400,7 +351,7 @@ namespace Problemator.Core.ViewModels
                 ShowErrorForFailedToTickTags(message.FailedToTickTags);
             }
 
-            await LoadProblemsAsync();
+            await _sections.LoadAsync();
             await LoadTicks(SelectedDate);
 
             UpdateEmpty();

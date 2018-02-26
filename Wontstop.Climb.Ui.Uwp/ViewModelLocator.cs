@@ -12,6 +12,7 @@ using Problemator.Core.ViewModels;
 using SimpleInjector;
 using HttpApiClient;
 using System.Reflection;
+using Problemator.Core.Models;
 
 namespace Wontstop.Climb.Ui.Uwp
 {
@@ -72,6 +73,7 @@ namespace Wontstop.Climb.Ui.Uwp
                     new [] { Assembly.GetAssembly(GetType()) },
                     Container.GetInstance<IEventAggregator>()));
 
+            Container.RegisterSingleton<Sections>();
             Container.RegisterSingleton<ProblematorRequestsFactory>();
             Container.RegisterSingleton<ITimeService, TimeService>();
             Container.RegisterSingleton<IStorageService, StorageService>();
