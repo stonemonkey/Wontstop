@@ -255,7 +255,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 VerticalAlignment="Center"
                 HorizontalAlignment="Stretch"
                 PlaceholderText="select gym"
-                ItemsSource="{Binding Locations.Keys}"
+                ItemsSource="{Binding Locations}"
                 SelectedItem="{Binding SelectedLocation, Mode=TwoWay}">
                 <interactivity:Interaction.Behaviors>
                     <core:EventTriggerBehavior EventName="SelectionChanged">

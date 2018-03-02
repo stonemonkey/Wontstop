@@ -1,4 +1,7 @@
-﻿using HttpApiClient;
+﻿// Copyright (c) Costin Morariu. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using HttpApiClient;
 using MvvmToolkit.Messages;
 using Problemator.Core.Dtos;
 using Problemator.Core.Utils;
@@ -54,7 +57,7 @@ namespace Problemator.Core.Models
 
         public IList<WallSection> Get() => _sections.Values.ToList();
 
-        public bool ContainProblem(string tag) =>
+        public bool ContainsProblem(string tag) =>
             _tags.Contains(tag, StringComparer.OrdinalIgnoreCase);
 
         public Problem GetFirstAvailableProblem(string tag, DateTime date) =>

@@ -36,8 +36,5 @@ namespace Problemator.Core.Dtos
 
         [JsonProperty(PropertyName = "_")]
         public string UnixTimestamp { get; set; }
-
-        [JsonIgnore]
-        public int AscentType => int.Parse(SportTickAscentType);
     }
 }

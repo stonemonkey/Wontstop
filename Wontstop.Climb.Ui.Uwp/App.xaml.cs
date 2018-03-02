@@ -63,7 +63,7 @@ namespace Wontstop.Climb.Ui.Uwp
         private static Type GetStartPage()
         {
             var storageService = ServiceLocator.Get<IStorageService>();
-            var context = storageService.ReadLocal<UserContext>(Settings.ContextKey);
+            var context = storageService.ReadLocal<UserIdentity>(Settings.ContextKey);
             if (context == null)
             {
                 return typeof (LoginPage);

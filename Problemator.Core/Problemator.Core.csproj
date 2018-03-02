@@ -43,15 +43,18 @@
     <Compile Include="Dtos\DayTicks.cs" />
     <Compile Include="Dtos\Grade.cs" />
     <Compile Include="Dtos\GradeDist.cs" />
+    <Compile Include="Dtos\GymChangeConfirmation.cs" />
     <Compile Include="Dtos\Location.cs" />
     <Compile Include="Dtos\Problem.cs" />
     <Compile Include="Dtos\Statistics.cs" />
     <Compile Include="Dtos\Tick.cs" />
-    <Compile Include="Dtos\UserContext.cs" />
+    <Compile Include="Dtos\UserIdentity.cs" />
     <Compile Include="Dtos\UserSettings.cs" />
     <Compile Include="Dtos\WallSection.cs" />
     <Compile Include="Messages\TickProblemsMesage.cs" />
     <Compile Include="Models\Sections.cs" />
+    <Compile Include="Models\Session.cs" />
+    <Compile Include="Models\UserContext.cs" />
     <Compile Include="ProblematorRequestsFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
@@ -103,6 +106,9 @@
     </Reference>
     <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\netstandard1.1\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Thread">
+      <HintPath>..\..\..\Program Files (x86)\Microsoft SDKs\NuGetPackagesFallback\microsoft.netcore.universalwindowsplatform\6.0.6\ref\uap10.0.15138\System.Threading.Thread.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

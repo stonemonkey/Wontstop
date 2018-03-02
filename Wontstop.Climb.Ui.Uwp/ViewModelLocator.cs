@@ -73,7 +73,9 @@ namespace Wontstop.Climb.Ui.Uwp
                     new [] { Assembly.GetAssembly(GetType()) },
                     Container.GetInstance<IEventAggregator>()));
 
+            Container.RegisterSingleton<Session>();
             Container.RegisterSingleton<Sections>();
+            Container.RegisterSingleton<UserContext>();
             Container.RegisterSingleton<ProblematorRequestsFactory>();
             Container.RegisterSingleton<ITimeService, TimeService>();
             Container.RegisterSingleton<IStorageService, StorageService>();

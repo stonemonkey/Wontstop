@@ -29,7 +29,7 @@ namespace Problemator.Core.ViewModels
         public bool Empty { get; private set; }
 
         public string SelectedLocation { get; set; }
-        public IDictionary<string, string> Locations { get; set; }
+        public IList<string> Locations { get; set; }
 
         private static bool _isDaySaved;
         public static DateTimeOffset Day { get; set; }
@@ -43,6 +43,7 @@ namespace Problemator.Core.ViewModels
         private readonly ITimeService _timeService;
         private readonly IStorageService _storageService;
         private readonly IEventAggregator _eventAggregator;
+        private readonly Session _session;
         private readonly Sections _sections;
         private readonly ProblematorRequestsFactory _requestsFactory;
 
@@ -50,12 +51,14 @@ namespace Problemator.Core.ViewModels
             ITimeService timeService,
             IStorageService storageService,
             IEventAggregator eventAggregator,
+            Session session,
             Sections sections,
             ProblematorRequestsFactory requestsFactory)
         {
             _timeService = timeService;
             _storageService = storageService;
             _eventAggregator = eventAggregator;
+            _session = session;
             _sections = sections;
             _requestsFactory = requestsFactory;
 
@@ -70,11 +73,11 @@ namespace Problemator.Core.ViewModels
         public RelayCommand LoadCommand => _loadComand ??
             (_loadComand = new RelayCommand(async () => await LoadAsync()));
 
-        private UserContext _context;
+        private UserIdentity _identity;
 
         protected virtual async Task LoadAsync()
         {
-            _context = _storageService.ReadLocal<UserContext>(Settings.ContextKey);
+            _identity = _storageService.ReadLocal<UserIdentity>(Settings.ContextKey);
 
             await RefreshAsync();
 
@@ -85,36 +88,16 @@ namespace Problemator.Core.ViewModels
         {
             Busy = true;
 
-            await LoadDashboardAsync();
             await _sections.LoadAsync();
             await LoadTickDatesAsync();
             await LoadTicks(SelectedDate);
 
+            Locations = await _session.GetLocationNames();
+            SelectedLocation = await _session.GetCurrentLocationName();
+
             Busy = false;
             Sections = _sections.Get();
             Empty = !_sections.HasProblems();
-        }
-
-        private async Task LoadDashboardAsync()
-        {
-            (await _requestsFactory.CreateDashboardRequest()
-                    .RunAsync<ProblematorJsonParser>())
-                .OnSuccess(HandleDashboardResponse)
-                .PublishErrorOnHttpFailure(_eventAggregator);
-        }
-
-        private void HandleDashboardResponse(ProblematorJsonParser parser)
-        {
-            if (parser.PublishMessageOnInternalServerError(_eventAggregator))
-            {
-                return;
-            }
-
-            var dashboard = parser.To<Dashboard>();
-            Locations = dashboard.Locations.ToDictionary(x => x.Name, x => x.Id);
-            SelectedLocation = dashboard.Locations
-                .SingleOrDefault(x => string.Equals(x.Id,_context.GymId, StringComparison.Ordinal))?
-                .Name;
         }
 
         private async Task LoadTicks(DateTime day)
@@ -171,28 +154,8 @@ namespace Problemator.Core.ViewModels
 
         private async Task ChangeLocationAsync()
         {
-            var gymId = Locations[SelectedLocation];
-            if (gymId == _context.GymId)
-            {
-                return;
-            }
-
-            (await _requestsFactory.CreateChangeGymRequest(gymId)
-                    .RunAsync<ProblematorJsonParser>())
-                .OnSuccess(x => HandleChangeGymRequest(x, gymId))
-                .PublishErrorOnHttpFailure(_eventAggregator);
-
+            await _session.SetCurrentLocationAsync(SelectedLocation);
             await RefreshAsync();
-        }
-
-        private void HandleChangeGymRequest(ProblematorJsonParser parser, string gymId)
-        {
-            var context = parser.To<UserContext>();
-            _context.GymId = gymId;
-            _context.Jwt = context.Jwt;
-            _context.Message = context.Message;
-            _requestsFactory.SetUserContext(_context);
-            _storageService.SaveLocal(Settings.ContextKey, _context);
         }
 
         private RelayCommand _changeDateComand;

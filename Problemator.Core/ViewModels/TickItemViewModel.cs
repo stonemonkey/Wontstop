@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Costin Morariu. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using HttpApiClient;
@@ -9,6 +10,7 @@ using MvvmToolkit.Commands;
 using MvvmToolkit.Messages;
 using MvvmToolkit.Services;
 using Problemator.Core.Dtos;
+using Problemator.Core.Models;
 using Problemator.Core.Utils;
 
 namespace Problemator.Core.ViewModels
@@ -20,31 +22,69 @@ namespace Problemator.Core.ViewModels
         public event PropertyChangedEventHandler PropertyChanged;
 
         public bool Busy { get; private set; }
-     
-        [Model]
-        public Tick Tick { get; set; }
 
+        public string AscentType { get; private set; }
+
+        private Tick _tick;
+        [Model]
+        public Tick Tick
+        {
+            get { return _tick; }
+            set
+            {
+                _tick = value;
+                if (_tick != null)
+                {
+                    AscentType = _session.GetSportAscentType(Tick.AscentTypeId);
+                    Details.SelectedAscentType = AscentType;
+                    Details.SelectedDate = Tick.Timestamp;
+                }
+            }
+        }
+
+        public TickDetailsViewModel Details { get; }
+
+        private readonly Session _session;
+        private readonly Sections _sections;
         private readonly IEventAggregator _eventAggregator;
         private readonly INavigationService _navigationService;
         private readonly ProblematorRequestsFactory _requestFactory;
 
         public TickItemViewModel(
+            Session session,
+            Sections sections,
             IEventAggregator eventAggregator,
             INavigationService navigationService,
+            TickDetailsViewModel tickDetailsViewModel,
             ProblematorRequestsFactory requestFactory)
         {
+            _session = session;
+            _sections = sections;
             _eventAggregator = eventAggregator;
             _navigationService = navigationService;
             _requestFactory = requestFactory;
+
+            Details = tickDetailsViewModel;
         }
 
         private RelayCommand _loadComand;
         public RelayCommand LoadCommand => _loadComand ??
-            (_loadComand = new RelayCommand(Load));
+            (_loadComand = new RelayCommand(async () => await LoadAsync()));
 
-        private void Load()
+        private async Task LoadAsync()
         {
             _eventAggregator.Subscribe(this);
+
+            await LoadProblemAsync();
+        }
+
+        private async Task LoadProblemAsync()
+        {
+            // TODO: 
+            Details.Problems = new List<Problem>() {  };
+            Details.IsSingleSelection = Details.Problems.Count == 1;
+
+            await Task.Delay(100);
         }
 
         private RelayCommand _unloadComand;

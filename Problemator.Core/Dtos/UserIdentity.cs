@@ -6,11 +6,23 @@ using Newtonsoft.Json;
 namespace Problemator.Core.Dtos
 {
     /// <summary>
-    /// Represents the context of the user within the application. It is received from problmator 
+    /// Represents the identity of the user within the application. It is received from problmator 
     /// API as a result of authentication process (login/signup).
     /// </summary>
-    public class UserContext
+    public class UserIdentity
     {
+        public UserIdentity()
+        {
+        }
+
+        public UserIdentity(UserIdentity identity)
+        {
+            Jwt = identity.Jwt;
+            GymId = identity.GymId;
+            UserId = identity.UserId;
+            Message = identity.Message;
+        }
+
         [JsonProperty(PropertyName = "JWT")]
         public string Jwt { get; set; }
 

@@ -7,12 +7,20 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     mc:Ignorable="d">
+
+    <interactivity:Interaction.Behaviors>
+        <core:EventTriggerBehavior EventName="Loaded">
+            <core:InvokeCommandAction Command="{Binding LoadCommand}"/>
+        </core:EventTriggerBehavior>
+    </interactivity:Interaction.Behaviors>
 
     <UserControl.Resources>
         <DataTemplate x:Key="GradeDataTemplate">
             <Grid x:Name="TickItemPanel">
-                <TextBlock Text="{Binding Value.Name}"/>
+                <TextBlock Text="{Binding Name}"/>
             </Grid>
         </DataTemplate>
     </UserControl.Resources>
@@ -40,8 +48,8 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 VerticalAlignment="Center"
                 HorizontalAlignment="Stretch"
                 PlaceholderText="ascent type"
-                ItemsSource="{Binding AscentTypes.Values}"
-                SelectedIndex="{Binding SelectedAscentIdx, Mode=TwoWay}">
+                ItemsSource="{Binding AscentTypes}"
+                SelectedItem="{Binding SelectedAscentType, Mode=TwoWay}">
             </ComboBox>
 
             <ComboBox x:Name="GradeOpinionComboBox"
@@ -51,7 +59,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 HorizontalAlignment="Left"
                 PlaceholderText="grade opinion"
                 ItemsSource="{Binding Grades}"
-                SelectedIndex="{Binding SelectedGradeIdx, Mode=TwoWay}"
+                SelectedItem="{Binding SelectedGrade, Mode=TwoWay}"
                 ItemTemplate="{StaticResource GradeDataTemplate}">
             </ComboBox>
 

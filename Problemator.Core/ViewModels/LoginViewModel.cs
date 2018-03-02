@@ -3,13 +3,9 @@
 
 using System.ComponentModel;
 using System.Threading.Tasks;
-using HttpApiClient;
-using MvvmToolkit;
 using MvvmToolkit.Commands;
-using MvvmToolkit.Messages;
 using MvvmToolkit.Services;
-using Problemator.Core.Dtos;
-using Problemator.Core.Utils;
+using Problemator.Core.Models;
 
 namespace Problemator.Core.ViewModels
 {
@@ -24,21 +20,15 @@ namespace Problemator.Core.ViewModels
         public string Email { get; set; }
         public string Password { get; set; }
 
-        private readonly IStorageService _storageService;
-        private readonly IEventAggregator _eventAggregator;
+        private readonly UserContext _userContext;
         private readonly INavigationService _navigationService;
-        private readonly ProblematorRequestsFactory _requestsFactory;
 
         public LoginViewModel(
-            IStorageService storageService,
-            IEventAggregator eventAggregator,
-            INavigationService navigationService,
-            ProblematorRequestsFactory requestsFactory)
+            UserContext userContext,
+            INavigationService navigationService)
         {
-            _storageService = storageService;
-            _eventAggregator = eventAggregator;
+            _userContext = userContext;
             _navigationService = navigationService;
-            _requestsFactory = requestsFactory;
         }
 
         private RelayCommand _loginComand;
@@ -53,26 +43,13 @@ namespace Problemator.Core.ViewModels
         {
             Busy = true;
 
-            (await _requestsFactory.CreateLoginRequest(Email, Password)
-                .RunAsync<ProblematorJsonParser>())
-                    .OnSuccess(HandleResponse)
-                    .PublishErrorOnHttpFailure(_eventAggregator);
-
-            Busy = false;
-        }
-
-        private void HandleResponse(ProblematorJsonParser parser)
-        {
-            if (parser.PublishMessageOnInternalServerError(_eventAggregator))
+            var successful = await _userContext.AuthenticateAsync(Email, Password);
+            if (successful)
             {
-                return;
+                _navigationService.Navigate<MainViewModel>();
             }
 
-            var context = parser.To<UserContext>();
-            _requestsFactory.SetUserContext(context);
-            _storageService.SaveLocal(Settings.ContextKey, context);
-
-            _navigationService.Navigate<MainViewModel>();
+            Busy = false;
         }
     }
 }

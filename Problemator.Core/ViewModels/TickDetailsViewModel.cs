@@ -12,6 +12,7 @@ using MvvmToolkit.Commands;
 using MvvmToolkit.Messages;
 using Problemator.Core.Dtos;
 using Problemator.Core.Messages;
+using Problemator.Core.Models;
 using Problemator.Core.Utils;
 
 namespace Problemator.Core.ViewModels
@@ -35,35 +36,47 @@ namespace Problemator.Core.ViewModels
                 _isSingleSelection = value;
                 if (_isSingleSelection)
                 {
-                    SelectedGradeIdx = GradesIds.IndexOf(Problems.Single().GradeId);
+                    SelectedGrade = Grades.Single(x => 
+                        string.Equals(x.Id, Problems.Single().GradeId)).Name;
                 }
             }
         }
 
-        public int SelectedGradeIdx { get; set; }
-        public IDictionary<string, Grade> Grades { get; set; }
-        private IList<string> GradesIds => Grades?.Keys.ToList();
+        public string SelectedGrade { get; set; }
+        public IList<Grade> Grades { get; private set; }
 
-        public int SelectedAscentIdx { get; set; }
-        public IDictionary<int, string> AscentTypes { get; private set; } =
-            new Dictionary<int, string>
-            {
-                { 0, "lead" },
-                { 1, "toprope" },
-            };
+        public string SelectedAscentType { get; set; }
+        public IList<string> AscentTypes { get; private set; }
 
+        private readonly Session _session;
+        private readonly Sections _sections;
         private readonly IEventAggregator _eventAggregator;
         private readonly ProblematorRequestsFactory _requestsFactory;
 
         public TickDetailsViewModel(
+            Session session,
+            Sections sections,
             IEventAggregator eventAggregator,
             ProblematorRequestsFactory requestsFactory)
         {
+            _session = session;
+            _sections = sections;
             _eventAggregator = eventAggregator;
             _requestsFactory = requestsFactory;
         }
 
         #region Tick
+
+        private RelayCommand _loadComand;
+        public RelayCommand LoadCommand => _loadComand ??
+            (_loadComand = new RelayCommand(async () => await LoadAsync()));
+
+        private async Task LoadAsync()
+        {
+            Grades = await _session.GetGrades();
+            AscentTypes = _session.GetSportAscentTypes();
+            SelectedAscentType = await _session.GetUserSportAscentType();
+        }
 
         private RelayCommand _tickComand;
 
@@ -76,7 +89,7 @@ namespace Problemator.Core.ViewModels
 
             var responses = await Task.WhenAll(Problems
                 .Select(x => _requestsFactory.CreateUpdateTickRequest(
-                        CreateTick(x, NoTries, SelectedDate, SelectedAscentIdx))
+                        CreateTick(x, NoTries, SelectedDate, SelectedAscentType))
                     .RunAsync<ProblematorJsonParser>()));
 
             var failedToTickTags = GetFailedToTickTags(responses).ToArray();
@@ -110,19 +123,23 @@ namespace Problemator.Core.ViewModels
                 .Select(x => x.Request);
         }
 
-        private Tick CreateTick(Problem problem, int tries, DateTime timestamp, int ascentType)
+        private Tick CreateTick(Problem problem, int tries, DateTime timestamp, string ascentType)
         {
             var gradeOpinionId = problem.GradeId;
             if (IsSingleSelection)
             {
-                gradeOpinionId = GradesIds.ElementAt(SelectedGradeIdx);
+                gradeOpinionId = Grades.Single(x => 
+                    string.Equals(x.Name, SelectedGrade, StringComparison.OrdinalIgnoreCase)).Id;
             }
+
+            var ascentTypeId = _session.GetSportAscentTypeId(ascentType);
+
             return new Tick
             {
                 Tries = tries,
                 Timestamp = timestamp,
                 ProblemId = problem.Id,
-                AscentType = ascentType,
+                AscentTypeId = ascentTypeId,
                 GradeOpinionId = gradeOpinionId,
             };
         }

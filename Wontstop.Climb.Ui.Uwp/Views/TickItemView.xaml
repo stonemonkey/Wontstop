@@ -7,16 +7,31 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     mc:Ignorable="d"
+    Loaded="UserControl_Loaded"
+    Unloaded="UserControl_Unloaded"
     DataContext="{Binding TickItemViewModel, Source={StaticResource ViewModelLocator}}">
+       
+    <ToggleButton x:Name="TickItemToggleButton"
+        IsChecked="False"
+        HorizontalAlignment="Stretch"
+        HorizontalContentAlignment="Stretch">
+        
+        <interactivity:Interaction.Behaviors>
+            <core:EventTriggerBehavior EventName="Loaded">
+                <core:InvokeCommandAction Command="{Binding LoadCommand}"/>
+            </core:EventTriggerBehavior>
+            <core:EventTriggerBehavior EventName="Unloaded">
+                <core:InvokeCommandAction Command="{Binding UnloadCommand}"/>
+            </core:EventTriggerBehavior>
+        </interactivity:Interaction.Behaviors>
 
-    <Border x:Name="TickItemBorder"
-        HorizontalAlignment="Stretch">
         <Grid x:Name="TickItemPanel"
             Background="Transparent">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
@@ -37,7 +52,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     Grid.Column="2"
                     Margin="8,0,0,0"
                     VerticalAlignment="Center"
-                    Text="{Binding Tick.Grade}"/>
+                    Text="{Binding Tick.GradeName}"/>
                 <TextBlock x:Name="TagTextBlock"
                     Grid.Column="3"
                     Margin="8,0,0,0"
@@ -90,7 +105,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         Margin="4,0,0,0"
                         Foreground="Gray"
                         VerticalAlignment="Center"
-                        Text="{Binding Tick.AscentType, Converter={StaticResource IntToAscentTypeStringConverter}}"
+                        Text="{Binding AscentType}"
                         Style="{ThemeResource CaptionTextBlockStyle}"/>
                 </StackPanel>                
                 <TextBlock Text="|" 
@@ -143,14 +158,12 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         FontFamily="Segoe MDL2 Assets"/>
                 </Button>
             </StackPanel>
+            <Grid Name="TickDetailsPanel" 
+                Grid.Row="2"
+                Visibility="{Binding IsChecked, ElementName=TickItemToggleButton, Converter={StaticResource BoolToVisibilityConverter}}">
+                <TextBlock Text="TEST TEST TEST"/>
+            </Grid>
         </Grid>
-        <interactivity:Interaction.Behaviors>
-            <core:EventTriggerBehavior EventName="Loaded">
-                <core:InvokeCommandAction Command="{Binding LoadCommand}"/>
-            </core:EventTriggerBehavior>
-            <core:EventTriggerBehavior EventName="Unloaded">
-                <core:InvokeCommandAction Command="{Binding UnloadCommand}"/>
-            </core:EventTriggerBehavior>
-        </interactivity:Interaction.Behaviors>
-    </Border>
+    </ToggleButton>
+
 </UserControl>

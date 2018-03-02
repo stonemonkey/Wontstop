@@ -3,10 +3,9 @@
 
 using System.ComponentModel;
 using System.Threading.Tasks;
-using HttpApiClient.Parsers;
-using MvvmToolkit;
 using MvvmToolkit.Commands;
 using MvvmToolkit.Services;
+using Problemator.Core.Models;
 
 namespace Problemator.Core.ViewModels
 {
@@ -18,26 +17,27 @@ namespace Problemator.Core.ViewModels
 
         public bool Busy { get; set; }
 
-        private readonly IStorageService _storageService;
+        private readonly Session _session;
+        private readonly UserContext _userContext;
         private readonly INavigationService _navigationService;
-        private readonly ProblematorRequestsFactory _requestsFactory;
 
         public MainViewModel(
-            IStorageService storageService,
-            INavigationService navigationService,
-            ProblematorRequestsFactory requestsFactory)
+            Session session,
+            UserContext userContext,
+            INavigationService navigationService)
         {
-            _storageService = storageService;
+            _session = session;
+            _userContext = userContext;
             _navigationService = navigationService;
-            _requestsFactory = requestsFactory;
         }
 
         private RelayCommand _loadComand;
         public RelayCommand LoadCommand => _loadComand ??
-            (_loadComand = new RelayCommand(Load));
+            (_loadComand = new RelayCommand(async () => await LoadAsync()));
 
-        private void Load()
+        private async Task LoadAsync()
         {
+            await _session.LoadAsync();
             _navigationService.ClearBackStack();
         }
 
@@ -49,13 +49,7 @@ namespace Problemator.Core.ViewModels
         {
             Busy = true;
 
-            await _requestsFactory.CreateLogoutRequest()
-                .RunAsync<StringParser>();
-
-            _requestsFactory.ClearUserContext();
-
-            _storageService.DeleteLocal(Settings.ContextKey);
-
+            await _userContext.DeauthenticateAsync();
             _navigationService.Navigate<LoginViewModel>();
 
             Busy = false;

@@ -37,20 +37,15 @@ namespace Problemator.Core
         private static string _invalidArgumentMessage = "Invalid argument!";
         private static string _missingUserContextMessage = "Missing user context!";
 
-        private UserContext _context;
+        private UserIdentity _userIdentity;
 
         /// <summary>
         /// Sets the context of the user to be used for access while accessing Problemator API.
         /// </summary>
         /// <param name="context">User context instance.</param>
-        public void SetUserContext(UserContext context)
+        public void SetUserContext(UserIdentity context)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
-
-            _context = context;
+            _userIdentity = context ?? throw new ArgumentNullException(nameof(context));
         }
         
         /// <summary>
@@ -58,7 +53,7 @@ namespace Problemator.Core
         /// </summary>
         public void ClearUserContext()
         {
-            _context = null;
+            _userIdentity = null;
         }
 
         #region Parameter helpers
@@ -75,22 +70,22 @@ namespace Problemator.Core
 
         protected void AddGymIdParam(ConfigBase config)
         {
-            if (_context == null)
+            if (_userIdentity == null)
             {
                 throw new InvalidOperationException(_missingUserContextMessage);
             }
 
-            config.AddParam("gymid", _context.GymId);
+            config.AddParam("gymid", _userIdentity.GymId);
         }
 
         protected void AddApiAuthTokenParam(ConfigBase config)
         {
-            if (_context == null)
+            if (_userIdentity == null)
             {
                 throw new InvalidOperationException(_missingUserContextMessage);
             }
 
-            config.AddParam("api-auth-token", _context.Jwt);
+            config.AddParam("api-auth-token", _userIdentity.Jwt);
         }
 
         protected void AddClientTimestampParam(ConfigBase config)
@@ -238,7 +233,7 @@ namespace Problemator.Core
             config.AddParam(ProblemIdParamKey, tick.ProblemId);
             config.AddParam("grade_opinion", tick.GradeOpinionId);
             config.AddParam("tries", tick.Tries.ToString());
-            config.AddParam("ascent_type", tick.AscentType.ToString());
+            config.AddParam("ascent_type", tick.AscentTypeId.ToString());
             config.AddParam("tickdate", tick.Timestamp.ToString("dd.MM.yyyy", CultureInfo.InvariantCulture));
             AddApiAuthTokenParam(config);
             AddClientTimestampParam(config);
@@ -295,7 +290,7 @@ namespace Problemator.Core
         {
             var urn = $"{Server}/dashinfo";
             var config = new Config(urn, IsSecure);
-            var location = _context?.GymId;
+            var location = _userIdentity?.GymId;
             if (location != null)
             {
                 AddLocationParam(config, location);

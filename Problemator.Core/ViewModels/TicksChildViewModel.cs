@@ -34,7 +34,7 @@ namespace Problemator.Core.ViewModels
         public string Tags { get; set; }
 
         public string SelectedLocation { get; set; }
-        public IDictionary<string, string> Locations { get; set; }
+        public IList<string> Locations { get; private set; }
 
         private static bool _isDaySaved;
         public static DateTimeOffset Day { get; set; }
@@ -51,13 +51,16 @@ namespace Problemator.Core.ViewModels
         private readonly ITimeService _timeService;
         private readonly IStorageService _storageService;
         private readonly IEventAggregator _eventAggregator;
+        private readonly Session _session;
         private readonly Sections _sections;
+
         private readonly ProblematorRequestsFactory _requestsFactory;
 
         public TicksChildViewModel(
             ITimeService timeService,
             IStorageService storageService,
             IEventAggregator eventAggregator,
+            Session session,
             Sections sections,
             TickDetailsViewModel tickDetailsViewModel,
             ProblematorRequestsFactory requestsFactory)
@@ -65,6 +68,7 @@ namespace Problemator.Core.ViewModels
             _timeService = timeService;
             _storageService = storageService;
             _eventAggregator = eventAggregator;
+            _session = session;
             _sections = sections;
             _requestsFactory = requestsFactory;
 
@@ -82,12 +86,8 @@ namespace Problemator.Core.ViewModels
         public RelayCommand LoadCommand => _loadComand ??
             (_loadComand = new RelayCommand(async () => await LoadAsync()));
 
-        private UserContext _context;
-
         protected virtual async Task LoadAsync()
         {
-            _context = _storageService.ReadLocal<UserContext>(Settings.ContextKey);
-
             await RefreshAsync();
 
             _eventAggregator.Subscribe(this);
@@ -96,45 +96,24 @@ namespace Problemator.Core.ViewModels
         private async Task RefreshAsync()
         {
             Busy = true;
+            // TODO: move to session
             Details.SelectedDate = SelectedDate;
 
             ClearTaggedProblems();
 
-            await LoadDashboardAsync();
             await _sections.LoadAsync();
             await LoadTickDatesAsync();
-            await LoadTicks(SelectedDate);
+            await LoadTicksAsync(SelectedDate);
+
+            Locations = await _session.GetLocationNames();
+            SelectedLocation = await _session.GetCurrentLocationName();
 
             Busy = false;
             UpdateEmpty();
             NoProblemsAvailable = !_sections.HasProblems();
         }
 
-        private async Task LoadDashboardAsync()
-        {
-            (await _requestsFactory.CreateDashboardRequest()
-                    .RunAsync<ProblematorJsonParser>())
-                .OnSuccess(HandleDashboardResponse)
-                .PublishErrorOnHttpFailure(_eventAggregator);
-        }
-
-        private void HandleDashboardResponse(ProblematorJsonParser parser)
-        {
-            if (parser.PublishMessageOnInternalServerError(_eventAggregator))
-            {
-                return;
-            }
-
-            var dashboard = parser.To<Dashboard>();
-            Details.Grades = dashboard.Grades;
-            Details.SelectedAscentIdx = dashboard.UserSettings.AscentType;
-            Locations = dashboard.Locations.ToDictionary(x => x.Name, x => x.Id);
-            SelectedLocation = dashboard.Locations
-                .SingleOrDefault(x => string.Equals(x.Id,_context.GymId, StringComparison.Ordinal))?
-                .Name;
-        }
-
-        private async Task LoadTicks(DateTime day)
+        private async Task LoadTicksAsync(DateTime day)
         {
             (await _requestsFactory.CreateDayTicksRequest(day)
                 .RunAsync<ProblematorJsonParser>())
@@ -177,6 +156,9 @@ namespace Problemator.Core.ViewModels
 
         private void Unload()
         {
+            Ticks = null;
+            TickDates = null;
+
             _eventAggregator.Unsubscribe(this);
         }
 
@@ -188,28 +170,8 @@ namespace Problemator.Core.ViewModels
 
         private async Task ChangeLocationAsync()
         {
-            var gymId = Locations[SelectedLocation];
-            if (gymId == _context.GymId)
-            {
-                return;
-            }
-
-            (await _requestsFactory.CreateChangeGymRequest(gymId)
-                    .RunAsync<ProblematorJsonParser>())
-                .OnSuccess(x => HandleChangeGymRequest(x, gymId))
-                .PublishErrorOnHttpFailure(_eventAggregator);
-
+            await _session.SetCurrentLocationAsync(SelectedLocation);
             await RefreshAsync();
-        }
-
-        private void HandleChangeGymRequest(ProblematorJsonParser parser, string gymId)
-        {
-            var context = parser.To<UserContext>();
-            _context.GymId = gymId;
-            _context.Jwt = context.Jwt;
-            _context.Message = context.Message;
-            _requestsFactory.SetUserContext(_context);
-            _storageService.SaveLocal(Settings.ContextKey, _context);
         }
 
         private RelayCommand _changeDateComand;
@@ -249,7 +211,7 @@ namespace Problemator.Core.ViewModels
                 SuggestedProblems = null;
                 return;
             }
-            if (_sections.ContainProblem(lastTag))
+            if (_sections.ContainsProblem(lastTag))
             {
                 AddTaggedProblem(lastTag);
                 PublishTags();
@@ -329,7 +291,7 @@ namespace Problemator.Core.ViewModels
 
             var tags = SplitTags();
 
-            return tags.Where(x => !_sections.ContainProblem(x))
+            return tags.Where(x => !_sections.ContainsProblem(x))
                 .ToList();
         }
 
@@ -352,7 +314,7 @@ namespace Problemator.Core.ViewModels
             }
 
             await _sections.LoadAsync();
-            await LoadTicks(SelectedDate);
+            await LoadTicksAsync(SelectedDate);
 
             UpdateEmpty();
             SuggestedProblems = null;

@@ -33,7 +33,7 @@ namespace Problemator.Core.Dtos
         public int Tries { get; set; }
         
         [JsonProperty(PropertyName = "ascent_type")]
-        public int AscentType { get; set; }
+        public int AscentTypeId { get; set; }
 
         [JsonProperty(PropertyName = "a_like")]
         public int Like { get; set; }
@@ -48,7 +48,7 @@ namespace Problemator.Core.Dtos
         public string GradeId { get; set; }
 
         [JsonProperty(PropertyName = "gradename")]
-        public string Grade { get; set; }
+        public string GradeName { get; set; }
 
         [JsonProperty(PropertyName = "tag")]
         public string Tag { get; set; }
