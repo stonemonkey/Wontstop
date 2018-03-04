@@ -51,6 +51,8 @@
     <Compile Include="Dtos\UserIdentity.cs" />
     <Compile Include="Dtos\UserSettings.cs" />
     <Compile Include="Dtos\WallSection.cs" />
+    <Compile Include="Messages\DayChangedMessage.cs" />
+    <Compile Include="Messages\LocationChangedMessage.cs" />
     <Compile Include="Messages\TickProblemsMesage.cs" />
     <Compile Include="Models\Sections.cs" />
     <Compile Include="Models\Session.cs" />
@@ -66,6 +68,7 @@
     <Compile Include="ViewModels\ProblemDetailesViewModel.cs" />
     <Compile Include="ViewModels\ProblemItemViewModel.cs" />
     <Compile Include="ViewModels\ProblemsChildViewModel.cs" />
+    <Compile Include="ViewModels\TagProblemsViewModel.cs" />
     <Compile Include="ViewModels\TickDetailsViewModel.cs" />
     <Compile Include="ViewModels\TickItemViewModel.cs" />
     <Compile Include="ViewModels\TicksChildViewModel.cs" />

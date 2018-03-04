@@ -18,7 +18,8 @@ using Problemator.Core.Utils;
 
 namespace Problemator.Core.ViewModels
 {
-    public class TicksChildViewModel : IHandle<Tick>, IHandle<BusyMessage>, IHandle<TickProblemsMesage>, INotifyPropertyChanged
+    public class TicksChildViewModel : 
+        IHandle<Tick>, IHandle<BusyMessage>, IHandle<TickProblemsMesage>, INotifyPropertyChanged
     {
         #pragma warning disable CS0067
         // Is used by Fody to add NotifyPropertyChanged on properties.
@@ -28,57 +29,44 @@ namespace Problemator.Core.ViewModels
 
         public bool Busy { get; private set; }
         public bool Empty { get; private set; }
-        public bool CanTick { get; private set; }
-        public bool NoProblemsAvailable { get; private set; }
-
-        public string Tags { get; set; }
 
         public string SelectedLocation { get; set; }
         public IList<string> Locations { get; private set; }
 
-        private static bool _isDaySaved;
-        public static DateTimeOffset Day { get; set; }
-        private static DateTime SelectedDate => Day.Date;
-
-        public TickDetailsViewModel Details { get; }
-
-        public IList<Problem> SuggestedProblems { get; set; }
+        private static bool _isSelectedDaySaved;
+        public static DateTimeOffset SelectedDay { get; set; }
+        private static DateTime SelectedDate => SelectedDay.Date;
 
         public IList<DateTimeOffset> TickDates { get; private set; }
 
         public ObservableCollection<Tick> Ticks { get; private set; }
 
+        private readonly Session _session;
+        private readonly Sections _sections;
         private readonly ITimeService _timeService;
         private readonly IStorageService _storageService;
         private readonly IEventAggregator _eventAggregator;
-        private readonly Session _session;
-        private readonly Sections _sections;
-
         private readonly ProblematorRequestsFactory _requestsFactory;
 
         public TicksChildViewModel(
+            Session session,
+            Sections sections,
             ITimeService timeService,
             IStorageService storageService,
             IEventAggregator eventAggregator,
-            Session session,
-            Sections sections,
-            TickDetailsViewModel tickDetailsViewModel,
             ProblematorRequestsFactory requestsFactory)
         {
+            _session = session;
+            _sections = sections;
             _timeService = timeService;
             _storageService = storageService;
             _eventAggregator = eventAggregator;
-            _session = session;
-            _sections = sections;
             _requestsFactory = requestsFactory;
 
-            Details = tickDetailsViewModel;
-            Details.Problems = _taggedProblems;
-
-            if (!_isDaySaved)
+            if (!_isSelectedDaySaved)
             {
-                Day = _timeService.Now;
-                _isDaySaved = true;
+                SelectedDay = _timeService.Now;
+                _isSelectedDaySaved = true;
             }
         }
 
@@ -88,29 +76,23 @@ namespace Problemator.Core.ViewModels
 
         protected virtual async Task LoadAsync()
         {
-            await RefreshAsync();
-
             _eventAggregator.Subscribe(this);
+            await RefreshAsync();
         }
 
         private async Task RefreshAsync()
         {
-            Busy = true;
-            // TODO: move to session
-            Details.SelectedDate = SelectedDate;
+            _eventAggregator.PublishOnCurrentThread(new BusyMessage(true));
 
-            ClearTaggedProblems();
-
-            await _sections.LoadAsync();
             await LoadTickDatesAsync();
             await LoadTicksAsync(SelectedDate);
 
             Locations = await _session.GetLocationNames();
             SelectedLocation = await _session.GetCurrentLocationName();
 
-            Busy = false;
+            _eventAggregator.PublishOnCurrentThread(new BusyMessage(false));
+
             UpdateEmpty();
-            NoProblemsAvailable = !_sections.HasProblems();
         }
 
         private async Task LoadTicksAsync(DateTime day)
@@ -138,6 +120,11 @@ namespace Problemator.Core.ViewModels
                 .RunAsync<ProblematorJsonParser>())
                     .OnSuccess(HandleTickDatesResponse)
                     .PublishErrorOnHttpFailure(_eventAggregator);
+        }
+
+        private void UpdateEmpty()
+        {
+            Empty = Ticks == null || !Ticks.Any();
         }
 
         private void HandleTickDatesResponse(ProblematorJsonParser parser)
@@ -171,154 +158,35 @@ namespace Problemator.Core.ViewModels
         private async Task ChangeLocationAsync()
         {
             await _session.SetCurrentLocationAsync(SelectedLocation);
+            _eventAggregator.PublishOnCurrentThread(new LocationChangedMessage(SelectedLocation));
             await RefreshAsync();
         }
 
         private RelayCommand _changeDateComand;
 
         public RelayCommand ChangeDateCommand => _changeDateComand ??
-            (_changeDateComand = new RelayCommand(async () => await RefreshAsync(), () => !Busy));
+            (_changeDateComand = new RelayCommand(
+                async () => await ChangeDayAsync(), () => !Busy));
 
-        private RelayCommand _publisTagsComand;
-        public RelayCommand PublishTagsCommand => _publisTagsComand ??
-            (_publisTagsComand = new RelayCommand(PublishTags));
-
-        private void PublishTags()
+        private async Task ChangeDayAsync()
         {
-            _eventAggregator.PublishOnCurrentThread(Tags ?? string.Empty);
-        }
-
-        private RelayCommand<bool> _tagsChangedComand;
-
-        public RelayCommand<bool> TagsChangedCommand => _tagsChangedComand ??
-            (_tagsChangedComand = new RelayCommand<bool>(
-                TagsChanged));
-
-        private const int TagMinLength = 2;
-
-        private void TagsChanged(bool byUser)
-        {
-            if (!byUser || Busy || string.IsNullOrWhiteSpace(Tags))
-            {
-                CanTick = false;
-                return;
-            }
-            CanTick = AreAllTagsValid();
-
-            var lastTag = GetLastTagFrom(Tags);
-            if (lastTag.Length < TagMinLength)
-            {
-                SuggestedProblems = null;
-                return;
-            }
-            if (_sections.ContainsProblem(lastTag))
-            {
-                AddTaggedProblem(lastTag);
-                PublishTags();
-                return;
-            }
-
-            SuggestedProblems = _sections.GetAvailableProblems(lastTag, SelectedDate);
-        }
-
-        private RelayCommand<string> _suggestionChosenComand;
-
-        public RelayCommand<string> SuggestionChosenCommand => _suggestionChosenComand ??
-            (_suggestionChosenComand = new RelayCommand<string>(
-                SuggestionChosen, tag => !Busy && !string.IsNullOrWhiteSpace(tag)));
-
-        private void SuggestionChosen(string tag)
-        {
-            var lastTag = GetLastTagFrom(Tags);
-            var tags = Tags.Substring(0, Tags.Length - lastTag.Length);
-            Tags = tags + tag;
-
-            AddTaggedProblem(tag);
-            PublishTags();
-        }
-
-        private readonly IList<Problem> _taggedProblems = new List<Problem>();
-
-        private void ClearTaggedProblems()
-        {
-            _taggedProblems.Clear();
-        }
-
-        private void AddTaggedProblem(string tag)
-        {
-            if (_taggedProblems.Any(x => string.Equals(tag, x.TagShort, StringComparison.OrdinalIgnoreCase)))
-            {
-                return;
-            }
-
-            _taggedProblems.Add(_sections.GetFirstAvailableProblem(tag, SelectedDate));
-            Details.IsSingleSelection = _taggedProblems.Count == 1;
-        }
-
-        private const string TicksSeparator = ",";
-
-        private static string GetLastTagFrom(string text)
-        {
-            var lastTag = text.Replace(" ", null);
-
-            var lastTagSeparatorIdx = lastTag.LastIndexOf(TicksSeparator, StringComparison.Ordinal);
-            if (lastTagSeparatorIdx >= 0)
-            {
-                lastTag = lastTag.Remove(0, lastTagSeparatorIdx + 1);
-            }
-
-            return lastTag;
-        }
-
-        private void UpdateEmpty()
-        {
-            Empty = Ticks == null || !Ticks.Any();
-        }
-
-        private bool AreAllTagsValid()
-        {
-            var inexisten = GetInexistenTags();
-
-            return !inexisten.Any();
-        }
-
-        private List<string> GetInexistenTags()
-        {
-            if (Tags == null)
-            {
-                return new List<string>();
-            }
-
-            var tags = SplitTags();
-
-            return tags.Where(x => !_sections.ContainsProblem(x))
-                .ToList();
-        }
-
-        private string[] SplitTags()
-        {
-            return Tags.Replace(" ", null)
-                .Split(new[] { TicksSeparator }, StringSplitOptions.RemoveEmptyEntries);
+            _eventAggregator.PublishOnCurrentThread(new DayChangedMessage(SelectedDay));
+            await RefreshAsync();
         }
 
         public async void Handle(TickProblemsMesage message)
         {
-            if (message.Successfull)
-            {
-                Tags = null;
-                ClearTaggedProblems();
-            }
-            else
+            if (!message.Successfull)
             {
                 ShowErrorForFailedToTickTags(message.FailedToTickTags);
             }
 
-            await _sections.LoadAsync();
             await LoadTicksAsync(SelectedDate);
 
             UpdateEmpty();
-            SuggestedProblems = null;
         }
+
+        private const string TicksSeparator = ",";
 
         private void ShowErrorForFailedToTickTags(IEnumerable<string> tags)
         {

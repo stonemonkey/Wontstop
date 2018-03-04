@@ -69,93 +69,6 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     attachedProperties:ViewModel.Model="{Binding DataContext, ElementName=TickItemPanel}"/>
             </Grid>
         </DataTemplate>
-
-        <DataTemplate x:Key="SuggestedProblemDataTemplate">
-            <Grid x:Name="SuggestedProblemItemPanel"
-                Background="Transparent">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid x:Name="ProblemControlPanel"
-                    Grid.Row="0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <SymbolIcon x:Name="DoneSymbolIcon"
-                        Grid.Column="0"
-                        Margin="0,0,8,0"
-                        VerticalAlignment="Center"
-                        Symbol="Accept"
-                        Visibility="{Binding Tick, Converter={StaticResource ObjectToVisibilityConverter}}"/>
-                    <Ellipse x:Name="ColorElipse"
-                        Grid.Column="1"
-                        Width="16" Height="16"
-                        Fill="{Binding ColorName, Converter={StaticResource StringToColorConverter}}"/>
-                    <TextBlock x:Name="GradeTextBlock"
-                        Grid.Column="2"
-                        Margin="8,0,0,0"
-                        VerticalAlignment="Center"
-                        Text="{Binding Grade}"/>
-                    <TextBlock x:Name="TagTextBlock"
-                        Grid.Column="3"
-                        Margin="8,0,0,0"
-                        VerticalAlignment="Center"
-                        Text="{Binding TagShort}"/>
-                    <TextBlock x:Name="RemovedTextBlock"
-                        Grid.Column="4"
-                        Margin="8,0,0,0"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Right"
-                        Text="removed"
-                        Foreground="Red"
-                        Visibility="{Binding Visible, Converter={StaticResource IntOneToVisibilityConverter}, ConverterParameter=True}"/>
-                </Grid>
-                <StackPanel x:Name="TickPanel"
-                    Grid.Row="1"
-                    Margin="0,2"
-                    Orientation="Horizontal"
-                    Visibility="{Binding Tick, Converter={StaticResource ObjectToVisibilityConverter}}">
-                    <TextBlock Text="Ticked" 
-                        Foreground="Gray"
-                        Style="{ThemeResource CaptionTextBlockStyle}"/>
-                    <TextBlock x:Name="LoggedDateTextBlock"
-                        Margin="4,0,0,0"
-                        Foreground="Gray"
-                        VerticalAlignment="Center"
-                        Style="{ThemeResource CaptionTextBlockStyle}"
-                        Text="{Binding Tick.Timestamp, Converter={StaticResource DateTimeToDateStringConverter}}"/>
-                    <TextBlock Text="|" 
-                        Margin="4,0,0,0"
-                        Foreground="Gray"
-                        Style="{ThemeResource CaptionTextBlockStyle}"/>
-                    <TextBlock x:Name="TriesCountTextBlock"
-                        Margin="4,0,0,0"
-                        Foreground="Gray"
-                        VerticalAlignment="Center"
-                        Text="{Binding Tick.Tries}"
-                        Style="{ThemeResource CaptionTextBlockStyle}"/>
-                    <TextBlock x:Name="OneTryLabelTextBlock"
-                        Text="try"
-                        Margin="4,0,0,0"
-                        Foreground="Gray"
-                        VerticalAlignment="Center"
-                        Style="{ThemeResource CaptionTextBlockStyle}"
-                        Visibility="{Binding Tick.Tries, Converter={StaticResource IntOneToBoolConverter}, ConverterParameter=False}"/>
-                    <TextBlock x:Name="ManyTriesLabelTextBlock"
-                        Text="tries"
-                        Margin="4,0,0,0"
-                        Foreground="Gray"
-                        VerticalAlignment="Center"
-                        Style="{ThemeResource CaptionTextBlockStyle}"
-                        Visibility="{Binding Tick.Tries, Converter={StaticResource IntOneToBoolConverter}, ConverterParameter=True}"/>
-                </StackPanel>
-            </Grid>
-        </DataTemplate>
     </Page.Resources>
 
     <interactivity:Interaction.Behaviors>
@@ -210,7 +123,6 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <Grid x:Name="TitleBarPanel"
@@ -230,7 +142,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 Style="{ThemeResource SubheaderTextBlockStyle}"/>
             <CalendarDatePicker x:Name="TicksDatePicker"
                 Grid.Column="1"
-                Margin="8,0,12,0" Date="{Binding Day, Mode=TwoWay}">
+                Margin="8,0,12,0" Date="{Binding SelectedDay, Mode=TwoWay}">
                 <interactivity:Interaction.Behaviors>
                     <behaviours:HighlightDaysBehavior 
                         HighlightedDays="{Binding TickDates}" HighlightedDayBackground="Red"/>
@@ -263,41 +175,8 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     </core:EventTriggerBehavior>
                 </interactivity:Interaction.Behaviors>
             </ComboBox>
-            <Grid x:Name="SuggestionsPanel"
-                Grid.Row="1"
-                Background="Transparent">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock x:Name="NoProblemsTextBlock"
-                    Margin="24,8"
-                    Foreground="Red"
-                    TextWrapping="Wrap"
-                    VerticalAlignment="Center"
-                    Text="We couldn't find any problem for the selected gym."
-                    Visibility="{Binding NoProblemsAvailable, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=False}"/>
-                <AutoSuggestBox x:Name="TicksSuggestBox"
-                    Margin="12,8"
-                    Text="{Binding Tags, Mode=TwoWay}"
-                    ItemsSource="{Binding SuggestedProblems}"
-                    ItemTemplate="{StaticResource SuggestedProblemDataTemplate}"
-                    PlaceholderText="type some tags (e.g. A1001,B2001)"
-                    Visibility="{Binding NoProblemsAvailable, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}">
-                    <interactivity:Interaction.Behaviors>
-                        <core:EventTriggerBehavior EventName="TextChanged">
-                            <core:InvokeCommandAction 
-                                Command="{Binding TagsChangedCommand}"
-                                InputConverter="{StaticResource AutoSuggestBoxTextChangedEventArgsToBoolConverter}"/>
-                        </core:EventTriggerBehavior>
-                        <core:EventTriggerBehavior EventName="SuggestionChosen">
-                            <core:InvokeCommandAction 
-                                Command="{Binding SuggestionChosenCommand}"
-                                InputConverter="{StaticResource AutoSuggestBoxSuggestionChosenEventArgsToStringConverter}"/>
-                        </core:EventTriggerBehavior>
-                    </interactivity:Interaction.Behaviors>
-                </AutoSuggestBox>
-            </Grid>
+            <views:TagProblemsView
+                Grid.Row="1" />
             <ListView x:Name="TicksList"
                 Grid.Row="2"
                 Margin="0,4,0,0"
@@ -318,13 +197,8 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             </Grid>
         </Grid>
 
-        <views:TickDetailsView
-            Grid.Row="2"
-            DataContext="{Binding Details}"
-            Visibility="{Binding DataContext.CanTick, ElementName=TicksPagePanel, Converter={StaticResource BoolToVisibilityConverter}}"/>
-        
         <ProgressRing x:Name="BusyProgress"
-            Grid.Row="0" Grid.RowSpan="3"
+            Grid.Row="0" Grid.RowSpan="2"
             IsActive="True"
             Visibility="Collapsed"
             Width="{StaticResource ProgressSize}" 

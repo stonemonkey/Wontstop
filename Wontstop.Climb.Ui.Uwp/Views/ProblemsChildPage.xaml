@@ -177,11 +177,6 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                                 IsChecked="False"
                                 Content="{Binding FullName}"
                                 HorizontalAlignment="Stretch">
-                                <!--<interactivity:Interaction.Behaviors>
-                                    <core:EventTriggerBehavior EventName="Checked">
-                                        <core:InvokeCommandAction Command="{Binding DataContext.PublishTagsCommand, ElementName=SectionsList}"/>
-                                    </core:EventTriggerBehavior>
-                                </interactivity:Interaction.Behaviors>-->
                             </ToggleButton>
                             <ListView x:Name="ProblemsList"
                                 Grid.Row="1"

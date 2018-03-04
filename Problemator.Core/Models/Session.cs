@@ -55,7 +55,7 @@ namespace Problemator.Core.Models
             _dashboard = parser.To<Dashboard>();
         }
 
-        public async Task<IList<Grade>> GetGrades()
+        public async Task<IList<Grade>> GetGradesAsync()
         {
             await ValidateDashboardLoaded();
 

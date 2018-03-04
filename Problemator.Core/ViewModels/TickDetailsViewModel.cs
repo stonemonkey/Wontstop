@@ -73,7 +73,7 @@ namespace Problemator.Core.ViewModels
 
         private async Task LoadAsync()
         {
-            Grades = await _session.GetGrades();
+            Grades = await _session.GetGradesAsync();
             AscentTypes = _session.GetSportAscentTypes();
             SelectedAscentType = await _session.GetUserSportAscentType();
         }

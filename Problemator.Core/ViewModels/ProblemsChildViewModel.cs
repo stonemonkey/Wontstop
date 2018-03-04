@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Threading.Tasks;
 using HttpApiClient;
 using MvvmToolkit;
@@ -40,26 +39,26 @@ namespace Problemator.Core.ViewModels
         public IList<WallSection> Sections { get; private set; }
         public ObservableCollection<Tick> Ticks { get; private set; }
 
+        private readonly Session _session;
+        private readonly Sections _sections;
         private readonly ITimeService _timeService;
         private readonly IStorageService _storageService;
         private readonly IEventAggregator _eventAggregator;
-        private readonly Session _session;
-        private readonly Sections _sections;
         private readonly ProblematorRequestsFactory _requestsFactory;
 
         public ProblemsChildViewModel(
+            Session session,
+            Sections sections,
             ITimeService timeService,
             IStorageService storageService,
             IEventAggregator eventAggregator,
-            Session session,
-            Sections sections,
             ProblematorRequestsFactory requestsFactory)
         {
+            _session = session;
+            _sections = sections;
             _timeService = timeService;
             _storageService = storageService;
             _eventAggregator = eventAggregator;
-            _session = session;
-            _sections = sections;
             _requestsFactory = requestsFactory;
 
             if (!_isDaySaved)

@@ -10,8 +10,6 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     mc:Ignorable="d"
-    Loaded="UserControl_Loaded"
-    Unloaded="UserControl_Unloaded"
     DataContext="{Binding TickItemViewModel, Source={StaticResource ViewModelLocator}}">
        
     <ToggleButton x:Name="TickItemToggleButton"
