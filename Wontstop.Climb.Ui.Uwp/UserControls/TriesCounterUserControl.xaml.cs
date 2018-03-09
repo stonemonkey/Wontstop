@@ -12,13 +12,27 @@ namespace Wontstop.Climb.Ui.Uwp.UserControls
         private const int MaxNoTries = 50;
 
         public static readonly DependencyProperty CountProperty = DependencyProperty.Register(
-            "Count", typeof(int), typeof(TriesCounterUserControl), new PropertyMetadata(MinNoTries, CountChanged));
+            "Count", 
+            typeof(int), 
+            typeof(TriesCounterUserControl), 
+            new PropertyMetadata(MinNoTries, CountChanged));
 
         private static void CountChanged(
             DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = (TriesCounterUserControl) d;
-            control.UpdateTriesCountText();
+            if (control.Count < MinNoTries)
+            {
+                control.Count = MinNoTries;
+            }
+            else if (control.Count > MaxNoTries)
+            {
+                control.Count = MaxNoTries;
+            }
+            else
+            {
+                control.UpdateTriesCountText();
+            }
         }
 
         public int Count
