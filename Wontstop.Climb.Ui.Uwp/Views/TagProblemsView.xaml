@@ -9,6 +9,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:uc="using:Wontstop.Climb.Ui.Uwp.UserControls"
     mc:Ignorable="d"
     DataContext="{Binding TagProblemsViewModel, Source={StaticResource ViewModelLocator}}">
 
@@ -106,19 +107,20 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             </Grid>
         </DataTemplate>
     </UserControl.Resources>
-
-    <interactivity:Interaction.Behaviors>
-        <core:EventTriggerBehavior EventName="Loaded">
-            <core:InvokeCommandAction Command="{Binding LoadCommand}"/>
-        </core:EventTriggerBehavior>
-        <core:EventTriggerBehavior EventName="Unloaded">
-            <core:InvokeCommandAction Command="{Binding UnloadCommand}"/>
-        </core:EventTriggerBehavior>
-    </interactivity:Interaction.Behaviors>
-    
-    <Grid x:Name="TagProblemsControlPanel"
+   
+    <Grid x:Name="TagProblemsViewPanel"
         HorizontalAlignment="Stretch"
         Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
+
+        <interactivity:Interaction.Behaviors>
+            <core:EventTriggerBehavior EventName="Loaded">
+                <core:InvokeCommandAction Command="{Binding LoadCommand}"/>
+            </core:EventTriggerBehavior>
+            <core:EventTriggerBehavior EventName="Unloaded">
+                <core:InvokeCommandAction Command="{Binding UnloadCommand}"/>
+            </core:EventTriggerBehavior>
+        </interactivity:Interaction.Behaviors>
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -199,31 +201,11 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     ItemTemplate="{StaticResource GradeItemDataTemplate}">
                 </ComboBox>
 
-                <StackPanel x:Name="TriesCountPanel"
-                    Grid.Column="3" 
+                <uc:TriesCounterUserControl 
+                    Grid.Column="3"
                     Margin="12,8,12,8"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Right">
-                    <Button x:Name="DecrementTriesButton"
-                        Command="{Binding DecrementTriesCommand}">
-                        <TextBlock 
-                            Text="&#59192;"
-                            VerticalAlignment="Center"
-                            FontFamily="Segoe MDL2 Assets"/>
-                    </Button>
-                    <TextBlock  
-                        Width="24"
-                        TextAlignment="Center"
-                        VerticalAlignment="Center"
-                        Text="{Binding NoTries, Mode=TwoWay}"/>
-                    <Button x:Name="IncrementTriesButton"
-                        Command="{Binding IncrementTicksCommand}">
-                        <TextBlock 
-                            Text="&#59152;"
-                            VerticalAlignment="Center"
-                            FontFamily="Segoe MDL2 Assets"/>
-                    </Button>
-                </StackPanel>
+                    HorizontalAlignment="Right"
+                    Count="{Binding TriesCount}"/>
             </Grid>
         
             <Button x:Name="TickButton"

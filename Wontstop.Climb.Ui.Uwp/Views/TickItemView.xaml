@@ -7,8 +7,10 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:attachedProperties="using:MvvmToolkit.WinRT.AttachedProperties"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:views="using:Wontstop.Climb.Ui.Uwp.Views"
     mc:Ignorable="d"
     DataContext="{Binding TickItemViewModel, Source={StaticResource ViewModelLocator}}">
        
@@ -16,13 +18,10 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
         IsChecked="False"
         HorizontalAlignment="Stretch"
         HorizontalContentAlignment="Stretch">
-        
+
         <interactivity:Interaction.Behaviors>
             <core:EventTriggerBehavior EventName="Loaded">
                 <core:InvokeCommandAction Command="{Binding LoadCommand}"/>
-            </core:EventTriggerBehavior>
-            <core:EventTriggerBehavior EventName="Unloaded">
-                <core:InvokeCommandAction Command="{Binding UnloadCommand}"/>
             </core:EventTriggerBehavior>
         </interactivity:Interaction.Behaviors>
 
@@ -136,15 +135,6 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 Orientation="Horizontal"
                 VerticalAlignment="Stretch"
                 HorizontalAlignment="Right">
-                <!--<Button x:Name="EditButton"
-                    VerticalAlignment="Stretch"
-                    Command="{Binding EditTickCommand}"
-                    Width="{Binding ActualHeight, ElementName=EditButton}">
-                    <TextBlock 
-                        Text="&#xE70F;"
-                        VerticalAlignment="Center"
-                        FontFamily="Segoe MDL2 Assets"/>
-                </Button>-->
                 <Button x:Name="DeleteButton"
                     Margin="12,0,0,0"
                     VerticalAlignment="Stretch"
@@ -156,11 +146,10 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         FontFamily="Segoe MDL2 Assets"/>
                 </Button>
             </StackPanel>
-            <Grid Name="TickDetailsPanel" 
+            <views:TickDetailsView
                 Grid.Row="2"
-                Visibility="{Binding IsChecked, ElementName=TickItemToggleButton, Converter={StaticResource BoolToVisibilityConverter}}">
-                <TextBlock Text="TEST TEST TEST"/>
-            </Grid>
+                attachedProperties:ViewModel.Model="{Binding DataContext.Tick, ElementName=TickItemPanel}"
+                Visibility="{Binding IsChecked, ElementName=TickItemToggleButton, Converter={StaticResource BoolToVisibilityConverter}}"/>
         </Grid>
     </ToggleButton>
 

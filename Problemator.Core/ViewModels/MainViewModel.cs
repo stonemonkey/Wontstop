@@ -17,7 +17,6 @@ namespace Problemator.Core.ViewModels
 
         public bool Busy { get; set; }
 
-        private readonly Session _session;
         private readonly UserContext _userContext;
         private readonly INavigationService _navigationService;
 
@@ -26,18 +25,16 @@ namespace Problemator.Core.ViewModels
             UserContext userContext,
             INavigationService navigationService)
         {
-            _session = session;
             _userContext = userContext;
             _navigationService = navigationService;
         }
 
         private RelayCommand _loadComand;
         public RelayCommand LoadCommand => _loadComand ??
-            (_loadComand = new RelayCommand(async () => await LoadAsync()));
+            (_loadComand = new RelayCommand(Load));
 
-        private async Task LoadAsync()
+        private void Load()
         {
-            await _session.LoadAsync();
             _navigationService.ClearBackStack();
         }
 

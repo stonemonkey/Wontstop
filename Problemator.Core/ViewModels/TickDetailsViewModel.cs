@@ -6,8 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-using HttpApiClient;
-using HttpApiClient.Requests;
+using MvvmToolkit.Attributes;
 using MvvmToolkit.Commands;
 using MvvmToolkit.Messages;
 using Problemator.Core.Dtos;
@@ -23,29 +22,70 @@ namespace Problemator.Core.ViewModels
         // Is used by Fody to add NotifyPropertyChanged on properties.
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public DateTime SelectedDate { get; set; }
-
-        public IList<Problem> Problems { get; set; }
-
-        private bool _isSingleSelection;
-        public bool IsSingleSelection
+        private Tick _tick;
+        [Model]
+        public Tick Tick
         {
-            get { return _isSingleSelection; }
+            get { return _tick; }
             set
             {
-                _isSingleSelection = value;
-                if (_isSingleSelection)
-                {
-                    SelectedGrade = Grades.Single(x => 
-                        string.Equals(x.Id, Problems.Single().GradeId)).Name;
-                }
+                _tick = value;
+                IsDirty = false;
+                TryUpdateTickSelectedValues();
             }
         }
 
-        public string SelectedGrade { get; set; }
+        public bool IsDirty { get; private set; }
+
+        private int _triesCount;
+        public int TriesCount
+        {
+            get { return _triesCount; }
+            set
+            {
+                _triesCount = value;
+                UpdateDirty();
+            }
+        }
+
+        private Grade _selectedGrade;
+        public Grade SelectedGrade
+        {
+            get { return _selectedGrade; }
+            set
+            {
+                _selectedGrade = value;
+                UpdateDirty();
+            }
+        }
+
         public IList<Grade> Grades { get; private set; }
 
-        public string SelectedAscentType { get; set; }
+        private string _selectedAscentType;
+        public string SelectedAscentType
+        {
+            get { return _selectedAscentType; }
+            set
+            {
+                _selectedAscentType = value;
+                UpdateDirty();
+            }
+        }
+
+        private void UpdateDirty()
+        {
+            if (_tick == null || 
+                TriesCount == 0 || SelectedAscentType == null || SelectedGrade == null)
+            {
+                return;
+            }
+
+            IsDirty = _tick.Tries != TriesCount ||
+                _tick.AscentTypeId != _session.GetSportAscentTypeId(SelectedAscentType) ||
+                _tick.GradeOpinionId == null && _tick.GradeId != Grades.Single(x => string.Equals(x.Name, SelectedGrade.Name, StringComparison.Ordinal)).Id ||
+                _tick.GradeOpinionId != null && _tick.GradeOpinionId != Grades.Single(x => string.Equals(x.Name, SelectedGrade.Name, StringComparison.Ordinal)).Id;
+        }
+
         public IList<string> AscentTypes { get; private set; }
 
         private readonly Session _session;
@@ -65,112 +105,61 @@ namespace Problemator.Core.ViewModels
             _requestsFactory = requestsFactory;
         }
 
-        #region Tick
-
         private RelayCommand _loadComand;
         public RelayCommand LoadCommand => _loadComand ??
             (_loadComand = new RelayCommand(async () => await LoadAsync()));
 
         private async Task LoadAsync()
         {
+            await _session.LoadAsync(false);
+
             Grades = await _session.GetGradesAsync();
             AscentTypes = _session.GetSportAscentTypes();
             SelectedAscentType = await _session.GetUserSportAscentType();
+
+            TryUpdateTickSelectedValues();
         }
 
-        private RelayCommand _tickComand;
+        private void TryUpdateTickSelectedValues()
+        {
+            if (_tick != null && _session.IsLoaded() && Grades != null)
+            {
+                TriesCount = _tick.Tries;
+                SelectedAscentType = _session.GetSportAscentType(_tick.AscentTypeId);
+                SelectedGrade = Grades.Single(x => string.Equals(x.Name, _tick.GradeName));
+            }
+        }
 
-        public RelayCommand TickCommand => _tickComand ??
-            (_tickComand = new RelayCommand(async () => await TickAsync()));
+        #region Tick
 
-        private async Task TickAsync()
+        private RelayCommand _saveComand;
+
+        public RelayCommand SaveCommand => _saveComand ??
+            (_saveComand = new RelayCommand(async () => await SaveAsync()));
+
+        private async Task SaveAsync()
         {
             _eventAggregator.PublishOnCurrentThread(new BusyMessage(true));
 
-            var responses = await Task.WhenAll(Problems
-                .Select(x => _requestsFactory.CreateUpdateTickRequest(
-                        CreateTick(x, NoTries, SelectedDate, SelectedAscentType))
-                    .RunAsync<ProblematorJsonParser>()));
+            _tick.Tries = TriesCount;
+            _tick.AscentTypeId = _session.GetSportAscentTypeId(SelectedAscentType);
+            _tick.GradeOpinionId = Grades.Single(x => string.Equals(x.Name, SelectedGrade.Name, StringComparison.Ordinal)).Id;
 
-            var failedToTickTags = GetFailedToTickTags(responses).ToArray();
-            _eventAggregator.PublishOnCurrentThread(new TickProblemsMesage(failedToTickTags));
+            var response = await _requestsFactory.CreateUpdateTickRequest(Tick)
+                .RunAsync<ProblematorJsonParser>();
+
+            string[] failedToTickTags = new string[] { };
+            if (response.IsSuccessfull())
+            {
+                IsDirty = true;
+            }
+            else
+            {
+                failedToTickTags = new string[] { Tick.TagShort };
+            }
+            _eventAggregator.PublishOnCurrentThread(new TickAddMesage(failedToTickTags));
 
             _eventAggregator.PublishOnCurrentThread(new BusyMessage(false));
-        }
-
-        private IEnumerable<string> GetFailedToTickTags(
-            IEnumerable<Response<ProblematorJsonParser>> responses)
-        {
-            var failedRequests = GetFailedRequests(responses).ToList();
-            if (!failedRequests.Any())
-            {
-                return Enumerable.Empty<string>();
-            }
-
-            var ids = failedRequests.Select(x =>
-                x.Config.Params[_requestsFactory.ProblemIdParamKey]);
-
-            return Problems.Where(x => ids.Any(id =>
-                    string.Equals(x.Id, id, StringComparison.OrdinalIgnoreCase)))
-                .Select(x => x.TagShort);
-        }
-
-        public IEnumerable<IRequest> GetFailedRequests(
-            IEnumerable<Response<ProblematorJsonParser>> responses)
-        {
-            return responses
-                .Where(x => x.Failed())
-                .Select(x => x.Request);
-        }
-
-        private Tick CreateTick(Problem problem, int tries, DateTime timestamp, string ascentType)
-        {
-            var gradeOpinionId = problem.GradeId;
-            if (IsSingleSelection)
-            {
-                gradeOpinionId = Grades.Single(x => 
-                    string.Equals(x.Name, SelectedGrade, StringComparison.OrdinalIgnoreCase)).Id;
-            }
-
-            var ascentTypeId = _session.GetSportAscentTypeId(ascentType);
-
-            return new Tick
-            {
-                Tries = tries,
-                Timestamp = timestamp,
-                ProblemId = problem.Id,
-                AscentTypeId = ascentTypeId,
-                GradeOpinionId = gradeOpinionId,
-            };
-        }
-
-        #endregion
-
-        #region Tryes
-
-        private const int MinNoTries = 1;
-        private const int MaxNoTries = 50;
-
-        public int NoTries { get; set; } = MinNoTries;
-
-        private RelayCommand _decrementTriesCommand;
-
-        public RelayCommand DecrementTriesCommand => _decrementTriesCommand ??
-            (_decrementTriesCommand = new RelayCommand(DecrementTries, () => NoTries > MinNoTries));
-
-        private void DecrementTries()
-        {
-            NoTries--;
-        }
-
-        private RelayCommand _incrementTriesCommand;
-
-        public RelayCommand IncrementTicksCommand => _incrementTriesCommand ??
-            (_incrementTriesCommand = new RelayCommand(IncrementTicks, () => NoTries < MaxNoTries));
-
-        private void IncrementTicks()
-        {
-            NoTries++;
         }
 
         #endregion

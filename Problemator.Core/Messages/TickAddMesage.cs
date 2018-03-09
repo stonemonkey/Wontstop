@@ -6,12 +6,12 @@ using System.Linq;
 
 namespace Problemator.Core.Messages
 {
-    public class TickProblemsMesage
+    public class TickAddMesage
     {
         public bool Successfull { get; }
         public string[] FailedToTickTags { get; }
 
-        public TickProblemsMesage(string[] failedToTickTags)
+        public TickAddMesage(string[] failedToTickTags)
         {
             if (failedToTickTags == null)
             {

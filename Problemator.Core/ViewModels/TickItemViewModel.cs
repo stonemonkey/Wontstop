@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Costin Morariu. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using HttpApiClient;
@@ -21,10 +20,6 @@ namespace Problemator.Core.ViewModels
         // Is used by Fody to add NotifyPropertyChanged on properties.
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public bool Busy { get; private set; }
-
-        public string AscentType { get; private set; }
-
         private Tick _tick;
         [Model]
         public Tick Tick
@@ -33,16 +28,13 @@ namespace Problemator.Core.ViewModels
             set
             {
                 _tick = value;
-                if (_tick != null)
-                {
-                    AscentType = _session.GetSportAscentType(Tick.AscentTypeId);
-                    Details.SelectedAscentType = AscentType;
-                    Details.SelectedDate = Tick.Timestamp;
-                }
+                TryUpdateAscentType();
             }
         }
 
-        public TickDetailsViewModel Details { get; }
+        public bool Busy { get; private set; }
+
+        public string AscentType { get; private set; }
 
         private readonly Session _session;
         private readonly Sections _sections;
@@ -55,7 +47,6 @@ namespace Problemator.Core.ViewModels
             Sections sections,
             IEventAggregator eventAggregator,
             INavigationService navigationService,
-            TickDetailsViewModel tickDetailsViewModel,
             ProblematorRequestsFactory requestFactory)
         {
             _session = session;
@@ -63,8 +54,6 @@ namespace Problemator.Core.ViewModels
             _eventAggregator = eventAggregator;
             _navigationService = navigationService;
             _requestFactory = requestFactory;
-
-            Details = tickDetailsViewModel;
         }
 
         private RelayCommand _loadComand;
@@ -73,36 +62,16 @@ namespace Problemator.Core.ViewModels
 
         private async Task LoadAsync()
         {
-            _eventAggregator.Subscribe(this);
-
-            await LoadProblemAsync();
+            await _session.LoadAsync(false);
+            TryUpdateAscentType();
         }
 
-        private async Task LoadProblemAsync()
+        private void TryUpdateAscentType()
         {
-            // TODO: 
-            Details.Problems = new List<Problem>() {  };
-            Details.IsSingleSelection = Details.Problems.Count == 1;
-
-            await Task.Delay(100);
-        }
-
-        private RelayCommand _unloadComand;
-        public RelayCommand UnloadCommand => _unloadComand ??
-            (_unloadComand = new RelayCommand(Unload));
-
-        private void Unload()
-        {
-            _eventAggregator.Unsubscribe(this);
-        }
-
-        private RelayCommand _editTickCommand;
-        public RelayCommand EditTickCommand => _editTickCommand ??
-            (_editTickCommand = new RelayCommand(EditTick, () => !Busy));
-
-        private void EditTick()
-        {
-            _navigationService.Navigate<ProblemDetailesViewModel>(Tick.ProblemId);
+            if (_tick != null && _session.IsLoaded())
+            {
+                AscentType = _session.GetSportAscentType(_tick.AscentTypeId);
+            }
         }
 
         private RelayCommand _deleteTickCommand;

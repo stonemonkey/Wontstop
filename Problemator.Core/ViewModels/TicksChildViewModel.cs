@@ -19,7 +19,10 @@ using Problemator.Core.Utils;
 namespace Problemator.Core.ViewModels
 {
     public class TicksChildViewModel : 
-        IHandle<Tick>, IHandle<BusyMessage>, IHandle<TickProblemsMesage>, INotifyPropertyChanged
+        IHandle<TickRemoveMessage>, 
+        IHandle<TickAddMesage>, 
+        IHandle<BusyMessage>, 
+        INotifyPropertyChanged
     {
         #pragma warning disable CS0067
         // Is used by Fody to add NotifyPropertyChanged on properties.
@@ -77,16 +80,17 @@ namespace Problemator.Core.ViewModels
         protected virtual async Task LoadAsync()
         {
             _eventAggregator.Subscribe(this);
-            await RefreshAsync();
+            await RefreshAsync(false);
         }
 
-        private async Task RefreshAsync()
+        private async Task RefreshAsync(bool refresh)
         {
             _eventAggregator.PublishOnCurrentThread(new BusyMessage(true));
 
             await LoadTickDatesAsync();
             await LoadTicksAsync(SelectedDate);
 
+            await _session.LoadAsync(refresh);
             Locations = await _session.GetLocationNames();
             SelectedLocation = await _session.GetCurrentLocationName();
 
@@ -159,7 +163,7 @@ namespace Problemator.Core.ViewModels
         {
             await _session.SetCurrentLocationAsync(SelectedLocation);
             _eventAggregator.PublishOnCurrentThread(new LocationChangedMessage(SelectedLocation));
-            await RefreshAsync();
+            await RefreshAsync(true);
         }
 
         private RelayCommand _changeDateComand;
@@ -170,11 +174,16 @@ namespace Problemator.Core.ViewModels
 
         private async Task ChangeDayAsync()
         {
+            await RefreshAsync(true);
             _eventAggregator.PublishOnCurrentThread(new DayChangedMessage(SelectedDay));
-            await RefreshAsync();
         }
 
-        public async void Handle(TickProblemsMesage message)
+        public void Handle(TickRemoveMessage message)
+        {
+            Ticks.Remove(message.Tick);
+        }
+
+        public async void Handle(TickAddMesage message)
         {
             if (!message.Successfull)
             {
@@ -197,11 +206,6 @@ namespace Problemator.Core.ViewModels
         public void Handle(BusyMessage message)
         {
             Busy = message.Show;
-        }
-
-        public void Handle(Tick message)
-        {
-            Ticks.Remove(message);
         }
     }
 }

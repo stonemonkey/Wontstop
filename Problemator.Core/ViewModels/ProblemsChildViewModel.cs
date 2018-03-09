@@ -11,12 +11,13 @@ using MvvmToolkit;
 using MvvmToolkit.Commands;
 using MvvmToolkit.Messages;
 using Problemator.Core.Dtos;
+using Problemator.Core.Messages;
 using Problemator.Core.Models;
 using Problemator.Core.Utils;
 
 namespace Problemator.Core.ViewModels
 {
-    public class ProblemsChildViewModel : IHandle<Tick>, INotifyPropertyChanged
+    public class ProblemsChildViewModel : IHandle<TickRemoveMessage>, INotifyPropertyChanged
     {
         #pragma warning disable CS0067
         // Is used by Fody to add NotifyPropertyChanged on properties.
@@ -31,8 +32,8 @@ namespace Problemator.Core.ViewModels
         public IList<string> Locations { get; set; }
 
         private static bool _isDaySaved;
-        public static DateTimeOffset Day { get; set; }
-        private static DateTime SelectedDate => Day.Date;
+        public static DateTimeOffset SelectedDay { get; set; }
+        private static DateTime SelectedDate => SelectedDay.Date;
 
         public IList<DateTimeOffset> TickDates { get; private set; }
 
@@ -63,7 +64,7 @@ namespace Problemator.Core.ViewModels
 
             if (!_isDaySaved)
             {
-                Day = _timeService.Now;
+                SelectedDay = _timeService.Now;
                 _isDaySaved = true;
             }
         }
@@ -78,12 +79,12 @@ namespace Problemator.Core.ViewModels
         {
             _identity = _storageService.ReadLocal<UserIdentity>(Settings.ContextKey);
 
-            await RefreshAsync();
+            await RefreshAsync(false);
 
             _eventAggregator.Subscribe(this);
         }
 
-        private async Task RefreshAsync()
+        private async Task RefreshAsync(bool refresh)
         {
             Busy = true;
 
@@ -91,6 +92,7 @@ namespace Problemator.Core.ViewModels
             await LoadTickDatesAsync();
             await LoadTicks(SelectedDate);
 
+            await _session.LoadAsync(refresh);
             Locations = await _session.GetLocationNames();
             SelectedLocation = await _session.GetCurrentLocationName();
 
@@ -154,19 +156,24 @@ namespace Problemator.Core.ViewModels
         private async Task ChangeLocationAsync()
         {
             await _session.SetCurrentLocationAsync(SelectedLocation);
-            await RefreshAsync();
+            await RefreshAsync(true);
         }
 
         private RelayCommand _changeDateComand;
 
         public RelayCommand ChangeDateCommand => _changeDateComand ??
-            (_changeDateComand = new RelayCommand(async () => await RefreshAsync(), () => !Busy));
+            (_changeDateComand = new RelayCommand(
+                async () => await ChangeDayAsync(), () => !Busy));
 
-        public async void Handle(Tick message)
+        private async Task ChangeDayAsync()
         {
-            Ticks.Remove(message);
+            await RefreshAsync(true);
+            _eventAggregator.PublishOnCurrentThread(new DayChangedMessage(SelectedDay));
+        }
 
-            await RefreshAsync();
+        public void Handle(TickRemoveMessage message)
+        {
+            Ticks.Remove(message.Tick);
         }
     }
 }

@@ -32,17 +32,20 @@ namespace Problemator.Core.Models
         private Dashboard _dashboard;
         private Task<Response<ProblematorJsonParser>> _dashboardRequestTask;
 
-        public async Task LoadAsync()
+        public async Task LoadAsync(bool forceReload)
         {
-            _dashboardRequestTask = _requestsFactory.CreateDashboardRequest()
-                .RunAsync<ProblematorJsonParser>();
+            if (forceReload || _dashboard == null)
+            {
+                _dashboardRequestTask = _requestsFactory.CreateDashboardRequest()
+                    .RunAsync<ProblematorJsonParser>();
 
-            var response = await _dashboardRequestTask;
+                var response = await _dashboardRequestTask;
 
-            _dashboardRequestTask = null;
+                _dashboardRequestTask = null;
 
-            response.OnSuccess(HandleDashboardResponse)
-                .PublishErrorOnHttpFailure(_eventAggregator);
+                response.OnSuccess(HandleDashboardResponse)
+                    .PublishErrorOnHttpFailure(_eventAggregator);
+            }
         }
 
         private void HandleDashboardResponse(ProblematorJsonParser parser)
@@ -202,6 +205,11 @@ namespace Problemator.Core.Models
         }
 
         #endregion
+
+        public bool IsLoaded()
+        {
+            return _dashboard != null;
+        }
 
         private async Task ValidateDashboardLoaded()
         {

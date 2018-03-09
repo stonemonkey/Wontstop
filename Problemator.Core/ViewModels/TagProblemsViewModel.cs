@@ -21,7 +21,7 @@ namespace Problemator.Core.ViewModels
     public class TagProblemsViewModel : 
         IHandle<LocationChangedMessage>,
         IHandle<DayChangedMessage>,
-        IHandle<TickProblemsMesage>,
+        IHandle<TickAddMesage>,
         INotifyPropertyChanged
     {
         #pragma warning disable CS0067
@@ -69,6 +69,8 @@ namespace Problemator.Core.ViewModels
             _selectedDate = _timeService.Now;
         }
 
+        #region Load/Unload handlers
+
         private RelayCommand _loadComand;
         public RelayCommand LoadCommand => _loadComand ??
             (_loadComand = new RelayCommand(async () => await LoadAsync()));
@@ -96,6 +98,8 @@ namespace Problemator.Core.ViewModels
         {
             _eventAggregator.Unsubscribe(this);
         }
+
+        #endregion
 
         #region Suggestions
 
@@ -217,6 +221,8 @@ namespace Problemator.Core.ViewModels
 
         #region Tick
 
+        public int TriesCount { get; set; }
+
         private RelayCommand _tickComand;
 
         public RelayCommand TickCommand => _tickComand ??
@@ -228,11 +234,11 @@ namespace Problemator.Core.ViewModels
 
             var responses = await Task.WhenAll(_taggedProblems
                 .Select(x => _requestsFactory.CreateUpdateTickRequest(
-                        CreateTick(x, NoTries, _selectedDate, SelectedAscentType))
+                        CreateTick(x, TriesCount, _selectedDate, SelectedAscentType))
                     .RunAsync<ProblematorJsonParser>()));
 
             var failedToTickTags = GetFailedToTickTags(responses).ToArray();
-            _eventAggregator.PublishOnCurrentThread(new TickProblemsMesage(failedToTickTags));
+            _eventAggregator.PublishOnCurrentThread(new TickAddMesage(failedToTickTags));
 
             _eventAggregator.PublishOnCurrentThread(new BusyMessage(false));
         }
@@ -282,43 +288,6 @@ namespace Problemator.Core.ViewModels
             };
         }
 
-        public string GetGradeId(string name)
-        {
-            var grade = Grades.Single(x =>
-                string.Equals(name, x.Name, StringComparison.OrdinalIgnoreCase));
-
-            return grade.Id;
-        }
-
-        #endregion
-
-        #region Tryes
-
-        private const int MinNoTries = 1;
-        private const int MaxNoTries = 50;
-
-        public int NoTries { get; set; } = MinNoTries;
-
-        private RelayCommand _decrementTriesCommand;
-
-        public RelayCommand DecrementTriesCommand => _decrementTriesCommand ??
-            (_decrementTriesCommand = new RelayCommand(DecrementTries, () => NoTries > MinNoTries));
-
-        private void DecrementTries()
-        {
-            NoTries--;
-        }
-
-        private RelayCommand _incrementTriesCommand;
-
-        public RelayCommand IncrementTicksCommand => _incrementTriesCommand ??
-            (_incrementTriesCommand = new RelayCommand(IncrementTicks, () => NoTries < MaxNoTries));
-
-        private void IncrementTicks()
-        {
-            NoTries++;
-        }
-
         #endregion
 
         #region Message handlers
@@ -338,7 +307,7 @@ namespace Problemator.Core.ViewModels
             ClearTaggedProblems();
         }
 
-        public async void Handle(TickProblemsMesage message)
+        public async void Handle(TickAddMesage message)
         {
             if (message.Successfull)
             {
