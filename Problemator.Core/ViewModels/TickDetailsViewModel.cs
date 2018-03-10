@@ -141,6 +141,9 @@ namespace Problemator.Core.ViewModels
         {
             _eventAggregator.PublishOnCurrentThread(new BusyMessage(true));
 
+            await _requestsFactory.CreateDeleteTickRequest(_tick.Id)
+                .RunAsync<ProblematorJsonParser>();
+
             _tick.Tries = TriesCount;
             _tick.AscentTypeId = _session.GetSportAscentTypeId(SelectedAscentType);
             _tick.GradeOpinionId = Grades.Single(x => string.Equals(x.Name, SelectedGrade.Name, StringComparison.Ordinal)).Id;
