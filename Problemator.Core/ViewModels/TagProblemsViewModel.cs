@@ -81,11 +81,13 @@ namespace Problemator.Core.ViewModels
 
             ClearTaggedProblems();
 
-            await _sections.LoadAsync();
+            await _session.LoadAsync(false);
 
             Grades = await _session.GetGradesAsync();
             AscentTypes = _session.GetSportAscentTypes();
             SelectedAscentType = await _session.GetUserSportAscentType();
+
+            await _sections.LoadAsync();
 
             NoProblemsAvailable = !_sections.HasProblems();
         }
