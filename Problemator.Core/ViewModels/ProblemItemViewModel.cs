@@ -110,7 +110,7 @@ namespace Problemator.Core.ViewModels
                 .RunAsync<ProblematorJsonParser>())
                     .OnSuccess(p =>
                     {
-                        _eventAggregator.PublishOnCurrentThread(new TickRemoveMessage(Problem.Tick));
+                        _eventAggregator.PublishRemove(Problem.Tick);
                     })
                     .PublishErrorOnAnyFailure(_eventAggregator);
         }

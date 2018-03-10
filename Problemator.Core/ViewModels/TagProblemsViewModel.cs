@@ -231,26 +231,26 @@ namespace Problemator.Core.ViewModels
 
         private async Task TickAsync()
         {
-            _eventAggregator.PublishOnCurrentThread(new BusyMessage(true));
+            _eventAggregator.PublishShowBusy();
 
             var responses = await Task.WhenAll(_taggedProblems
                 .Select(x => _requestsFactory.CreateUpdateTickRequest(
                         CreateTick(x, TriesCount, _selectedDate, SelectedAscentType))
                     .RunAsync<ProblematorJsonParser>()));
 
-            var failedToTickTags = GetFailedToTickTags(responses).ToArray();
-            _eventAggregator.PublishOnCurrentThread(new TickAddMesage(failedToTickTags));
+            var failedToAddTags = GetFailedToTickTags(responses);
+            _eventAggregator.PublishFailedToAdd(failedToAddTags);
 
-            _eventAggregator.PublishOnCurrentThread(new BusyMessage(false));
+            _eventAggregator.PublishHideBusy();
         }
 
-        private IEnumerable<string> GetFailedToTickTags(
+        private string[] GetFailedToTickTags(
             IEnumerable<Response<ProblematorJsonParser>> responses)
         {
             var failedRequests = GetFailedRequests(responses).ToList();
             if (!failedRequests.Any())
             {
-                return Enumerable.Empty<string>();
+                return new string[] { };
             }
 
             var ids = failedRequests.Select(x =>
@@ -258,7 +258,8 @@ namespace Problemator.Core.ViewModels
 
             return _taggedProblems.Where(x => ids.Any(id =>
                     string.Equals(x.Id, id, StringComparison.OrdinalIgnoreCase)))
-                .Select(x => x.TagShort);
+                .Select(x => x.TagShort)
+                .ToArray();
         }
 
         public IEnumerable<IRequest> GetFailedRequests(

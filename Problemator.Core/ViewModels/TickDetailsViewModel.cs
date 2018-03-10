@@ -137,7 +137,7 @@ namespace Problemator.Core.ViewModels
 
         private async Task SaveAsync()
         {
-            _eventAggregator.PublishOnCurrentThread(new BusyMessage(true));
+            _eventAggregator.PublishShowBusy();
 
             await _requestsFactory.CreateDeleteTickRequest(_tick.Id)
                 .RunAsync<ProblematorJsonParser>();
@@ -149,18 +149,18 @@ namespace Problemator.Core.ViewModels
             var response = await _requestsFactory.CreateUpdateTickRequest(Tick)
                 .RunAsync<ProblematorJsonParser>();
 
-            string[] failedToTickTags = new string[] { };
+            string[] failedToAddTags = new string[] { };
             if (response.IsSuccessfull())
             {
                 IsDirty = true;
             }
             else
             {
-                failedToTickTags = new string[] { Tick.TagShort };
+                failedToAddTags = new string[] { Tick.TagShort };
             }
-            _eventAggregator.PublishOnCurrentThread(new TickAddMesage(failedToTickTags));
+            _eventAggregator.PublishFailedToAdd(failedToAddTags);
 
-            _eventAggregator.PublishOnCurrentThread(new BusyMessage(false));
+            _eventAggregator.PublishHideBusy();
         }
 
         #endregion

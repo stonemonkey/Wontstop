@@ -85,7 +85,7 @@ namespace Problemator.Core.ViewModels
 
         private async Task RefreshAsync(bool refresh)
         {
-            _eventAggregator.PublishOnCurrentThread(new BusyMessage(true));
+            _eventAggregator.PublishShowBusy();
 
             await LoadTickDatesAsync();
             await LoadTicksAsync(SelectedDate);
@@ -94,7 +94,7 @@ namespace Problemator.Core.ViewModels
             Locations = await _session.GetLocationNames();
             SelectedLocation = await _session.GetCurrentLocationName();
 
-            _eventAggregator.PublishOnCurrentThread(new BusyMessage(false));
+            _eventAggregator.PublishHideBusy();
 
             UpdateEmpty();
         }
@@ -148,7 +148,7 @@ namespace Problemator.Core.ViewModels
         private async Task ChangeLocationAsync()
         {
             await _session.SetCurrentLocationAsync(SelectedLocation);
-            _eventAggregator.PublishOnCurrentThread(new LocationChangedMessage(SelectedLocation));
+            _eventAggregator.PublishLocationChanged(SelectedLocation);
             await RefreshAsync(true);
         }
 
@@ -161,7 +161,7 @@ namespace Problemator.Core.ViewModels
         private async Task ChangeDayAsync()
         {
             await RefreshAsync(true);
-            _eventAggregator.PublishOnCurrentThread(new DayChangedMessage(SelectedDay));
+            _eventAggregator.PublishDayChanged(SelectedDay);
         }
 
         public async void Handle(TickRemoveMessage message)

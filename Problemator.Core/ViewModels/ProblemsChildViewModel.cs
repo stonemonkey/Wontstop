@@ -154,7 +154,7 @@ namespace Problemator.Core.ViewModels
         private async Task ChangeDayAsync()
         {
             await RefreshAsync(true);
-            _eventAggregator.PublishOnCurrentThread(new DayChangedMessage(SelectedDay));
+            _eventAggregator.PublishDayChanged(SelectedDay);
         }
 
         public async void Handle(TickRemoveMessage message)

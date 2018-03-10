@@ -92,11 +92,11 @@ namespace Problemator.Core.ViewModels
 
         private async Task DeleteTickAsync()
         {
-            _eventAggregator.PublishOnCurrentThread(new BusyMessage(true));
+            _eventAggregator.PublishShowBusy();
 
             await RemoveTickAsync();
 
-            _eventAggregator.PublishOnCurrentThread(new BusyMessage(false));
+            _eventAggregator.PublishHideBusy();
         }
 
         private async Task RemoveTickAsync()
@@ -105,7 +105,7 @@ namespace Problemator.Core.ViewModels
                 .RunAsync<ProblematorJsonParser>())
                     .OnSuccess(p =>
                     {
-                        _eventAggregator.PublishOnCurrentThread(new TickRemoveMessage(Tick));
+                        _eventAggregator.PublishRemove(Tick);
                     })
                     .PublishErrorOnAnyFailure(_eventAggregator);
         }
