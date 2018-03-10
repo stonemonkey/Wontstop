@@ -32,20 +32,19 @@ namespace Problemator.Core.Models
 
         public async Task<bool> AuthenticateAsync(string email, string password)
         {
+            var succeeded = false;
+
             var response = (await _requestsFactory.CreateLoginRequest(email, password)
                 .RunAsync<ProblematorJsonParser>())
-                    .PublishErrorOnHttpFailure(_eventAggregator);
+                    .OnSuccess(p =>
+                    {
+                        _userIdentity = p.To<UserIdentity>();
+                        SaveUserIdentity(_userIdentity);
+                        succeeded = true;
+                    })
+                    .PublishErrorOnAnyFailure(_eventAggregator);
 
-            if (!response.IsSuccessfull() ||
-                response.TypedParser.PublishMessageOnInternalServerError(_eventAggregator))
-            {
-                return false;
-            }
-
-            _userIdentity = response.TypedParser.To<UserIdentity>();
-            SaveUserIdentity(_userIdentity);
-
-            return true;
+            return succeeded;
         }
 
         public async Task DeauthenticateAsync()

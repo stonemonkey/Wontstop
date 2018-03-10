@@ -35,24 +35,18 @@ namespace Problemator.Core.Models
         {
             (await _requestsFactory.CreateWallSectionsRequest()
                 .RunAsync<ProblematorJsonParser>())
-                    .OnSuccess(HandleWallSectionsResponse)
-                    .PublishErrorOnHttpFailure(_eventAggregator);
-        }
-
-        private void HandleWallSectionsResponse(ProblematorJsonParser parser)
-        {
-            if (parser.PublishMessageOnInternalServerError(_eventAggregator))
-            {
-                return;
-            }
-
-            _sections = parser.To<IDictionary<string, WallSection>>() ?? new Dictionary<string, WallSection>();
-            _problems = _sections.Values
-                .SelectMany(x => x.Problems)
-                .ToList();
-            _tags = _problems
-                .Select(x => x.TagShort)
-                .ToList();
+                    .OnSuccess(p =>
+                    {
+                        _sections = p.To<IDictionary<string, WallSection>>() ?? 
+                            new Dictionary<string, WallSection>();
+                        _problems = _sections.Values
+                            .SelectMany(x => x.Problems)
+                            .ToList();
+                        _tags = _problems
+                            .Select(x => x.TagShort)
+                            .ToList();
+                    })
+                    .PublishErrorOnAnyFailure(_eventAggregator);
         }
 
         public IList<WallSection> Get() => _sections.Values.ToList();

@@ -3,18 +3,18 @@
 
 using System.ComponentModel;
 using System.Threading.Tasks;
-using HttpApiClient;
 using MvvmToolkit.Attributes;
 using MvvmToolkit.Commands;
 using MvvmToolkit.Messages;
 using MvvmToolkit.Services;
 using Problemator.Core.Dtos;
+using Problemator.Core.Messages;
 using Problemator.Core.Models;
 using Problemator.Core.Utils;
 
 namespace Problemator.Core.ViewModels
 {
-    public class TickItemViewModel : INotifyPropertyChanged
+    public class TickItemViewModel : IHandle<BusyMessage>, INotifyPropertyChanged
     {
         #pragma warning disable CS0067
         // Is used by Fody to add NotifyPropertyChanged on properties.
@@ -32,9 +32,9 @@ namespace Problemator.Core.ViewModels
             }
         }
 
-        public bool Busy { get; private set; }
-
         public string AscentType { get; private set; }
+
+        private bool _busy;
 
         private readonly Session _session;
         private readonly Sections _sections;
@@ -62,6 +62,8 @@ namespace Problemator.Core.ViewModels
 
         private async Task LoadAsync()
         {
+            _eventAggregator.Subscribe(this);
+
             await _session.LoadAsync(false);
             TryUpdateAscentType();
         }
@@ -74,36 +76,43 @@ namespace Problemator.Core.ViewModels
             }
         }
 
+        private RelayCommand _unloadComand;
+        public RelayCommand UnloadCommand => _unloadComand ??
+            (_unloadComand = new RelayCommand(Unload));
+
+        private void Unload()
+        {
+            _eventAggregator.Unsubscribe(this);
+        }
+
         private RelayCommand _deleteTickCommand;
         public RelayCommand DeleteTickCommand => _deleteTickCommand ??
             (_deleteTickCommand = new RelayCommand(
-                async () => await DeleteTickAsync(), () => !Busy));
+                async () => await DeleteTickAsync(), () => !_busy));
 
         private async Task DeleteTickAsync()
         {
-            Busy = true;
+            _eventAggregator.PublishOnCurrentThread(new BusyMessage(true));
 
             await RemoveTickAsync();
 
-            Busy = false;
+            _eventAggregator.PublishOnCurrentThread(new BusyMessage(false));
         }
 
         private async Task RemoveTickAsync()
         {
             (await _requestFactory.CreateDeleteTickRequest(Tick.Id)
                 .RunAsync<ProblematorJsonParser>())
-                    .OnSuccess(HandleRemoveResponse)
-                    .PublishErrorOnHttpFailure(_eventAggregator);
+                    .OnSuccess(p =>
+                    {
+                        _eventAggregator.PublishOnCurrentThread(new TickRemoveMessage(Tick));
+                    })
+                    .PublishErrorOnAnyFailure(_eventAggregator);
         }
 
-        private void HandleRemoveResponse(ProblematorJsonParser parser)
+        public void Handle(BusyMessage message)
         {
-            if (parser.PublishMessageOnInternalServerError(_eventAggregator))
-            {
-                return;
-            }
-
-            _eventAggregator.PublishOnCurrentThread(Tick);
+            _busy = message.Show;
         }
     }
 }

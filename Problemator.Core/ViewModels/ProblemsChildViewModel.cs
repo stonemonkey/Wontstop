@@ -90,7 +90,7 @@ namespace Problemator.Core.ViewModels
 
             await _sections.LoadAsync();
             await LoadTickDatesAsync();
-            await LoadTicks(SelectedDate);
+            await LoadTicksAsync(SelectedDate);
 
             await _session.LoadAsync(refresh);
             Locations = await _session.GetLocationNames();
@@ -101,41 +101,27 @@ namespace Problemator.Core.ViewModels
             Empty = !_sections.HasProblems();
         }
 
-        private async Task LoadTicks(DateTime day)
+        private async Task LoadTicksAsync(DateTime day)
         {
             (await _requestsFactory.CreateDayTicksRequest(day)
                 .RunAsync<ProblematorJsonParser>())
-                    .OnSuccess(HandleTicksResponse)
-                    .PublishErrorOnHttpFailure(_eventAggregator);
-        }
-
-        private void HandleTicksResponse(ProblematorJsonParser parser)
-        {
-            if (parser.PublishMessageOnInternalServerError(_eventAggregator))
-            {
-                return;
-            }
-
-            var day = parser.To<DayTicks>();
-            Ticks = new ObservableCollection<Tick>(day.Ticks);
+                    .OnSuccess(p =>
+                    {
+                        var dayTicks = p.To<DayTicks>();
+                        Ticks = new ObservableCollection<Tick>(dayTicks.Ticks);
+                    })
+                    .PublishErrorOnAnyFailure(_eventAggregator);
         }
 
         private async Task LoadTickDatesAsync()
         {
             (await _requestsFactory.CreateTickDatesRequest()
                 .RunAsync<ProblematorJsonParser>())
-                    .OnSuccess(HandleTickDatesResponse)
-                    .PublishErrorOnHttpFailure(_eventAggregator);
-        }
-
-        private void HandleTickDatesResponse(ProblematorJsonParser parser)
-        {
-            if (parser.PublishMessageOnInternalServerError(_eventAggregator))
-            {
-                return;
-            }
-
-            TickDates = parser.To<IList<DateTimeOffset>>();
+                    .OnSuccess(p =>
+                    {
+                        TickDates = p.To<IList<DateTimeOffset>>();
+                    })
+                    .PublishErrorOnAnyFailure(_eventAggregator);
         }
 
         private RelayCommand _unloadComand;
@@ -171,9 +157,9 @@ namespace Problemator.Core.ViewModels
             _eventAggregator.PublishOnCurrentThread(new DayChangedMessage(SelectedDay));
         }
 
-        public void Handle(TickRemoveMessage message)
+        public async void Handle(TickRemoveMessage message)
         {
-            Ticks.Remove(message.Tick);
+            await LoadTicksAsync(SelectedDate);
         }
     }
 }

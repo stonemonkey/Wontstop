@@ -42,30 +42,11 @@ namespace Problemator.Core.Utils
         }
 
         /// <summary>
-        /// Publishes error message from a Problemator response containing internal error.
-        /// </summary>
-        /// <param name="parser">Parser associated with the response.</param>
-        /// <param name="eventAggregator">Aggregator instance used to publish error.</param>
-        /// <returns>True if the response contains an internal error that was published, otherwise false.
-        /// </returns>
-        public static bool PublishMessageOnInternalServerError(
-            this ProblematorJsonParser parser, IEventAggregator eventAggregator)
-        {
-            var isError = parser.ContainsServerInternalError();
-            if (isError)
-            {
-                eventAggregator.PublishErrorMessageOnCurrentThread(parser.GetErrorMessage());
-            }
-
-            return isError;
-        }
-
-        /// <summary>
         /// Determines if a successfull HTTP response contains Problemator error. 
         /// </summary>
         /// <param name="parser">Parser associated with the response.</param>
         /// <returns>True if the response contains an internal error, otherwise false.</returns>
-        public static bool ContainsServerInternalError(this ProblematorJsonParser parser)
+        public static bool ContainsProblematorError(this ProblematorJsonParser parser)
         {
             return parser.IsResponseSuccessfull() &&
                 string.Equals(

@@ -103,42 +103,28 @@ namespace Problemator.Core.ViewModels
         {
             (await _requestsFactory.CreateDayTicksRequest(day)
                 .RunAsync<ProblematorJsonParser>())
-                    .OnSuccess(HandleTicksResponse)
-                    .PublishErrorOnHttpFailure(_eventAggregator);
-        }
-
-        private void HandleTicksResponse(ProblematorJsonParser parser)
-        {
-            if (parser.PublishMessageOnInternalServerError(_eventAggregator))
-            {
-                return;
-            }
-
-            var day = parser.To<DayTicks>();
-            Ticks = new ObservableCollection<Tick>(day.Ticks);
+                    .OnSuccess(p =>
+                    {
+                        var dayTicks = p.To<DayTicks>();
+                        Ticks = new ObservableCollection<Tick>(dayTicks.Ticks);
+                    })
+                    .PublishErrorOnAnyFailure(_eventAggregator);
         }
 
         private async Task LoadTickDatesAsync()
         {
             (await _requestsFactory.CreateTickDatesRequest()
                 .RunAsync<ProblematorJsonParser>())
-                    .OnSuccess(HandleTickDatesResponse)
-                    .PublishErrorOnHttpFailure(_eventAggregator);
+                    .OnSuccess(p =>
+                    {
+                        TickDates = p.To<IList<DateTimeOffset>>();
+                    })
+                    .PublishErrorOnAnyFailure(_eventAggregator);
         }
 
         private void UpdateEmpty()
         {
             Empty = Ticks == null || !Ticks.Any();
-        }
-
-        private void HandleTickDatesResponse(ProblematorJsonParser parser)
-        {
-            if (parser.PublishMessageOnInternalServerError(_eventAggregator))
-            {
-                return;
-            }
-
-            TickDates = parser.To<IList<DateTimeOffset>>(); 
         }
 
         private RelayCommand _unloadComand;
@@ -178,9 +164,11 @@ namespace Problemator.Core.ViewModels
             _eventAggregator.PublishOnCurrentThread(new DayChangedMessage(SelectedDay));
         }
 
-        public void Handle(TickRemoveMessage message)
+        public async void Handle(TickRemoveMessage message)
         {
-            Ticks.Remove(message.Tick);
+            await LoadTicksAsync(SelectedDate);
+
+            UpdateEmpty();
         }
 
         public async void Handle(TickAddMesage message)

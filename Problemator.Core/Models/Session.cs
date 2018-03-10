@@ -43,19 +43,9 @@ namespace Problemator.Core.Models
 
                 _dashboardRequestTask = null;
 
-                response.OnSuccess(HandleDashboardResponse)
-                    .PublishErrorOnHttpFailure(_eventAggregator);
+                response.OnSuccess(p => _dashboard = p.To<Dashboard>())
+                    .PublishErrorOnAnyFailure(_eventAggregator);
             }
-        }
-
-        private void HandleDashboardResponse(ProblematorJsonParser parser)
-        {
-            if (parser.PublishMessageOnInternalServerError(_eventAggregator))
-            {
-                return;
-            }
-
-            _dashboard = parser.To<Dashboard>();
         }
 
         public async Task<IList<Grade>> GetGradesAsync()
@@ -189,19 +179,12 @@ namespace Problemator.Core.Models
         {
             (await _requestsFactory.CreateChangeGymRequest(gymId)
                 .RunAsync<ProblematorJsonParser>())
-                    .OnSuccess(x => HandleChangeGymRequest(x, gymId))
-                    .PublishErrorOnHttpFailure(_eventAggregator);
-        }
-
-        private void HandleChangeGymRequest(ProblematorJsonParser parser, string gymId)
-        {
-            if (parser.PublishMessageOnInternalServerError(_eventAggregator))
-            {
-                return;
-            }
-
-            var confirmation = parser.To<GymChangeConfirmation>();
-            _userContext.UpdateUserIdentity(gymId, confirmation);
+                    .OnSuccess(p => 
+                    {
+                        var confirmation = p.To<GymChangeConfirmation>();
+                        _userContext.UpdateUserIdentity(gymId, confirmation);
+                    })
+                    .PublishErrorOnAnyFailure(_eventAggregator);
         }
 
         #endregion

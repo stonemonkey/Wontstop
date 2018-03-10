@@ -9,6 +9,7 @@ using MvvmToolkit.Commands;
 using MvvmToolkit.Messages;
 using MvvmToolkit.Services;
 using Problemator.Core.Dtos;
+using Problemator.Core.Messages;
 using Problemator.Core.Utils;
 
 namespace Problemator.Core.ViewModels
@@ -107,18 +108,11 @@ namespace Problemator.Core.ViewModels
         {
             (await _requestFactory.CreateDeleteTickRequest(Problem.Tick.Id)
                 .RunAsync<ProblematorJsonParser>())
-                    .OnSuccess(HandleRemoveResponse)
-                    .PublishErrorOnHttpFailure(_eventAggregator);
-        }
-
-        private void HandleRemoveResponse(ProblematorJsonParser parser)
-        {
-            if (parser.PublishMessageOnInternalServerError(_eventAggregator))
-            {
-                return;
-            }
-
-            _eventAggregator.PublishOnCurrentThread(Problem.Tick);
+                    .OnSuccess(p =>
+                    {
+                        _eventAggregator.PublishOnCurrentThread(new TickRemoveMessage(Problem.Tick));
+                    })
+                    .PublishErrorOnAnyFailure(_eventAggregator);
         }
 
         private RelayCommand _openDetailsComand;
