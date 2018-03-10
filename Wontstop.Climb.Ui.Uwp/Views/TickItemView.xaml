@@ -32,7 +32,8 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Grid x:Name="TickControlPanel"
+            
+            <Grid x:Name="ProblemInfoPanel"
                 Grid.Row="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -64,7 +65,8 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     Foreground="Red"
                     Visibility="{Binding Tick.Visible, Converter={StaticResource IntOneToVisibilityConverter}, ConverterParameter=True}"/>-->
             </Grid>
-            <StackPanel x:Name="TickPanel"
+            
+            <StackPanel x:Name="TickInfoPanel"
                 Grid.Row="1"
                 Margin="0,2"
                 Orientation="Horizontal">
@@ -130,11 +132,13 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     Style="{ThemeResource CaptionTextBlockStyle}"
                     Visibility="{Binding Tick.Tries, Converter={StaticResource IntOneToBoolConverter}, ConverterParameter=True}"/>
             </StackPanel>
-            <StackPanel x:Name="ActionsPanel"
+            
+            <StackPanel x:Name="QuickActionsPanel"
                 Grid.Row="0" Grid.RowSpan="2"
                 Orientation="Horizontal"
                 VerticalAlignment="Stretch"
-                HorizontalAlignment="Right">
+                HorizontalAlignment="Right"
+                Visibility="{Binding IsChecked, ElementName=TickItemToggleButton, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}">
                 <Button x:Name="DeleteButton"
                     Margin="12,0,0,0"
                     VerticalAlignment="Stretch"
