@@ -82,8 +82,8 @@ namespace Problemator.Core.ViewModels
 
             IsDirty = _tick.Tries != TriesCount ||
                 _tick.AscentTypeId != _session.GetSportAscentTypeId(SelectedAscentType) ||
-                _tick.GradeOpinionId == null && _tick.GradeId != Grades.Single(x => string.Equals(x.Name, SelectedGrade.Name, StringComparison.Ordinal)).Id ||
-                _tick.GradeOpinionId != null && _tick.GradeOpinionId != Grades.Single(x => string.Equals(x.Name, SelectedGrade.Name, StringComparison.Ordinal)).Id;
+                _tick.GradeOpinionId == null && _tick.GradeId != Grades.GetByName(SelectedGrade.Name).Id ||
+                _tick.GradeOpinionId != null && _tick.GradeOpinionId != Grades.GetByName(SelectedGrade.Name).Id;
         }
 
         public IList<string> AscentTypes { get; private set; }
@@ -126,7 +126,7 @@ namespace Problemator.Core.ViewModels
             {
                 TriesCount = _tick.Tries;
                 SelectedAscentType = _session.GetSportAscentType(_tick.AscentTypeId);
-                SelectedGrade = Grades.Single(x => string.Equals(x.Name, _tick.GradeName));
+                SelectedGrade = Grades.GetById(_tick.GradeOpinionId ?? _tick.GradeId);
             }
         }
 
@@ -146,7 +146,7 @@ namespace Problemator.Core.ViewModels
 
             _tick.Tries = TriesCount;
             _tick.AscentTypeId = _session.GetSportAscentTypeId(SelectedAscentType);
-            _tick.GradeOpinionId = Grades.Single(x => string.Equals(x.Name, SelectedGrade.Name, StringComparison.Ordinal)).Id;
+            _tick.GradeOpinionId = Grades.GetByName(SelectedGrade.Name).Id;
 
             var response = await _requestsFactory.CreateUpdateTickRequest(Tick)
                 .RunAsync<ProblematorJsonParser>();

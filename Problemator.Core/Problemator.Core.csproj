@@ -43,6 +43,7 @@
     <Compile Include="Dtos\DayTicks.cs" />
     <Compile Include="Dtos\Grade.cs" />
     <Compile Include="Dtos\GradeDist.cs" />
+    <Compile Include="Utils\GradesExtensions.cs" />
     <Compile Include="Dtos\GymChangeConfirmation.cs" />
     <Compile Include="Dtos\Location.cs" />
     <Compile Include="Dtos\Problem.cs" />

@@ -173,8 +173,7 @@ namespace Problemator.Core.ViewModels
             if (IsSingleSelection)
             {
                 var gradeId = _taggedProblems.Single().GradeId;
-                SelectedGrade = Grades.Single(x =>
-                    string.Equals(gradeId, x.Id, StringComparison.OrdinalIgnoreCase));
+                SelectedGrade = Grades.GetById(gradeId);
             }
         }
 
