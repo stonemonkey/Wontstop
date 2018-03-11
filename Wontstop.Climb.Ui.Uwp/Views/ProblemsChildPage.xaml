@@ -63,7 +63,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             </Setter>
         </Style>
 
-        <DataTemplate x:Key="ProblemDataTemplate">
+        <DataTemplate x:Key="ProblemItemDataTemplate">
             <Grid x:Name="ProblemItemPanel">
                 <views:ProblemItemView 
                     attachedProperties:ViewModel.Model="{Binding DataContext, ElementName=ProblemItemPanel}"/>
@@ -183,7 +183,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                                 Margin="0,4,0,0"
                                 SelectionMode="None"
                                 ItemsSource="{Binding Problems}"
-                                ItemTemplate="{StaticResource ProblemDataTemplate}"
+                                ItemTemplate="{StaticResource ProblemItemDataTemplate}"
                                 HeaderTemplate="{StaticResource EmptyDataTemplate}"
                                 Visibility="{Binding IsChecked, ElementName=SectionName, Converter={StaticResource BoolToVisibilityConverter}}">
                             </ListView>
