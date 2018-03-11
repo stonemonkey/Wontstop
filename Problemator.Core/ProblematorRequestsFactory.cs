@@ -176,6 +176,28 @@ namespace Problemator.Core
         }
 
         /// <summary>
+        /// Creates request for retriving problem details.
+        /// </summary>
+        /// <returns>GET request.</returns>
+        public GetRequest CreateProblemRequest(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                throw new ArgumentException(_invalidArgumentMessage, nameof(id));
+            }
+
+            var urn = $"{Server}/problem";
+            var config = new Config(urn, IsSecure);
+            config.AddParam("id", id);
+            AddApiAuthTokenParam(config);
+            AddClientTimestampParam(config);
+            AddUserAgentHeader(config);
+            AddApplicationKindHeader(config);
+
+            return new GetRequest(config, _responseLogger);
+        }
+
+        /// <summary>
         /// Creates request for adding problem ticks.
         /// </summary>
         /// <returns>GET request.</returns>
