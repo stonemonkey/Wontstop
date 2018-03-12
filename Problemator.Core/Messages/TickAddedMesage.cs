@@ -5,11 +5,11 @@ using System;
 
 namespace Problemator.Core.Messages
 {
-    public class TickAddMesage
+    public class TickAddedMesage
     {
         public string TagShort { get; }
 
-        public TickAddMesage(string tagShort)
+        public TickAddedMesage(string tagShort)
         {
             if (string.IsNullOrWhiteSpace(tagShort))
             {

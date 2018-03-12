@@ -49,7 +49,7 @@ namespace Problemator.Core.Models
                 .RunAsync<ProblematorJsonParser>())
                     .OnSuccess(p =>
                     {
-                        _eventAggregator.PublishAddTick(tick.GetTagShort());
+                        _eventAggregator.PublishAddedTick(tick.GetTagShort());
                     })
                     .PublishErrorOnAnyFailure(_eventAggregator);
         }
@@ -72,7 +72,7 @@ namespace Problemator.Core.Models
                 .RunAsync<ProblematorJsonParser>())
                     .OnSuccess(p =>
                     {
-                        _eventAggregator.PublishRemoveTick(tick);
+                        _eventAggregator.PublishRemovedTick(tick);
                     })
                     .PublishErrorOnAnyFailure(_eventAggregator);
         }

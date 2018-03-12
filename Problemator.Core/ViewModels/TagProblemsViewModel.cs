@@ -18,7 +18,7 @@ namespace Problemator.Core.ViewModels
     public class TagProblemsViewModel : 
         IHandle<LocationChangedMessage>,
         IHandle<DayChangedMessage>,
-        IHandle<TickAddMesage>,
+        IHandle<TickAddedMesage>,
         INotifyPropertyChanged
     {
         #pragma warning disable CS0067
@@ -232,7 +232,7 @@ namespace Problemator.Core.ViewModels
             _selectedDate = message.NewDay.Date;
         }
 
-        public async void Handle(TickAddMesage message)
+        public async void Handle(TickAddedMesage message)
         {
             ClearTaggedProblem();
 

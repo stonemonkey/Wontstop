@@ -57,8 +57,8 @@
     <Compile Include="Dtos\WallSection.cs" />
     <Compile Include="Messages\DayChangedMessage.cs" />
     <Compile Include="Messages\LocationChangedMessage.cs" />
-    <Compile Include="Messages\TickAddMesage.cs" />
-    <Compile Include="Messages\TickRemoveMessage.cs" />
+    <Compile Include="Messages\TickAddedMesage.cs" />
+    <Compile Include="Messages\TickRemovedMessage.cs" />
     <Compile Include="Models\Sections.cs" />
     <Compile Include="Models\Session.cs" />
     <Compile Include="Models\UserContext.cs" />

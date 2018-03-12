@@ -6,11 +6,11 @@ using System;
 
 namespace Problemator.Core.Messages
 {
-    public class TickRemoveMessage
+    public class TickRemovedMessage
     {
         public Tick Tick { get; private set; }
 
-        public TickRemoveMessage(Tick tick)
+        public TickRemovedMessage(Tick tick)
         {
             Tick = tick ?? throw new ArgumentNullException(nameof(tick));
         }

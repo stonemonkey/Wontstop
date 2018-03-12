@@ -19,8 +19,8 @@ using Problemator.Core.Utils;
 namespace Problemator.Core.ViewModels
 {
     public class TicksChildViewModel : 
-        IHandle<TickRemoveMessage>, 
-        IHandle<TickAddMesage>, 
+        IHandle<TickRemovedMessage>, 
+        IHandle<TickAddedMesage>, 
         IHandle<BusyMessage>, 
         INotifyPropertyChanged
     {
@@ -161,12 +161,12 @@ namespace Problemator.Core.ViewModels
             _eventAggregator.PublishDayChanged(SelectedDay);
         }
 
-        public async void Handle(TickRemoveMessage message)
+        public async void Handle(TickRemovedMessage message)
         {
             await LoadTicksAsync(SelectedDate);
         }
 
-        public async void Handle(TickAddMesage message)
+        public async void Handle(TickAddedMesage message)
         {
             await LoadTicksAsync(SelectedDate);
         }
