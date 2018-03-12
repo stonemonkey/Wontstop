@@ -161,7 +161,7 @@ namespace Problemator.Core.Models
             }
 
             var identity = _userContext.GetUserIdentity();
-            if (location.Id == identity.GymId)
+            if (string.Equals(location.Id, identity.GymId, StringComparison.Ordinal))
             {
                 return;
             }

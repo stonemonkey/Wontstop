@@ -3,6 +3,7 @@
 
 using HttpApiClient;
 using MvvmToolkit.Messages;
+using MvvmToolkit.Utils;
 using System;
 using System.Threading.Tasks;
 
@@ -24,6 +25,8 @@ namespace Problemator.Core.Utils
         public static Response<ProblematorJsonParser> OnSuccess(
             this Response<ProblematorJsonParser> response, Action<ProblematorJsonParser> action)
         {
+            action.ValidateNotNull(nameof(action));
+
             if (response.Succeded())
             {
                 action(response.TypedParser);
@@ -35,6 +38,8 @@ namespace Problemator.Core.Utils
         public static async Task<Response<ProblematorJsonParser>> OnSuccessAsync(
             this Response<ProblematorJsonParser> response, Func<ProblematorJsonParser, Task> func)
         {
+            func.ValidateNotNull(nameof(func));
+
             if (response.Succeded())
             {
                 await func(response.TypedParser);
@@ -71,6 +76,8 @@ namespace Problemator.Core.Utils
         public static Response<ProblematorJsonParser> OnProblematorError(
             this Response<ProblematorJsonParser> response, Action<ProblematorJsonParser> action)
         {
+            action.ValidateNotNull(nameof(action));
+
             if (response.IsProblematorError())
             {
                 action(response.TypedParser);
@@ -82,6 +89,8 @@ namespace Problemator.Core.Utils
         public static async Task<Response<ProblematorJsonParser>> OnProblematorErrorAsync(
             this Response<ProblematorJsonParser> response, Func<ProblematorJsonParser, Task> func)
         {
+            func.ValidateNotNull(nameof(func));
+
             if (response.IsProblematorError())
             {
                 await func(response.TypedParser);
@@ -101,6 +110,8 @@ namespace Problemator.Core.Utils
         public static Response<ProblematorJsonParser> PublishErrorOnAnyFailure(
             this Response<ProblematorJsonParser> response, IEventAggregator eventAggregator)
         {
+            eventAggregator.ValidateNotNull(nameof(eventAggregator));
+
             return response
                 .OnRequestFailure(x => eventAggregator.PublishOnCurrentThread(x.Exception))
                 .OnResponseFailure(x => eventAggregator.PublishErrorMessageOnCurrentThread(x.GetContent()))

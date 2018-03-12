@@ -34,8 +34,7 @@ namespace Problemator.Core
             _responseLogger = responseLogger;
         }
 
-        private static string _invalidArgumentMessage = "Invalid argument!";
-        private static string _missingUserContextMessage = "Missing user context!";
+        private static string _missingUserIdentityMessage = "Missing user context!";
 
         private UserIdentity _userIdentity;
 
@@ -45,7 +44,9 @@ namespace Problemator.Core
         /// <param name="context">User context instance.</param>
         public void SetUserContext(UserIdentity context)
         {
-            _userIdentity = context ?? throw new ArgumentNullException(nameof(context));
+            context.ValidateNotNull(nameof(context));
+
+            _userIdentity = context;
         }
         
         /// <summary>
@@ -60,11 +61,8 @@ namespace Problemator.Core
 
         protected void AddLocationParam(ConfigBase config, string location)
         {
-            if (string.IsNullOrEmpty(location))
-            {
-                throw new ArgumentException(_invalidArgumentMessage, nameof(location));
-            }
-
+            location.ValidateNotNullEmptyWhiteSpace(location);
+ 
             config.AddParam("problematorlocation", location);
         }
 
@@ -72,7 +70,7 @@ namespace Problemator.Core
         {
             if (_userIdentity == null)
             {
-                throw new InvalidOperationException(_missingUserContextMessage);
+                throw new InvalidOperationException(_missingUserIdentityMessage);
             }
 
             config.AddParam("gymid", _userIdentity.GymId);
@@ -82,7 +80,7 @@ namespace Problemator.Core
         {
             if (_userIdentity == null)
             {
-                throw new InvalidOperationException(_missingUserContextMessage);
+                throw new InvalidOperationException(_missingUserIdentityMessage);
             }
 
             config.AddParam("api-auth-token", _userIdentity.Jwt);
@@ -118,14 +116,8 @@ namespace Problemator.Core
         /// <returns>GET request.</returns>
         public GetRequest CreateLoginRequest(string email, string password, string location = null)
         {
-            if (string.IsNullOrWhiteSpace(email))
-            {
-                throw new ArgumentException(_invalidArgumentMessage, nameof(email));
-            }
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                throw new ArgumentException(_invalidArgumentMessage, nameof(password));
-            }
+            email.ValidateNotNullEmptyWhiteSpace(nameof(email));
+            password.ValidateNotNullEmptyWhiteSpace(nameof(password));
 
             var urn = $"{Server}/dologin";
             var config = new Config(urn, IsSecure);
@@ -181,10 +173,7 @@ namespace Problemator.Core
         /// <returns>GET request.</returns>
         public GetRequest CreateProblemRequest(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-            {
-                throw new ArgumentException(_invalidArgumentMessage, nameof(id));
-            }
+            id.ValidateNotNullEmptyWhiteSpace(nameof(id));
 
             var urn = $"{Server}/problem";
             var config = new Config(urn, IsSecure);
@@ -200,13 +189,11 @@ namespace Problemator.Core
         /// <summary>
         /// Creates request for adding problem ticks.
         /// </summary>
+        /// <param name="ticks">Comma separated string containing problem ids.</param>
         /// <returns>GET request.</returns>
         public GetRequest CreateSaveTicksRequest(string ticks)
         {
-            if (string.IsNullOrWhiteSpace(ticks))
-            {
-                throw new ArgumentException(_invalidArgumentMessage, nameof(ticks));
-            }
+            ticks.ValidateNotNullEmptyWhiteSpace(nameof(ticks));
 
             var urn = $"{Server}/saveticks/";
             var config = new Config(urn, IsSecure);
@@ -245,10 +232,7 @@ namespace Problemator.Core
         /// <returns>GET request.</returns>
         public GetRequest CreateUpdateTickRequest(Tick tick)
         {
-            if (tick == null)
-            {
-                throw new ArgumentNullException(nameof(tick));
-            }
+            tick.ValidateNotNull(nameof(tick));
 
             var urn = $"{Server}/savetick";
             var config = new Config(urn, IsSecure);
@@ -271,10 +255,7 @@ namespace Problemator.Core
         /// <returns>GET request.</returns>
         public GetRequest CreateDeleteTickRequest(string tickId)
         {
-            if (string.IsNullOrWhiteSpace(tickId))
-            {
-                throw new ArgumentException(_invalidArgumentMessage, nameof(tickId));
-            }
+            tickId.ValidateNotNullEmptyWhiteSpace(nameof(tickId));
 
             var urn = $"{Server}/untick";
             var config = new Config(urn, IsSecure);
@@ -331,6 +312,8 @@ namespace Problemator.Core
         /// <returns>GET request.</returns>
         public GetRequest CreateChangeGymRequest(string gymId)
         {
+            gymId.ValidateNotNullEmptyWhiteSpace(nameof(gymId));
+
             var urn = $"{Server}/changegym";
             var config = new Config(urn, IsSecure);
             config.AddParam("id", gymId);

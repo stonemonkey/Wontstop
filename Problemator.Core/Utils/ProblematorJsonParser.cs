@@ -2,6 +2,7 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using HttpApiClient.Parsers;
+using MvvmToolkit.Utils;
 using Newtonsoft.Json.Linq;
 
 namespace Problemator.Core.Utils
@@ -12,6 +13,8 @@ namespace Problemator.Core.Utils
 
         public override async Task ParseAsync(HttpResponseMessage httpResponse)
         {
+            httpResponse.ValidateNotNull(nameof(httpResponse));
+
             await base.ParseAsync(httpResponse);
 
             try
@@ -32,6 +35,8 @@ namespace Problemator.Core.Utils
 
         public string GetValue(string key)
         {
+            key.ValidateNotNullEmptyWhiteSpace(nameof(key));
+
             var data = Data as JObject;
             var value = data?[key];
             return (value == null) ? string.Empty : value.ToString();

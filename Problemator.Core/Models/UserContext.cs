@@ -32,6 +32,9 @@ namespace Problemator.Core.Models
 
         public async Task<bool> AuthenticateAsync(string email, string password)
         {
+            email.ValidateNotNullEmptyWhiteSpace(nameof(email));
+            password.ValidateNotNullEmptyWhiteSpace(nameof(password));
+
             var succeeded = false;
 
             var response = (await _requestsFactory.CreateLoginRequest(email, password)

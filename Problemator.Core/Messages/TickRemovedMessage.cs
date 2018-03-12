@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Costin Morariu. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using MvvmToolkit.Utils;
 using Problemator.Core.Dtos;
-using System;
 
 namespace Problemator.Core.Messages
 {
@@ -12,7 +12,9 @@ namespace Problemator.Core.Messages
 
         public TickRemovedMessage(Tick tick)
         {
-            Tick = tick ?? throw new ArgumentNullException(nameof(tick));
+            tick.ValidateNotNull(nameof(tick));
+
+            Tick = tick;
         }
     }
 }
