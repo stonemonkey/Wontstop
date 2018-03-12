@@ -19,12 +19,12 @@ namespace Problemator.Core.Messages
             eventAggregator.PublishOnCurrentThread(new BusyMessage(false));
         }
 
-        public static void PublishFailedToAdd(this IEventAggregator eventAggregator, string [] tags)
+        public static void PublishAddTick(this IEventAggregator eventAggregator, string tagShort)
         {
-            eventAggregator.PublishOnCurrentThread(new TickAddMesage(tags));
+            eventAggregator.PublishOnCurrentThread(new TickAddMesage(tagShort));
         }
 
-        public static void PublishRemove(this IEventAggregator eventAggregator, Tick tick)
+        public static void PublishRemoveTick(this IEventAggregator eventAggregator, Tick tick)
         {
             eventAggregator.PublishOnCurrentThread(new TickRemoveMessage(tick));
         }

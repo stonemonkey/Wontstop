@@ -4,10 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Threading.Tasks;
-using HttpApiClient;
-using HttpApiClient.Requests;
 using MvvmToolkit;
 using MvvmToolkit.Commands;
 using MvvmToolkit.Messages;
@@ -28,43 +25,35 @@ namespace Problemator.Core.ViewModels
         // Is used by Fody to add NotifyPropertyChanged on properties.
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public string Tags { get; set; }
-
-        public IList<WallProblem> SuggestedProblems { get; set; }
-
-        public bool CanTick { get; private set; }
-
-        public bool IsSingleSelection { get; private set; }
-
-        public bool NoProblemsAvailable { get; private set; }
-
         public Grade SelectedGrade { get; set; }
         public IList<Grade> Grades { get; private set; }
 
         public string SelectedAscentType { get; set; }
         public IList<string> AscentTypes { get; private set; }
 
+        public bool AreProblemsMissing { get; private set; }
+
         private bool _busy;
         private DateTime _selectedDate;
 
+        private readonly Ticks _ticks;
         private readonly Session _session;
         private readonly Sections _sections;
         private readonly ITimeService _timeService;
         private readonly IEventAggregator _eventAggregator;
-        private readonly ProblematorRequestsFactory _requestsFactory;
 
         public TagProblemsViewModel(
+            Ticks ticks,
             Session session,
             Sections sections,
             ITimeService timeService,
-            IEventAggregator eventAggregator,
-            ProblematorRequestsFactory requestsFactory)
+            IEventAggregator eventAggregator)
         {
+            _ticks = ticks;
             _session = session;
             _sections = sections;
             _timeService = timeService;
             _eventAggregator = eventAggregator;
-            _requestsFactory = requestsFactory;
 
             _selectedDate = _timeService.Now;
         }
@@ -79,17 +68,26 @@ namespace Problemator.Core.ViewModels
         {
             _eventAggregator.Subscribe(this);
 
-            ClearTaggedProblems();
+            ClearTaggedProblem();
 
+            await LoadSessionAsync();
+            await LoadSectionsAsync();
+        }
+
+        private async Task LoadSessionAsync()
+        {
             await _session.LoadAsync(false);
 
             Grades = await _session.GetGradesAsync();
             AscentTypes = _session.GetSportAscentTypes();
             SelectedAscentType = await _session.GetUserSportAscentType();
+        }
 
+        private async Task LoadSectionsAsync()
+        {
             await _sections.LoadAsync();
 
-            NoProblemsAvailable = !_sections.HasProblems();
+            AreProblemsMissing = !_sections.HasProblems();
         }
 
         private RelayCommand _unloadComand;
@@ -105,35 +103,40 @@ namespace Problemator.Core.ViewModels
 
         #region Suggestions
 
-        private RelayCommand<bool> _tagsChangedComand;
+        public bool CanTick { get; private set; }
 
-        public RelayCommand<bool> TagsChangedCommand => _tagsChangedComand ??
-            (_tagsChangedComand = new RelayCommand<bool>(TagsChanged));
+        public string Tag { get; set; }
+
+        public IList<WallProblem> SuggestedProblems { get; set; }
+
+        private RelayCommand<bool> _tagChangedComand;
+
+        public RelayCommand<bool> TagsChangedCommand => _tagChangedComand ??
+            (_tagChangedComand = new RelayCommand<bool>(TagChanged));
 
         private const int TagMinLength = 2;
 
-        private void TagsChanged(bool byUser)
+        private void TagChanged(bool byUser)
         {
-            if (!byUser || _busy || string.IsNullOrWhiteSpace(Tags))
+            if (!byUser || _busy || string.IsNullOrWhiteSpace(Tag))
             {
                 CanTick = false;
                 return;
             }
-            CanTick = AreAllTagsValid();
+            CanTick = IsAValidTag(Tag);
 
-            var lastTag = GetLastTagFrom(Tags);
-            if (lastTag.Length < TagMinLength)
+            if (Tag.Length < TagMinLength)
             {
                 SuggestedProblems = null;
                 return;
             }
-            if (_sections.ContainsProblem(lastTag))
+            if (CanTick)
             {
-                AddTaggedProblem(lastTag);
+                SetTaggedProblem(Tag);
                 return;
             }
 
-            SuggestedProblems = _sections.GetAvailableProblems(lastTag, _selectedDate);
+            SuggestedProblems = _sections.GetAvailableProblems(Tag, _selectedDate);
         }
 
         private RelayCommand<string> _suggestionChosenComand;
@@ -144,78 +147,33 @@ namespace Problemator.Core.ViewModels
 
         private void SuggestionChosen(string tag)
         {
-            var lastTag = GetLastTagFrom(Tags);
-            var tags = Tags.Substring(0, Tags.Length - lastTag.Length);
-            Tags = tags + tag;
-
-            AddTaggedProblem(tag);
+            Tag = tag;
+            SetTaggedProblem(tag);
         }
 
-        private readonly IList<WallProblem> _taggedProblems = new List<WallProblem>();
+        private WallProblem _taggedProblem;
 
-        private void ClearTaggedProblems()
+        private void ClearTaggedProblem()
         {
-            Tags = null;
-            _taggedProblems.Clear();
-            IsSingleSelection = false;
+            Tag = null;
+            _taggedProblem = null;
         }
 
-        private void AddTaggedProblem(string tag)
+        private void SetTaggedProblem(string tag)
         {
-            if (_taggedProblems.Any(x => string.Equals(tag, x.TagShort, StringComparison.OrdinalIgnoreCase)))
+            if (_taggedProblem != null &&
+                string.Equals(tag, _taggedProblem.TagShort, StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }
 
-            _taggedProblems.Add(_sections.GetFirstAvailableProblem(tag, _selectedDate));
-
-            IsSingleSelection = _taggedProblems.Count == 1;
-            if (IsSingleSelection)
-            {
-                var gradeId = _taggedProblems.Single().GradeId;
-                SelectedGrade = Grades.GetById(gradeId);
-            }
+            _taggedProblem = _sections.GetFirstAvailableProblem(tag, _selectedDate);
+            SelectedGrade = Grades.GetById(_taggedProblem.GradeId);
         }
 
-        private const string TicksSeparator = ",";
-
-        private static string GetLastTagFrom(string text)
+        private bool IsAValidTag(string tag)
         {
-            var lastTag = text.Replace(" ", null);
-
-            var lastTagSeparatorIdx = lastTag.LastIndexOf(TicksSeparator, StringComparison.Ordinal);
-            if (lastTagSeparatorIdx >= 0)
-            {
-                lastTag = lastTag.Remove(0, lastTagSeparatorIdx + 1);
-            }
-
-            return lastTag;
-        }
-
-        private bool AreAllTagsValid()
-        {
-            var inexisten = GetInexistenTags();
-
-            return !inexisten.Any();
-        }
-
-        private List<string> GetInexistenTags()
-        {
-            if (Tags == null)
-            {
-                return new List<string>();
-            }
-
-            var tags = SplitTags();
-
-            return tags.Where(x => !_sections.ContainsProblem(x))
-                .ToList();
-        }
-
-        private string[] SplitTags()
-        {
-            return Tags.Replace(" ", null)
-                .Split(new[] { TicksSeparator }, StringSplitOptions.RemoveEmptyEntries);
+            return _sections.ContainsProblem(tag);
         }
 
         #endregion
@@ -233,58 +191,24 @@ namespace Problemator.Core.ViewModels
         {
             _eventAggregator.PublishShowBusy();
 
-            var responses = await Task.WhenAll(_taggedProblems
-                .Select(x => _requestsFactory.CreateUpdateTickRequest(
-                        CreateTick(x, TriesCount, _selectedDate, SelectedAscentType))
-                    .RunAsync<ProblematorJsonParser>()));
-
-            var failedToAddTags = GetFailedToTickTags(responses);
-            _eventAggregator.PublishFailedToAdd(failedToAddTags);
+            await _ticks.AddTickAsync(CreateTick());
+            SuggestedProblems = null;
 
             _eventAggregator.PublishHideBusy();
         }
 
-        private string[] GetFailedToTickTags(
-            IEnumerable<Response<ProblematorJsonParser>> responses)
+        private Tick CreateTick()
         {
-            var failedRequests = GetFailedRequests(responses).ToList();
-            if (!failedRequests.Any())
-            {
-                return new string[] { };
-            }
-
-            var ids = failedRequests.Select(x =>
-                x.Config.Params[_requestsFactory.ProblemIdParamKey]);
-
-            return _taggedProblems.Where(x => ids.Any(id =>
-                    string.Equals(x.ProblemId, id, StringComparison.OrdinalIgnoreCase)))
-                .Select(x => x.TagShort)
-                .ToArray();
-        }
-
-        public IEnumerable<IRequest> GetFailedRequests(
-            IEnumerable<Response<ProblematorJsonParser>> responses)
-        {
-            return responses
-                .Where(x => x.Failed())
-                .Select(x => x.Request);
-        }
-
-        private Tick CreateTick(WallProblem problem, int tries, DateTime timestamp, string ascentType)
-        {
-            var gradeOpinionId = problem.GradeId;
-            if (IsSingleSelection)
-            {
-                gradeOpinionId = SelectedGrade.Id;
-            }
-
-            var ascentTypeId = _session.GetSportAscentTypeId(ascentType);
+            var problemId = _taggedProblem.ProblemId;
+            var ascentTypeId = _session.GetSportAscentTypeId(SelectedAscentType);
+            var gradeOpinionId = SelectedGrade.Id;
 
             return new Tick
             {
-                Tries = tries,
-                Timestamp = timestamp,
-                ProblemId = problem.ProblemId,
+                Tag = Tag,
+                Tries = TriesCount,
+                Timestamp = _selectedDate,
+                ProblemId = problemId,
                 AscentTypeId = ascentTypeId,
                 GradeOpinionId = gradeOpinionId,
             };
@@ -296,29 +220,23 @@ namespace Problemator.Core.ViewModels
 
         public async void Handle(LocationChangedMessage message)
         {
-            await _sections.LoadAsync();
+            ClearTaggedProblem();
 
-            ClearTaggedProblems();
-            NoProblemsAvailable = !_sections.HasProblems();
+            await LoadSectionsAsync();
         }
 
         public void Handle(DayChangedMessage message)
         {
-            _selectedDate = message.NewDay.Date;
+            ClearTaggedProblem();
 
-            ClearTaggedProblems();
+            _selectedDate = message.NewDay.Date;
         }
 
         public async void Handle(TickAddMesage message)
         {
-            if (message.Successfull)
-            {
-                ClearTaggedProblems();
-            }
+            ClearTaggedProblem();
 
             await _sections.LoadAsync();
-
-            SuggestedProblems = null;
         }
 
         public void Handle(BusyMessage message)

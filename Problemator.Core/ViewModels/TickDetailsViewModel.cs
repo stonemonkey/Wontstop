@@ -73,7 +73,9 @@ namespace Problemator.Core.ViewModels
         private void UpdateDirty()
         {
             if (_tick == null || 
-                TriesCount == 0 || SelectedAscentType == null || SelectedGrade == null)
+                TriesCount == 0 || 
+                SelectedAscentType == null || 
+                SelectedGrade == null)
             {
                 return;
             }
@@ -86,21 +88,21 @@ namespace Problemator.Core.ViewModels
 
         public IList<string> AscentTypes { get; private set; }
 
+        private readonly Ticks _ticks;
         private readonly Session _session;
         private readonly Sections _sections;
         private readonly IEventAggregator _eventAggregator;
-        private readonly ProblematorRequestsFactory _requestsFactory;
 
         public TickDetailsViewModel(
+            Ticks ticks,
             Session session,
             Sections sections,
-            IEventAggregator eventAggregator,
-            ProblematorRequestsFactory requestsFactory)
+            IEventAggregator eventAggregator)
         {
+            _ticks = ticks;
             _session = session;
             _sections = sections;
             _eventAggregator = eventAggregator;
-            _requestsFactory = requestsFactory;
         }
 
         private RelayCommand _loadComand;
@@ -109,26 +111,30 @@ namespace Problemator.Core.ViewModels
 
         private async Task LoadAsync()
         {
+            _eventAggregator.Subscribe(this);
+
+            await LoadSessionAsync();
+            TryUpdateTickSelectedValues();
+        }
+
+        private async Task LoadSessionAsync()
+        {
             await _session.LoadAsync(false);
 
             Grades = await _session.GetGradesAsync();
             AscentTypes = _session.GetSportAscentTypes();
             SelectedAscentType = await _session.GetUserSportAscentType();
-
-            TryUpdateTickSelectedValues();
         }
 
         private void TryUpdateTickSelectedValues()
         {
-            if (_tick != null && _session.IsLoaded() && Grades != null)
+            if (_tick != null && Grades != null && _session.IsLoaded())
             {
                 TriesCount = _tick.Tries;
                 SelectedAscentType = _session.GetSportAscentType(_tick.AscentTypeId);
                 SelectedGrade = Grades.GetById(_tick.GradeOpinionId ?? _tick.GradeId);
             }
         }
-
-        #region Tick
 
         private RelayCommand _saveComand;
 
@@ -139,30 +145,13 @@ namespace Problemator.Core.ViewModels
         {
             _eventAggregator.PublishShowBusy();
 
-            await _requestsFactory.CreateDeleteTickRequest(_tick.Id)
-                .RunAsync<ProblematorJsonParser>();
-
             _tick.Tries = TriesCount;
             _tick.AscentTypeId = _session.GetSportAscentTypeId(SelectedAscentType);
             _tick.GradeOpinionId = Grades.GetByName(SelectedGrade.Name).Id;
 
-            var response = await _requestsFactory.CreateUpdateTickRequest(Tick)
-                .RunAsync<ProblematorJsonParser>();
-
-            string[] failedToAddTags = new string[] { };
-            if (response.IsSuccessfull())
-            {
-                IsDirty = true;
-            }
-            else
-            {
-                failedToAddTags = new string[] { Tick.TagShort };
-            }
-            _eventAggregator.PublishFailedToAdd(failedToAddTags);
+            await _ticks.SaveTickAsync(_tick);
 
             _eventAggregator.PublishHideBusy();
         }
-
-        #endregion
     }
 }

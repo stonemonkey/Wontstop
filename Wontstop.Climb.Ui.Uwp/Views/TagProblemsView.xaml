@@ -129,6 +129,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
         <Grid x:Name="SuggestionsPanel"
             Grid.Row="0"
             Background="Transparent">
+            
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
@@ -140,14 +141,15 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 TextWrapping="Wrap"
                 VerticalAlignment="Center"
                 Text="We couldn't find any problem for the selected gym."
-                Visibility="{Binding NoProblemsAvailable, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=False}"/>
+                Visibility="{Binding AreProblemsMissing, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=False}"/>
+            
             <AutoSuggestBox x:Name="TicksAutoSuggestBox"
                 Margin="12,8"
-                Text="{Binding Tags, Mode=TwoWay}"
+                Text="{Binding Tag, Mode=TwoWay}"
                 ItemsSource="{Binding SuggestedProblems}"
                 ItemTemplate="{StaticResource SuggestedProblemDataTemplate}"
-                PlaceholderText="type some tags (e.g. A1001,B2001)"
-                Visibility="{Binding NoProblemsAvailable, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}">
+                PlaceholderText="type a tag (e.g. A1001)"
+                Visibility="{Binding AreProblemsMissing, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}">
                 <interactivity:Interaction.Behaviors>
                     <core:EventTriggerBehavior EventName="TextChanged">
                         <core:InvokeCommandAction 
@@ -171,8 +173,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
         
-            <Grid x:Name="SingleTickPanel"
-                Visibility="{Binding IsSingleSelection, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid x:Name="TickPanel">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>

@@ -55,7 +55,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     Grid.Column="3"
                     Margin="8,0,0,0"
                     VerticalAlignment="Center"
-                    Text="{Binding Tick.TagShort}"/>
+                    Text="{Binding TagShort}"/>
                 <!--<TextBlock x:Name="RemovedTextBlock"
                     Grid.Column="4"
                     Margin="8,0,0,0"

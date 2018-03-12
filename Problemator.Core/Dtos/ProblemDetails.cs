@@ -9,7 +9,7 @@ namespace Problemator.Core.Dtos
     /// <summary>
     /// Represents an indoor climbing route instance holding details.
     /// </summary>
-    public class Problem
+    public class ProblemDetails
     {
         [JsonProperty(PropertyName = "ascentcount")]
         public int AscentCount { get; set; }

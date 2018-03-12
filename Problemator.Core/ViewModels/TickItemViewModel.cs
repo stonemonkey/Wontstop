@@ -29,31 +29,34 @@ namespace Problemator.Core.ViewModels
             {
                 _tick = value;
                 TryUpdateAscentType();
+                TagShort = _tick.GetTagShort();
             }
         }
+
+        public string TagShort { get; private set; }
 
         public string AscentType { get; private set; }
 
         private bool _busy;
 
+        private readonly Ticks _ticks;
         private readonly Session _session;
         private readonly Sections _sections;
         private readonly IEventAggregator _eventAggregator;
         private readonly INavigationService _navigationService;
-        private readonly ProblematorRequestsFactory _requestFactory;
 
         public TickItemViewModel(
+            Ticks ticks,
             Session session,
             Sections sections,
             IEventAggregator eventAggregator,
-            INavigationService navigationService,
-            ProblematorRequestsFactory requestFactory)
+            INavigationService navigationService)
         {
+            _ticks = ticks;
             _session = session;
             _sections = sections;
             _eventAggregator = eventAggregator;
             _navigationService = navigationService;
-            _requestFactory = requestFactory;
         }
 
         private RelayCommand _loadComand;
@@ -94,20 +97,9 @@ namespace Problemator.Core.ViewModels
         {
             _eventAggregator.PublishShowBusy();
 
-            await RemoveTickAsync();
+            await _ticks.DeleteTickAsync(_tick);
 
             _eventAggregator.PublishHideBusy();
-        }
-
-        private async Task RemoveTickAsync()
-        {
-            (await _requestFactory.CreateDeleteTickRequest(Tick.Id)
-                .RunAsync<ProblematorJsonParser>())
-                    .OnSuccess(p =>
-                    {
-                        _eventAggregator.PublishRemove(Tick);
-                    })
-                    .PublishErrorOnAnyFailure(_eventAggregator);
         }
 
         public void Handle(BusyMessage message)

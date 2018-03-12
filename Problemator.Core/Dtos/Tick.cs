@@ -53,9 +53,6 @@ namespace Problemator.Core.Dtos
         [JsonProperty(PropertyName = "tag")]
         public string Tag { get; set; }
 
-        [JsonIgnore]
-        public string TagShort => Tag?.Substring(7);
-
         [JsonProperty(PropertyName = "colour")]
         public string ColorName { get; set; }
     }

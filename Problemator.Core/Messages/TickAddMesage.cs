@@ -2,24 +2,21 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
-using System.Linq;
 
 namespace Problemator.Core.Messages
 {
     public class TickAddMesage
     {
-        public bool Successfull { get; }
-        public string[] FailedToTickTags { get; }
+        public string TagShort { get; }
 
-        public TickAddMesage(string[] failedToTickTags)
+        public TickAddMesage(string tagShort)
         {
-            if (failedToTickTags == null)
+            if (string.IsNullOrWhiteSpace(tagShort))
             {
-                throw new ArgumentNullException(nameof(failedToTickTags));
+                throw new ArgumentOutOfRangeException(nameof(tagShort));
             }
 
-            FailedToTickTags = failedToTickTags;
-            Successfull = !failedToTickTags.Any();
+            TagShort = tagShort;
         }
     }
 }

@@ -45,10 +45,11 @@
     <Compile Include="Dtos\GradeDist.cs" />
     <Compile Include="Dtos\WallProblem.cs" />
     <Compile Include="Messages\MessageExtensions.cs" />
+    <Compile Include="Models\Ticks.cs" />
     <Compile Include="Utils\GradesExtensions.cs" />
     <Compile Include="Dtos\GymChangeConfirmation.cs" />
     <Compile Include="Dtos\Location.cs" />
-    <Compile Include="Dtos\Problem.cs" />
+    <Compile Include="Dtos\ProblemDetails.cs" />
     <Compile Include="Dtos\Statistics.cs" />
     <Compile Include="Dtos\Tick.cs" />
     <Compile Include="Dtos\UserIdentity.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="Utils\ProblematorJsonParser.cs" />
     <Compile Include="Utils\ProblematorJsonParserExtensions.cs" />
     <Compile Include="Utils\ProblematorResponseExtensions.cs" />
+    <Compile Include="Utils\TickExtensions.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\ProblemDetailesViewModel.cs" />

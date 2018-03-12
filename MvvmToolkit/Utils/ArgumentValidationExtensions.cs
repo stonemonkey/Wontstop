@@ -12,6 +12,14 @@ namespace MvvmToolkit.Utils
             }
         }
 
+        public static void ValidateNotNullEmpty(this string argument, string argumentName)
+        {
+            if (string.IsNullOrEmpty(argument))
+            {
+                throw new ArgumentException("Must not be null or empty!", argumentName);
+            }
+        }
+
         public static void ValidateNotNullEmptyWhiteSpace(this string argument, string argumentName)
         {
             if (string.IsNullOrWhiteSpace(argument))

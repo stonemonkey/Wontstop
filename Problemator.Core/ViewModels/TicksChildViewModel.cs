@@ -44,6 +44,7 @@ namespace Problemator.Core.ViewModels
 
         public ObservableCollection<Tick> Ticks { get; private set; }
 
+        private readonly Ticks _ticks;
         private readonly Session _session;
         private readonly Sections _sections;
         private readonly ITimeService _timeService;
@@ -52,6 +53,7 @@ namespace Problemator.Core.ViewModels
         private readonly ProblematorRequestsFactory _requestsFactory;
 
         public TicksChildViewModel(
+            Ticks ticks,
             Session session,
             Sections sections,
             ITimeService timeService,
@@ -59,6 +61,7 @@ namespace Problemator.Core.ViewModels
             IEventAggregator eventAggregator,
             ProblematorRequestsFactory requestsFactory)
         {
+            _ticks = ticks;
             _session = session;
             _sections = sections;
             _timeService = timeService;
@@ -89,26 +92,17 @@ namespace Problemator.Core.ViewModels
 
             await LoadTickDatesAsync();
             await LoadTicksAsync(SelectedDate);
-
-            await _session.LoadAsync(refresh);
-            Locations = await _session.GetLocationNames();
-            SelectedLocation = await _session.GetCurrentLocationName();
+            await LoadSessionAsync(refresh);
 
             _eventAggregator.PublishHideBusy();
-
-            UpdateEmpty();
         }
 
         private async Task LoadTicksAsync(DateTime day)
         {
-            (await _requestsFactory.CreateDayTicksRequest(day)
-                .RunAsync<ProblematorJsonParser>())
-                    .OnSuccess(p =>
-                    {
-                        var dayTicks = p.To<DayTicks>();
-                        Ticks = new ObservableCollection<Tick>(dayTicks.Ticks);
-                    })
-                    .PublishErrorOnAnyFailure(_eventAggregator);
+            var ticks = await _ticks.GetTicksAsync(day);
+
+            Ticks = new ObservableCollection<Tick>(ticks);
+            Empty = Ticks == null || !Ticks.Any();
         }
 
         private async Task LoadTickDatesAsync()
@@ -122,9 +116,12 @@ namespace Problemator.Core.ViewModels
                     .PublishErrorOnAnyFailure(_eventAggregator);
         }
 
-        private void UpdateEmpty()
+        private async Task LoadSessionAsync(bool refresh)
         {
-            Empty = Ticks == null || !Ticks.Any();
+            await _session.LoadAsync(refresh);
+
+            Locations = await _session.GetLocationNames();
+            SelectedLocation = await _session.GetCurrentLocationName();
         }
 
         private RelayCommand _unloadComand;
@@ -167,28 +164,11 @@ namespace Problemator.Core.ViewModels
         public async void Handle(TickRemoveMessage message)
         {
             await LoadTicksAsync(SelectedDate);
-
-            UpdateEmpty();
         }
 
         public async void Handle(TickAddMesage message)
         {
-            if (!message.Successfull)
-            {
-                ShowErrorForFailedToTickTags(message.FailedToTickTags);
-            }
-
             await LoadTicksAsync(SelectedDate);
-
-            UpdateEmpty();
-        }
-
-        private const string TicksSeparator = ",";
-
-        private void ShowErrorForFailedToTickTags(IEnumerable<string> tags)
-        {
-            _eventAggregator.PublishErrorMessageOnCurrentThread(
-                $"Unable to save: {string.Join(TicksSeparator, tags)}");
         }
 
         public void Handle(BusyMessage message)

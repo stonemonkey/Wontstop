@@ -10,6 +10,7 @@ using MvvmToolkit.Messages;
 using MvvmToolkit.Services;
 using Problemator.Core.Dtos;
 using Problemator.Core.Messages;
+using Problemator.Core.Models;
 using Problemator.Core.Utils;
 
 namespace Problemator.Core.ViewModels
@@ -36,19 +37,22 @@ namespace Problemator.Core.ViewModels
             }
         }
 
-        public Problem Details { get; private set; }
+        public ProblemDetails Details { get; private set; }
 
         private bool _busy;
 
+        private readonly Ticks _ticks;
         private readonly IEventAggregator _eventAggregator;
         private readonly INavigationService _navigationService;
         private readonly ProblematorRequestsFactory _requestFactory;
 
         public ProblemItemViewModel(
+            Ticks ticks,
             IEventAggregator eventAggregator,
             INavigationService navigationService,
             ProblematorRequestsFactory requestFactory)
         {
+            _ticks = ticks;
             _eventAggregator = eventAggregator;
             _navigationService = navigationService;
             _requestFactory = requestFactory;
@@ -75,7 +79,7 @@ namespace Problemator.Core.ViewModels
                     .OnSuccess(p =>
                     {
                         var data = p.GetData();
-                        Details = data["problem"].ToObject<Problem>();
+                        Details = data["problem"].ToObject<ProblemDetails>();
                     })
                     .PublishErrorOnAnyFailure(_eventAggregator);
         }
@@ -112,7 +116,7 @@ namespace Problemator.Core.ViewModels
         {
             _eventAggregator.PublishShowBusy();
 
-            await RemoveTickAsync();
+            await _ticks.DeleteTickAsync(Problem.Tick);
             UpdateHasTick();
 
             _eventAggregator.PublishHideBusy();
@@ -121,17 +125,6 @@ namespace Problemator.Core.ViewModels
         private void UpdateHasTick()
         {
             HasTick = _problem?.Tick != null;
-        }
-
-        private async Task RemoveTickAsync()
-        {
-            (await _requestFactory.CreateDeleteTickRequest(Problem.Tick.Id)
-                .RunAsync<ProblematorJsonParser>())
-                    .OnSuccess(p =>
-                    {
-                        _eventAggregator.PublishRemove(Problem.Tick);
-                    })
-                    .PublishErrorOnAnyFailure(_eventAggregator);
         }
 
         private RelayCommand _openDetailsComand;

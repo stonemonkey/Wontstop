@@ -58,15 +58,25 @@ namespace Problemator.Core.ViewModels
         {
             _eventAggregator.PublishShowBusy();
 
-            await _session.LoadAsync(refresh);
-            Locations = await _session.GetLocationNames();
-            SelectedLocation = await _session.GetCurrentLocationName();
-
-            await _sections.LoadAsync();
-            Sections = _sections.Get();
+            await LoadSessionAsync(refresh);
+            await LoadSectionsAsync();
 
             _eventAggregator.PublishHideBusy();
+        }
 
+        private async Task LoadSessionAsync(bool refresh)
+        {
+            await _session.LoadAsync(refresh);
+
+            Locations = await _session.GetLocationNames();
+            SelectedLocation = await _session.GetCurrentLocationName();
+        }
+
+        private async Task LoadSectionsAsync()
+        {
+            await _sections.LoadAsync();
+
+            Sections = _sections.Get();
             Empty = !_sections.HasProblems();
         }
 
