@@ -30,7 +30,7 @@ namespace Problemator.Core.ViewModels
 
         public string Tags { get; set; }
 
-        public IList<Problem> SuggestedProblems { get; set; }
+        public IList<WallProblem> SuggestedProblems { get; set; }
 
         public bool CanTick { get; private set; }
 
@@ -151,7 +151,7 @@ namespace Problemator.Core.ViewModels
             AddTaggedProblem(tag);
         }
 
-        private readonly IList<Problem> _taggedProblems = new List<Problem>();
+        private readonly IList<WallProblem> _taggedProblems = new List<WallProblem>();
 
         private void ClearTaggedProblems()
         {
@@ -257,7 +257,7 @@ namespace Problemator.Core.ViewModels
                 x.Config.Params[_requestsFactory.ProblemIdParamKey]);
 
             return _taggedProblems.Where(x => ids.Any(id =>
-                    string.Equals(x.Id, id, StringComparison.OrdinalIgnoreCase)))
+                    string.Equals(x.ProblemId, id, StringComparison.OrdinalIgnoreCase)))
                 .Select(x => x.TagShort)
                 .ToArray();
         }
@@ -270,7 +270,7 @@ namespace Problemator.Core.ViewModels
                 .Select(x => x.Request);
         }
 
-        private Tick CreateTick(Problem problem, int tries, DateTime timestamp, string ascentType)
+        private Tick CreateTick(WallProblem problem, int tries, DateTime timestamp, string ascentType)
         {
             var gradeOpinionId = problem.GradeId;
             if (IsSingleSelection)
@@ -284,7 +284,7 @@ namespace Problemator.Core.ViewModels
             {
                 Tries = tries,
                 Timestamp = timestamp,
-                ProblemId = problem.Id,
+                ProblemId = problem.ProblemId,
                 AscentTypeId = ascentTypeId,
                 GradeOpinionId = gradeOpinionId,
             };

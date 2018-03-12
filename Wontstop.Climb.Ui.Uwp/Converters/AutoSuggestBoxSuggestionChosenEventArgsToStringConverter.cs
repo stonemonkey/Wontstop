@@ -10,7 +10,7 @@ namespace Wontstop.Climb.Ui.Uwp.Converters
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             var args = value as AutoSuggestBoxSuggestionChosenEventArgs;
-            var problem = args?.SelectedItem as Problem;
+            var problem = args?.SelectedItem as WallProblem;
 
             return problem?.TagShort;
         }

@@ -26,7 +26,7 @@ namespace Problemator.Core.Models
         }
 
         private List<string> _tags;
-        private List<Problem> _problems;
+        private List<WallProblem> _problems;
         private IDictionary<string, WallSection> _sections;
 
         public bool HasProblems() => _problems != null && _problems.Any();
@@ -54,18 +54,18 @@ namespace Problemator.Core.Models
         public bool ContainsProblem(string tag) =>
             _tags.Contains(tag, StringComparer.OrdinalIgnoreCase);
 
-        public Problem GetFirstAvailableProblem(string tag, DateTime date) =>
+        public WallProblem GetFirstAvailableProblem(string tag, DateTime date) =>
             _problems.First(x =>
                 IsAvailaleAt(x, date) &&
                 x.TagShort.Equals(tag, StringComparison.OrdinalIgnoreCase));
 
-        public IList<Problem> GetAvailableProblems(string tagFragment, DateTime date) =>
+        public IList<WallProblem> GetAvailableProblems(string tagFragment, DateTime date) =>
             _problems.Where(x =>
                     IsAvailaleAt(x, date) &&
                     x.TagShort.StartsWith(tagFragment, StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
-        private bool IsAvailaleAt(Problem problem, DateTime date)
+        private bool IsAvailaleAt(WallProblem problem, DateTime date)
         {
             if (problem.Removed == null)
             {

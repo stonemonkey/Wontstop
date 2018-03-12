@@ -14,20 +14,19 @@ using Problemator.Core.Utils;
 
 namespace Problemator.Core.ViewModels
 {
-    public class ProblemItemViewModel : INotifyPropertyChanged
+    public class ProblemItemViewModel : 
+        IHandle<BusyMessage>,
+        INotifyPropertyChanged
     {
         #pragma warning disable CS0067
         // Is used by Fody to add NotifyPropertyChanged on properties.
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public bool Busy { get; private set; }
-     
         public bool HasTick { get; private set; }
 
-        private Problem _problem;
-
+        private WallProblem _problem;
         [Model]
-        public Problem Problem
+        public WallProblem Problem
         {
             get { return _problem; }
             set
@@ -37,10 +36,13 @@ namespace Problemator.Core.ViewModels
             }
         }
 
+        public Problem Details { get; private set; }
+
+        private bool _busy;
+
         private readonly IEventAggregator _eventAggregator;
         private readonly INavigationService _navigationService;
         private readonly ProblematorRequestsFactory _requestFactory;
-
 
         public ProblemItemViewModel(
             IEventAggregator eventAggregator,
@@ -54,11 +56,28 @@ namespace Problemator.Core.ViewModels
 
         private RelayCommand _loadComand;
         public RelayCommand LoadCommand => _loadComand ??
-            (_loadComand = new RelayCommand(Load));
+            (_loadComand = new RelayCommand(async () => await LoadAsync()));
 
-        private void Load()
+        private async Task LoadAsync()
         {
             _eventAggregator.Subscribe(this);
+
+            if (HasTick)
+            {
+                await LoadProblemAsync();
+            }
+        }
+
+        private async Task LoadProblemAsync()
+        {
+            (await _requestFactory.CreateProblemRequest(Problem.ProblemId)
+                .RunAsync<ProblematorJsonParser>())
+                    .OnSuccess(p =>
+                    {
+                        var data = p.GetData();
+                        Details = data["problem"].ToObject<Problem>();
+                    })
+                    .PublishErrorOnAnyFailure(_eventAggregator);
         }
 
         private RelayCommand _unloadComand;
@@ -70,33 +89,33 @@ namespace Problemator.Core.ViewModels
             _eventAggregator.Unsubscribe(this);
         }
 
-        private RelayCommand _addTickCommand;
-        public RelayCommand AddTickCommand => _addTickCommand ??
-            (_addTickCommand = new RelayCommand(AddTick, () => !Busy));
+        //private RelayCommand _addTickCommand;
+        //public RelayCommand AddTickCommand => _addTickCommand ??
+        //    (_addTickCommand = new RelayCommand(AddTick, () => !_busy));
 
-        private void AddTick()
-        {
-            Busy = true;
+        //private void AddTick()
+        //{
+        //    _eventAggregator.PublishShowBusy();
 
-            // TODO: implement
-            UpdateHasTick();
+        //    // TODO: implement
+        //    UpdateHasTick();
 
-            Busy = false;
-        }
+        //    _eventAggregator.PublishHideBusy();
+        //}
 
         private RelayCommand _deleteTickCommand;
         public RelayCommand DeleteTickCommand => _deleteTickCommand ??
             (_deleteTickCommand = new RelayCommand(
-                async () => await DeleteTickAsync(), () => !Busy));
+                async () => await DeleteTickAsync(), () => !_busy));
 
         private async Task DeleteTickAsync()
         {
-            Busy = true;
+            _eventAggregator.PublishShowBusy();
 
             await RemoveTickAsync();
             UpdateHasTick();
 
-            Busy = false;
+            _eventAggregator.PublishHideBusy();
         }
 
         private void UpdateHasTick()
@@ -118,11 +137,16 @@ namespace Problemator.Core.ViewModels
         private RelayCommand _openDetailsComand;
 
         public RelayCommand OpenDetailsCommand => _openDetailsComand ??
-            (_openDetailsComand = new RelayCommand(OpenDetails, () => !Busy));
+            (_openDetailsComand = new RelayCommand(OpenDetails, () => !_busy));
 
         private void OpenDetails()
         {
             _navigationService.Navigate<ProblemDetailesViewModel>(Problem);
+        }
+
+        public void Handle(BusyMessage message)
+        {
+            _busy = message.Show;
         }
     }
 }

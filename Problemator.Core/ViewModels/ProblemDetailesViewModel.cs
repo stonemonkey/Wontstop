@@ -16,11 +16,11 @@ namespace Problemator.Core.ViewModels
 
         public int TriesCount { get; set; }
      
-        public Problem Problem { get; private set; }
+        public WallProblem Problem { get; private set; }
 
         public void Activate(object parameter)
         {
-            Problem = (Problem) parameter;
+            Problem = (WallProblem) parameter;
         }
 
         private const int MaxTriesCount = 100;

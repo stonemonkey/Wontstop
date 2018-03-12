@@ -19,7 +19,7 @@ namespace Problemator.Core.Dtos
         public string WallName { get; set; }
 
         [JsonProperty(PropertyName = "problems")]
-        public IList<Problem> Problems { get; set; }
+        public IList<WallProblem> Problems { get; set; }
 
         [JsonIgnore]
         public string FullName => $"{WallChar} {WallName}";

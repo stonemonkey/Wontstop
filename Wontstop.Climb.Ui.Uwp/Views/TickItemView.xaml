@@ -150,11 +150,11 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         FontFamily="Segoe MDL2 Assets"/>
                 </Button>
             </StackPanel>
+            
             <views:TickDetailsView
                 Grid.Row="2"
                 attachedProperties:ViewModel.Model="{Binding DataContext.Tick, ElementName=TickItemPanel}"
                 Visibility="{Binding IsChecked, ElementName=TickItemToggleButton, Converter={StaticResource BoolToVisibilityConverter}}"/>
         </Grid>
     </ToggleButton>
-
 </UserControl>

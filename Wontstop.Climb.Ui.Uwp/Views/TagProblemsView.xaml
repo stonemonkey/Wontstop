@@ -50,7 +50,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         Grid.Column="2"
                         Margin="8,0,0,0"
                         VerticalAlignment="Center"
-                        Text="{Binding Grade}"/>
+                        Text="{Binding GradeName}"/>
                     <TextBlock x:Name="TagTextBlock"
                         Grid.Column="3"
                         Margin="8,0,0,0"

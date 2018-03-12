@@ -14,13 +14,26 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
 
     <Button x:Name="ProblemItemButton"
         HorizontalAlignment="Stretch"
+        HorizontalContentAlignment="Stretch"
         Command="{Binding OpenDetailsCommand}">
+
         <Grid x:Name="ProblemItemPanel"
             Background="Transparent">
+
+            <interactivity:Interaction.Behaviors>
+                <core:EventTriggerBehavior EventName="Loaded">
+                    <core:InvokeCommandAction Command="{Binding LoadCommand}"/>
+                </core:EventTriggerBehavior>
+                <core:EventTriggerBehavior EventName="Unloaded">
+                    <core:InvokeCommandAction Command="{Binding UnloadCommand}"/>
+                </core:EventTriggerBehavior>
+            </interactivity:Interaction.Behaviors>
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
+            
             <Grid x:Name="ProblemControlPanel"
                 Grid.Row="0">
                 <Grid.ColumnDefinitions>
@@ -38,7 +51,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     Grid.Column="2"
                     Margin="8,0,0,0"
                     VerticalAlignment="Center"
-                    Text="{Binding Problem.Grade}"/>
+                    Text="{Binding Problem.GradeName}"/>
                 <TextBlock x:Name="TagTextBlock"
                     Grid.Column="3"
                     Margin="8,0,0,0"
@@ -53,10 +66,12 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     Foreground="Red"
                     Visibility="{Binding Problem.Visible, Converter={StaticResource IntOneToVisibilityConverter}, ConverterParameter=True}"/>
             </Grid>
+            
             <StackPanel x:Name="ProblemPanel"
                 Grid.Row="1"
                 Margin="0,2"
-                Orientation="Horizontal">
+                Orientation="Horizontal"
+                HorizontalAlignment="Stretch">
                 <TextBlock Text="{Binding Problem.ColorName}" 
                     Foreground="Gray"
                     Style="{ThemeResource CaptionTextBlockStyle}"/>
@@ -77,53 +92,30 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         Margin="4,0,0,0"
                         Foreground="Gray"
                         Style="{ThemeResource CaptionTextBlockStyle}"/>
-                    <TextBlock x:Name="LoggedTimeTextBlock"
+                    <TextBlock x:Name="TicksCountTextBlock"
                         Margin="4,0,0,0"
                         Foreground="Gray"
                         VerticalAlignment="Center"
-                        Style="{ThemeResource CaptionTextBlockStyle}"
-                        Text="{Binding Problem.Tick.Timestamp, Converter={StaticResource DateTimeToTimeStringConverter}}"/>
-                    <StackPanel x:Name="AscentTypePanel"
-                        Orientation="Horizontal"
-                        Visibility="{Binding Problem.RouteType, Converter={StaticResource StringEqualToVisibilityConverter}, ConverterParameter=sport}">
-                        <TextBlock Text="|" 
-                            Margin="4,0,0,0"
-                            Foreground="Gray"
-                            Style="{ThemeResource CaptionTextBlockStyle}"/>
-                        <TextBlock x:Name="AscentionTypeTextBlock"
-                            Margin="4,0,0,0"
-                            Foreground="Gray"
-                            VerticalAlignment="Center"
-                            Text="{Binding Problem.Tick.AscentType, Converter={StaticResource IntToAscentTypeStringConverter}}"
-                            Style="{ThemeResource CaptionTextBlockStyle}"/>
-                    </StackPanel>                
-                    <TextBlock Text="|" 
-                        Margin="4,0,0,0"
-                        Foreground="Gray"
+                        Text="{Binding Details.TickCount}"
                         Style="{ThemeResource CaptionTextBlockStyle}"/>
-                    <TextBlock x:Name="TriesCountTextBlock"
-                        Margin="4,0,0,0"
-                        Foreground="Gray"
-                        VerticalAlignment="Center"
-                        Text="{Binding Problem.Tick.Tries}"
-                        Style="{ThemeResource CaptionTextBlockStyle}"/>
-                    <TextBlock x:Name="OneTryLabelTextBlock"
-                        Text="try"
+                    <TextBlock x:Name="OneTickLabelTextBlock"
+                        Text="tick"
                         Margin="4,0,0,0"
                         Foreground="Gray"
                         VerticalAlignment="Center"
                         Style="{ThemeResource CaptionTextBlockStyle}"
-                        Visibility="{Binding Problem.Tick.Tries, Converter={StaticResource IntOneToBoolConverter}, ConverterParameter=False}"/>
-                    <TextBlock x:Name="ManyTriesLabelTextBlock"
-                        Text="tries"
+                        Visibility="{Binding Details.TickCount, Converter={StaticResource IntOneToBoolConverter}, ConverterParameter=False}"/>
+                    <TextBlock x:Name="ManyTicksLabelTextBlock"
+                        Text="ticks"
                         Margin="4,0,0,0"
                         Foreground="Gray"
                         VerticalAlignment="Center"
                         Style="{ThemeResource CaptionTextBlockStyle}"
-                        Visibility="{Binding Problem.Tick.Tries, Converter={StaticResource IntOneToBoolConverter}, ConverterParameter=True}"/>
+                        Visibility="{Binding Details.TickCount, Converter={StaticResource IntOneToBoolConverter}, ConverterParameter=True}"/>
                 </StackPanel>
             </StackPanel>
-            <StackPanel x:Name="ActionsPanel"
+            
+            <StackPanel x:Name="QuickActionsPanel"
                 Grid.Row="0" Grid.RowSpan="2"
                 Orientation="Horizontal"
                 VerticalAlignment="Stretch"
@@ -148,13 +140,5 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 </Button>
             </StackPanel>
         </Grid>
-        <interactivity:Interaction.Behaviors>
-            <core:EventTriggerBehavior EventName="Loaded">
-                <core:InvokeCommandAction Command="{Binding LoadCommand}"/>
-            </core:EventTriggerBehavior>
-            <core:EventTriggerBehavior EventName="Unloaded">
-                <core:InvokeCommandAction Command="{Binding UnloadCommand}"/>
-            </core:EventTriggerBehavior>
-        </interactivity:Interaction.Behaviors>
     </Button>
 </UserControl>
