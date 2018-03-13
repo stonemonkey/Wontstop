@@ -183,18 +183,18 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
 
                 <ComboBox x:Name="AscentTypeComboBox"
                     Grid.Column="0"
-                    Margin="12,12,24,8"
+                    Margin="12,12,12,8"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Stretch"
                     PlaceholderText="ascent type"
                     ItemsSource="{Binding AscentTypes}"
                     SelectedItem="{Binding SelectedAscentType, Mode=TwoWay}"
-                    Visibility="{Binding Tick.RouteType, Converter={StaticResource StringEqualToVisibilityConverter}, ConverterParameter=sport}">
+                    Visibility="{Binding RouteType, Converter={StaticResource StringEqualToVisibilityConverter}, ConverterParameter=sport}">
                 </ComboBox>
 
                 <ComboBox x:Name="GradeOpinionComboBox"
                     Grid.Column="1"
-                    Margin="0,12,12,8"
+                    Margin="12,12,12,8"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Left"
                     PlaceholderText="grade opinion"

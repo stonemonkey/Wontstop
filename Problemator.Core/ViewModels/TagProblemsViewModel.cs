@@ -105,6 +105,8 @@ namespace Problemator.Core.ViewModels
 
         public bool CanTick { get; private set; }
 
+        public string RouteType { get; private set; }
+
         public string Tag { get; set; }
 
         public IList<WallProblem> SuggestedProblems { get; set; }
@@ -169,6 +171,7 @@ namespace Problemator.Core.ViewModels
 
             _taggedProblem = _sections.GetFirstAvailableProblem(tag, _selectedDate);
             SelectedGrade = Grades.GetById(_taggedProblem.GradeId);
+            RouteType = _taggedProblem.RouteType;
         }
 
         private bool IsAValidTag(string tag)
