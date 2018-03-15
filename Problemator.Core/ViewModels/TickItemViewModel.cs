@@ -28,8 +28,7 @@ namespace Problemator.Core.ViewModels
             set
             {
                 _tick = value;
-                TryUpdateAscentType();
-                TagShort = _tick.GetTagShort();
+                TryUpdateFieldsFromTick();
             }
         }
 
@@ -68,13 +67,14 @@ namespace Problemator.Core.ViewModels
             _eventAggregator.Subscribe(this);
 
             await _session.LoadAsync(false);
-            TryUpdateAscentType();
+            TryUpdateFieldsFromTick();
         }
 
-        private void TryUpdateAscentType()
+        private void TryUpdateFieldsFromTick()
         {
             if (_tick != null && _session.IsLoaded())
             {
+                TagShort = _tick.GetTagShort();
                 AscentType = _session.GetSportAscentType(_tick.AscentTypeId);
             }
         }
@@ -100,6 +100,15 @@ namespace Problemator.Core.ViewModels
             await _ticks.DeleteTickAsync(_tick);
 
             _eventAggregator.PublishHideBusy();
+        }
+
+        private RelayCommand _openDetailsComand;
+        public RelayCommand OpenDetailsCommand => _openDetailsComand ??
+            (_openDetailsComand = new RelayCommand(OpenDetails, () => !_busy));
+
+        private void OpenDetails()
+        {
+            _navigationService.Navigate<TickDetailsViewModel>(Tick);
         }
 
         public void Handle(BusyMessage message)

@@ -34,7 +34,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             
-            <Grid x:Name="ProblemControlPanel"
+            <Grid x:Name="ProblemTitlePanel"
                 Grid.Row="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -67,7 +67,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     Visibility="{Binding Problem.Visible, Converter={StaticResource IntOneToVisibilityConverter}, ConverterParameter=True}"/>
             </Grid>
             
-            <StackPanel x:Name="ProblemPanel"
+            <StackPanel x:Name="ProblemDetailsPanel"
                 Grid.Row="1"
                 Margin="0,2"
                 Orientation="Horizontal"

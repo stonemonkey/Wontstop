@@ -5,9 +5,9 @@ using Windows.UI.Xaml.Controls;
 
 namespace Wontstop.Climb.Ui.Uwp.Views
 {
-    public sealed partial class TickDetailsView : UserControl
+    public sealed partial class TickDetailsPage : MainChildPageBase
     {
-        public TickDetailsView()
+        public TickDetailsPage()
         {
             InitializeComponent();
         }

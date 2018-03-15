@@ -3,7 +3,6 @@
 
 using System.ComponentModel;
 using System.Threading.Tasks;
-using HttpApiClient;
 using MvvmToolkit.Attributes;
 using MvvmToolkit.Commands;
 using MvvmToolkit.Messages;
@@ -11,7 +10,6 @@ using MvvmToolkit.Services;
 using Problemator.Core.Dtos;
 using Problemator.Core.Messages;
 using Problemator.Core.Models;
-using Problemator.Core.Utils;
 
 namespace Problemator.Core.ViewModels
 {
@@ -25,14 +23,14 @@ namespace Problemator.Core.ViewModels
 
         public bool HasTick { get; private set; }
 
-        private WallProblem _problem;
+        private WallProblem _wallProblem;
         [Model]
         public WallProblem Problem
         {
-            get { return _problem; }
+            get { return _wallProblem; }
             set
             {
-                _problem = value;
+                _wallProblem = value;
                 UpdateHasTick();
             }
         }
@@ -42,20 +40,20 @@ namespace Problemator.Core.ViewModels
         private bool _busy;
 
         private readonly Ticks _ticks;
+        private readonly Problem _problem;
         private readonly IEventAggregator _eventAggregator;
         private readonly INavigationService _navigationService;
-        private readonly ProblematorRequestsFactory _requestFactory;
 
         public ProblemItemViewModel(
             Ticks ticks,
+            Problem problem,
             IEventAggregator eventAggregator,
-            INavigationService navigationService,
-            ProblematorRequestsFactory requestFactory)
+            INavigationService navigationService)
         {
             _ticks = ticks;
+            _problem = problem;
             _eventAggregator = eventAggregator;
             _navigationService = navigationService;
-            _requestFactory = requestFactory;
         }
 
         private RelayCommand _loadComand;
@@ -74,14 +72,7 @@ namespace Problemator.Core.ViewModels
 
         private async Task LoadProblemAsync()
         {
-            (await _requestFactory.CreateProblemRequest(Problem.ProblemId)
-                .RunAsync<ProblematorJsonParser>())
-                    .OnSuccess(p =>
-                    {
-                        var data = p.GetData();
-                        Details = data["problem"].ToObject<ProblemDetails>();
-                    })
-                    .PublishErrorOnAnyFailure(_eventAggregator);
+            Details = await _problem.GetDetailsAsync(Problem.Id);
         }
 
         private RelayCommand _unloadComand;
@@ -124,11 +115,10 @@ namespace Problemator.Core.ViewModels
 
         private void UpdateHasTick()
         {
-            HasTick = _problem?.Tick != null;
+            HasTick = _wallProblem?.Tick != null;
         }
 
         private RelayCommand _openDetailsComand;
-
         public RelayCommand OpenDetailsCommand => _openDetailsComand ??
             (_openDetailsComand = new RelayCommand(OpenDetails, () => !_busy));
 

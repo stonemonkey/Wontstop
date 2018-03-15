@@ -7,17 +7,15 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:attachedProperties="using:MvvmToolkit.WinRT.AttachedProperties"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
-    xmlns:views="using:Wontstop.Climb.Ui.Uwp.Views"
     mc:Ignorable="d"
     DataContext="{Binding TickItemViewModel, Source={StaticResource ViewModelLocator}}">
        
-    <ToggleButton x:Name="TickItemToggleButton"
-        IsChecked="False"
+    <Button x:Name="TickItemButton"
         HorizontalAlignment="Stretch"
-        HorizontalContentAlignment="Stretch">
+        HorizontalContentAlignment="Stretch"
+        Command="{Binding OpenDetailsCommand}">
 
         <interactivity:Interaction.Behaviors>
             <core:EventTriggerBehavior EventName="Loaded">
@@ -30,10 +28,9 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             
-            <Grid x:Name="ProblemInfoPanel"
+            <Grid x:Name="TickTitlePanel"
                 Grid.Row="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -56,17 +53,9 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     Margin="8,0,0,0"
                     VerticalAlignment="Center"
                     Text="{Binding TagShort}"/>
-                <!--<TextBlock x:Name="RemovedTextBlock"
-                    Grid.Column="4"
-                    Margin="8,0,0,0"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Left"
-                    Text="(removed)"
-                    Foreground="Red"
-                    Visibility="{Binding Tick.Visible, Converter={StaticResource IntOneToVisibilityConverter}, ConverterParameter=True}"/>-->
             </Grid>
             
-            <StackPanel x:Name="TickInfoPanel"
+            <StackPanel x:Name="TickDetailsPanel"
                 Grid.Row="1"
                 Margin="0,2"
                 Orientation="Horizontal">
@@ -137,8 +126,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 Grid.Row="0" Grid.RowSpan="2"
                 Orientation="Horizontal"
                 VerticalAlignment="Stretch"
-                HorizontalAlignment="Right"
-                Visibility="{Binding IsChecked, ElementName=TickItemToggleButton, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}">
+                HorizontalAlignment="Right">
                 <Button x:Name="DeleteButton"
                     Margin="12,0,0,0"
                     VerticalAlignment="Stretch"
@@ -151,10 +139,6 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 </Button>
             </StackPanel>
             
-            <views:TickDetailsView
-                Grid.Row="2"
-                attachedProperties:ViewModel.Model="{Binding DataContext.Tick, ElementName=TickItemPanel}"
-                Visibility="{Binding IsChecked, ElementName=TickItemToggleButton, Converter={StaticResource BoolToVisibilityConverter}}"/>
         </Grid>
-    </ToggleButton>
+    </Button>
 </UserControl>

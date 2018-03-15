@@ -123,8 +123,8 @@
     <Compile Include="Views\TagProblemsView.xaml.cs">
       <DependentUpon>TagProblemsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\TickDetailsView.xaml.cs">
-      <DependentUpon>TickDetailsView.xaml</DependentUpon>
+    <Compile Include="Views\TickDetailsPage.xaml.cs">
+      <DependentUpon>TickDetailsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TicksChildPage.xaml.cs">
       <DependentUpon>TicksChildPage.xaml</DependentUpon>
@@ -181,7 +181,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\TickDetailsView.xaml">
+    <Page Include="Views\TickDetailsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

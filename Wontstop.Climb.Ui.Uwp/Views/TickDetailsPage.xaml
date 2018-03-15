@@ -1,0 +1,198 @@
+﻿<!--Copyright (c) Costin Morariu. All rights reserved.
+Licensed under the MIT license. See LICENSE file in the project root for full license information.-->
+
+<views:MainChildPageBase
+    xmlns:views="using:Wontstop.Climb.Ui.Uwp.Views"
+    x:Class="Wontstop.Climb.Ui.Uwp.Views.TickDetailsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:uc="using:Wontstop.Climb.Ui.Uwp.UserControls"
+    xmlns:behaviours="using:MvvmToolkit.Uwp.Behaviours"
+    mc:Ignorable="d"
+    DataContext="{Binding TickDetailsViewModel, Source={StaticResource ViewModelLocator}}">
+
+    <UserControl.Resources>
+        <DataTemplate x:Key="GradeItemDataTemplate">
+            <Grid x:Name="TickItemPanel">
+                <TextBlock Text="{Binding Name}"/>
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <interactivity:Interaction.Behaviors>
+        <behaviours:ShowBackButtonBehavior/>
+        <core:EventTriggerBehavior EventName="Loaded">
+            <core:InvokeCommandAction Command="{Binding LoadCommand}"/>
+        </core:EventTriggerBehavior>
+        <core:EventTriggerBehavior EventName="Unloaded">
+            <core:InvokeCommandAction Command="{Binding UnloadCommand}"/>
+        </core:EventTriggerBehavior>
+    </interactivity:Interaction.Behaviors>
+
+    <Grid x:Name="TickDetailsViewPanel" 
+        VerticalAlignment="Center"
+        HorizontalAlignment="Center">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid x:Name="ProblemInfoPanel"
+            Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <Ellipse x:Name="ColorElipse"
+                Grid.Column="0"
+                Width="16" Height="16"
+                Fill="{Binding Problem.ColorName, Converter={StaticResource StringToColorConverter}}"/>
+            <TextBlock x:Name="GradeTextBlock"
+                Grid.Column="1"
+                Margin="8,0,0,0"
+                VerticalAlignment="Center"
+                Text="{Binding Problem.GradeName}"/>
+            <TextBlock x:Name="TagTextBlock"
+                Grid.Column="2"
+                Margin="8,0,0,0"
+                VerticalAlignment="Center"
+                Text="{Binding Problem.TagShort}"/>
+            <TextBlock x:Name="WallTextBlock"
+                Grid.Column="3"
+                Margin="8,0,0,0"
+                VerticalAlignment="Center"
+                Text="{Binding Problem.WallDescription}"/>
+        </Grid>
+
+        <StackPanel x:Name="ProblemDetailsPanel"
+            Grid.Row="1"
+            Margin="0,2,0,0"
+            Orientation="Horizontal">
+            <TextBlock x:Name="ColorNameTextBlock"
+                Text="{Binding Problem.ColorName}" 
+                Foreground="Gray"
+                Style="{ThemeResource CaptionTextBlockStyle}"/>
+            <TextBlock Text="|" 
+                Margin="4,0,0,0"
+                Foreground="Gray"
+                Style="{ThemeResource CaptionTextBlockStyle}"/>
+            <TextBlock x:Name="RouteTypeTextBlock"
+                Margin="4,0,0,0"
+                Foreground="Gray"
+                VerticalAlignment="Center"
+                Text="{Binding Problem.RouteType}"
+                Style="{ThemeResource CaptionTextBlockStyle}"/>
+            <TextBlock Text="|" 
+                Margin="4,0,0,0"
+                Foreground="Gray"
+                Style="{ThemeResource CaptionTextBlockStyle}"/>
+            <TextBlock x:Name="AuthorTextBlock"
+                Margin="4,0,0,0"
+                Foreground="Gray"
+                VerticalAlignment="Center"
+                Text="{Binding Problem.Author}"
+                Style="{ThemeResource CaptionTextBlockStyle}"/>
+            <TextBlock Text="|" 
+                Margin="4,0,0,0"
+                Foreground="Gray"
+                Style="{ThemeResource CaptionTextBlockStyle}"/>
+            <TextBlock x:Name="AddedRelativeTextBlock"
+                Margin="4,0,0,0"
+                Foreground="Gray"
+                VerticalAlignment="Center"
+                Text="{Binding Problem.AddedRelative}"
+                Style="{ThemeResource CaptionTextBlockStyle}"/>
+        </StackPanel>
+
+        <RelativePanel x:Name="TickDetailsPanel"
+            Grid.Row="2"
+            Margin="0,20"
+            HorizontalAlignment="Center">
+
+            <StackPanel x:Name="GradeOpinionPanel"
+                Margin="0,8,0,8"
+                RelativePanel.AlignLeftWithPanel="True"
+                MinWidth="{Binding ActualWidth, ElementName=TriesCounterPanel}">
+                <TextBlock x:Name="GradeOpinionTextBlock"
+                    Margin="0,2"
+                    Foreground="Gray"
+                    VerticalAlignment="Center"
+                    Text="Grade opinion:"
+                    Style="{ThemeResource CaptionTextBlockStyle}"/>
+                <ComboBox x:Name="GradeOpinionComboBox"
+                    HorizontalAlignment="Stretch"
+                    PlaceholderText="grade opinion"
+                    ItemsSource="{Binding Grades}"
+                    SelectedItem="{Binding SelectedGrade, Mode=TwoWay}"
+                    ItemTemplate="{StaticResource GradeItemDataTemplate}">
+                </ComboBox>
+            </StackPanel>
+            
+            <StackPanel x:Name="TriesCounterPanel"
+                Margin="0,8,0,8"
+                RelativePanel.Below="GradeOpinionPanel">
+                <TextBlock x:Name="TriesCounterTextBlock"
+                    Margin="0,2"
+                    Foreground="Gray"
+                    VerticalAlignment="Center"
+                    Text="Number of tries:"
+                    Style="{ThemeResource CaptionTextBlockStyle}"/>
+                    <uc:TriesCounterUserControl x:Name="TriesCounterControl"
+                        Count="{Binding TriesCount, Mode=TwoWay}"/>
+            </StackPanel>
+
+            <StackPanel x:Name="AscentTypePanel"
+                Margin="20,8,0,8"
+                RelativePanel.Below="GradeOpinionPanel"
+                RelativePanel.AlignRightWith="TickTimePanel"
+                RelativePanel.AlignVerticalCenterWith="TriesCounterPanel"
+                MinWidth="{Binding ActualWidth, ElementName=TriesCounterPanel}"
+                Visibility="{Binding Tick.RouteType, Converter={StaticResource StringEqualToVisibilityConverter}, ConverterParameter=sport}">
+                <TextBlock x:Name="AscentTypeTextBlock"
+                    Margin="0,2"
+                    Foreground="Gray"
+                    VerticalAlignment="Center"
+                    Text="Ascent type:"
+                    Style="{ThemeResource CaptionTextBlockStyle}"/>
+                <ComboBox x:Name="AscentTypeComboBox"
+                    HorizontalAlignment="Stretch"
+                    PlaceholderText="ascent type"
+                    ItemsSource="{Binding AscentTypes}"
+                    SelectedItem="{Binding SelectedAscentType, Mode=TwoWay}">
+                </ComboBox>
+            </StackPanel>
+
+            <StackPanel x:Name="TickTimePanel"
+                Margin="0,8,0,8"
+                RelativePanel.Below="TriesCounterPanel">
+                <TextBlock x:Name="TickTimeTextBlock"
+                    Margin="0,2"
+                    Foreground="Gray"
+                    VerticalAlignment="Center"
+                    Text="Send time:"
+                    Style="{ThemeResource CaptionTextBlockStyle}"/>
+                <TimePicker x:Name="TickTimePicker"
+                    Time="{Binding SendTime, Mode=TwoWay}"/>
+            </StackPanel>
+        </RelativePanel>
+        
+        <Button x:Name="SaveButton"
+            Grid.Row="3"
+            Margin="0,8,0,20"
+            Content="Save"
+            HorizontalAlignment="Stretch"
+            Command="{Binding SaveCommand}">
+        </Button>
+    </Grid>
+</views:MainChildPageBase>

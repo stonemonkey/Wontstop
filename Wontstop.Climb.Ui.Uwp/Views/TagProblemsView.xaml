@@ -180,20 +180,9 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-
-                <ComboBox x:Name="AscentTypeComboBox"
-                    Grid.Column="0"
-                    Margin="12,12,12,8"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Stretch"
-                    PlaceholderText="ascent type"
-                    ItemsSource="{Binding AscentTypes}"
-                    SelectedItem="{Binding SelectedAscentType, Mode=TwoWay}"
-                    Visibility="{Binding RouteType, Converter={StaticResource StringEqualToVisibilityConverter}, ConverterParameter=sport}">
-                </ComboBox>
-
+                
                 <ComboBox x:Name="GradeOpinionComboBox"
-                    Grid.Column="1"
+                    Grid.Column="0"
                     Margin="12,12,12,8"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Left"
@@ -201,6 +190,17 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     ItemsSource="{Binding Grades}"
                     SelectedItem="{Binding SelectedGrade, Mode=TwoWay}"
                     ItemTemplate="{StaticResource GradeItemDataTemplate}">
+                </ComboBox>
+
+                <ComboBox x:Name="AscentTypeComboBox"
+                    Grid.Column="1"
+                    Margin="12,12,12,8"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Stretch"
+                    PlaceholderText="ascent type"
+                    ItemsSource="{Binding AscentTypes}"
+                    SelectedItem="{Binding SelectedAscentType, Mode=TwoWay}"
+                    Visibility="{Binding RouteType, Converter={StaticResource StringEqualToVisibilityConverter}, ConverterParameter=sport}">
                 </ComboBox>
 
                 <uc:TriesCounterUserControl 

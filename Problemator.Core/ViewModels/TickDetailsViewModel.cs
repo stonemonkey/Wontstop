@@ -1,12 +1,14 @@
 // Copyright (c) Costin Morariu. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
-using MvvmToolkit.Attributes;
+using MvvmToolkit;
 using MvvmToolkit.Commands;
 using MvvmToolkit.Messages;
+using MvvmToolkit.Services;
 using Problemator.Core.Dtos;
 using Problemator.Core.Messages;
 using Problemator.Core.Models;
@@ -14,24 +16,16 @@ using Problemator.Core.Utils;
 
 namespace Problemator.Core.ViewModels
 {
-    public class TickDetailsViewModel : INotifyPropertyChanged
+    public class TickDetailsViewModel : 
+        IHandle<TickAddedMesage>, 
+        IActivable, 
+        INotifyPropertyChanged
     {
         #pragma warning disable CS0067
         // Is used by Fody to add NotifyPropertyChanged on properties.
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private Tick _tick;
-        [Model]
-        public Tick Tick
-        {
-            get { return _tick; }
-            set
-            {
-                _tick = value;
-                IsDirty = false;
-                TryUpdateTickSelectedValues();
-            }
-        }
+        public Tick Tick { get; private set; }
 
         public bool IsDirty { get; private set; }
 
@@ -70,39 +64,67 @@ namespace Problemator.Core.ViewModels
             }
         }
 
+        private TimeSpan _sendTime;
+        public TimeSpan SendTime
+        {
+            get { return _sendTime; }
+            set
+            {
+                _sendTime = value;
+                UpdateDirty();
+            }
+        }
+
+        private DateTime SendTimestamp => 
+            (Tick.Timestamp.Date + SendTime).AddSeconds(Tick.Timestamp.Second);
+
         private void UpdateDirty()
         {
-            if (_tick == null || 
-                TriesCount == 0 || 
-                SelectedAscentType == null || 
-                SelectedGrade == null)
+            if (Tick == null || 
+                TriesCount == 0 ||
+                SelectedGrade == null ||
+                SelectedAscentType == null)
             {
                 return;
             }
 
-            IsDirty = _tick.Tries != TriesCount ||
-                _tick.AscentTypeId != _session.GetSportAscentTypeId(SelectedAscentType) ||
-                _tick.GradeOpinionId == null && _tick.GradeId != Grades.GetByName(SelectedGrade.Name).Id ||
-                _tick.GradeOpinionId != null && _tick.GradeOpinionId != Grades.GetByName(SelectedGrade.Name).Id;
+            IsDirty = Tick.Tries != TriesCount ||
+                Tick.Timestamp != SendTimestamp ||
+                Tick.AscentTypeId != _session.GetSportAscentTypeId(SelectedAscentType) ||
+                Tick.GradeOpinionId == null && Tick.GradeId != Grades.GetByName(SelectedGrade.Name).Id ||
+                Tick.GradeOpinionId != null && Tick.GradeOpinionId != Grades.GetByName(SelectedGrade.Name).Id;
         }
 
         public IList<string> AscentTypes { get; private set; }
 
+        public ProblemDetails Problem { get; private set; }
+
         private readonly Ticks _ticks;
+        private readonly Problem _problem;
         private readonly Session _session;
         private readonly Sections _sections;
         private readonly IEventAggregator _eventAggregator;
+        private readonly INavigationService _navigationService;
 
         public TickDetailsViewModel(
             Ticks ticks,
+            Problem problem,
             Session session,
             Sections sections,
-            IEventAggregator eventAggregator)
+            IEventAggregator eventAggregator,
+            INavigationService navigationService)
         {
             _ticks = ticks;
+            _problem = problem;
             _session = session;
             _sections = sections;
             _eventAggregator = eventAggregator;
+            _navigationService = navigationService;
+        }
+
+        public void Activate(object parameter)
+        {
+            Tick = (Tick) parameter;
         }
 
         private RelayCommand _loadComand;
@@ -114,7 +136,11 @@ namespace Problemator.Core.ViewModels
             _eventAggregator.Subscribe(this);
 
             await LoadSessionAsync();
-            TryUpdateTickSelectedValues();
+            UpdateFieldsFromTick();
+
+            Problem = await _problem.GetDetailsAsync(Tick.ProblemId);
+
+            IsDirty = false;
         }
 
         private async Task LoadSessionAsync()
@@ -126,32 +152,44 @@ namespace Problemator.Core.ViewModels
             SelectedAscentType = await _session.GetUserSportAscentType();
         }
 
-        private void TryUpdateTickSelectedValues()
+        private void UpdateFieldsFromTick()
         {
-            if (_tick != null && Grades != null && _session.IsLoaded())
-            {
-                TriesCount = _tick.Tries;
-                SelectedAscentType = _session.GetSportAscentType(_tick.AscentTypeId);
-                SelectedGrade = Grades.GetById(_tick.GradeOpinionId ?? _tick.GradeId);
-            }
+            TriesCount = Tick.Tries;
+            SendTime = Tick.Timestamp.TimeOfDay;
+            SelectedAscentType = _session.GetSportAscentType(Tick.AscentTypeId);
+            SelectedGrade = Grades.GetById(Tick.GradeOpinionId ?? Tick.GradeId);
+        }
+
+        private RelayCommand _unloadComand;
+        public RelayCommand UnloadCommand => _unloadComand ??
+            (_unloadComand = new RelayCommand(Unload));
+
+        private void Unload()
+        {
+            _eventAggregator.Unsubscribe(this);
         }
 
         private RelayCommand _saveComand;
-
         public RelayCommand SaveCommand => _saveComand ??
-            (_saveComand = new RelayCommand(async () => await SaveAsync()));
+            (_saveComand = new RelayCommand(async () => await SaveAsync(), () => IsDirty));
 
         private async Task SaveAsync()
         {
             _eventAggregator.PublishShowBusy();
 
-            _tick.Tries = TriesCount;
-            _tick.AscentTypeId = _session.GetSportAscentTypeId(SelectedAscentType);
-            _tick.GradeOpinionId = Grades.GetByName(SelectedGrade.Name).Id;
+            Tick.Tries = TriesCount;
+            Tick.Timestamp = SendTimestamp;
+            Tick.AscentTypeId = _session.GetSportAscentTypeId(SelectedAscentType);
+            Tick.GradeOpinionId = Grades.GetByName(SelectedGrade.Name).Id;
 
-            await _ticks.SaveTickAsync(_tick);
+            await _ticks.SaveTickAsync(Tick);
 
             _eventAggregator.PublishHideBusy();
+        }
+
+        public void Handle(TickAddedMesage message)
+        {
+            _navigationService.GoBack();
         }
     }
 }
