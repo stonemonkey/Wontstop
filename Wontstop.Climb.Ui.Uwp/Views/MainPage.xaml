@@ -20,8 +20,8 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             <core:InvokeCommandAction Command="{Binding LoadCommand}"/>
         </core:EventTriggerBehavior>
     </interactivity:Interaction.Behaviors>
-    
-    <Grid x:Name="MainPagePanel"
+
+    <Grid x:Name="PageRootPanel"
         Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         
         <VisualStateManager.VisualStateGroups>
@@ -49,6 +49,17 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     <VisualState.Setters>
                         <Setter Target="AppSplitView.IsPaneOpen" Value="True"/>
                         <Setter Target="AppSplitView.DisplayMode" Value="CompactInline"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+            <VisualStateGroup x:Name="ProgressStates">
+                <VisualState x:Name="BusyState">
+                    <VisualState.StateTriggers>
+                        <stateTriggers:EqualsStateTrigger Value="{Binding Busy}" EqualTo="True"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="PageRootPanel.Opacity" Value="0.5"/>
+                        <Setter Target="BusyProgress.Visibility" Value="Visible"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>

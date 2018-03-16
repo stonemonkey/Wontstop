@@ -80,7 +80,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
         </core:EventTriggerBehavior>
     </interactivity:Interaction.Behaviors>
 
-    <Grid x:Name="TicksPagePanel"
+    <Grid x:Name="PageRootPanel"
         Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         
         <VisualStateManager.VisualStateGroups>
@@ -113,7 +113,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         <stateTriggers:EqualsStateTrigger Value="{Binding Busy}" EqualTo="True"/>
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="TicksPagePanel.Opacity" Value="0.5"/>
+                        <Setter Target="PageRootPanel.Opacity" Value="0.5"/>
                         <Setter Target="BusyProgress.Visibility" Value="Visible"/>
                     </VisualState.Setters>
                 </VisualState>

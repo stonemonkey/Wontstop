@@ -12,16 +12,17 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:uc="using:Wontstop.Climb.Ui.Uwp.UserControls"
     xmlns:behaviours="using:MvvmToolkit.Uwp.Behaviours"
+    xmlns:stateTriggers="using:MvvmToolkit.Uwp.StateTriggers"
     mc:Ignorable="d"
     DataContext="{Binding TickDetailsViewModel, Source={StaticResource ViewModelLocator}}">
 
-    <UserControl.Resources>
+    <Page.Resources>
         <DataTemplate x:Key="GradeItemDataTemplate">
             <Grid x:Name="TickItemPanel">
                 <TextBlock Text="{Binding Name}"/>
             </Grid>
         </DataTemplate>
-    </UserControl.Resources>
+    </Page.Resources>
 
     <interactivity:Interaction.Behaviors>
         <behaviours:ShowBackButtonBehavior/>
@@ -33,9 +34,44 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
         </core:EventTriggerBehavior>
     </interactivity:Interaction.Behaviors>
 
-    <Grid x:Name="TickDetailsViewPanel" 
+    <Grid x:Name="PageRootPanel" 
         VerticalAlignment="Center"
         HorizontalAlignment="Center">
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="ScreenStates">
+                <VisualState x:Name="SmallScreens">
+                    <VisualState.StateTriggers>
+                        <stateTriggers:CompositeStateTrigger Operator="Or">
+                            <stateTriggers:CompositeStateTrigger.StateTriggers>
+                                <stateTriggers:DeviceFamilyTrigger DeviceFamily="Windows.Mobile"/>
+                                <stateTriggers:AdaptiveTrigger MinWindowWidth="0" MaxWindowWidth="{StaticResource SmallDeviceMaxWidth}"/>
+                            </stateTriggers:CompositeStateTrigger.StateTriggers>
+                        </stateTriggers:CompositeStateTrigger>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="BigScreens">
+                    <VisualState.StateTriggers>
+                        <stateTriggers:AdaptiveTrigger MinWindowWidth="{StaticResource MediumDeviceMaxWidth}"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+            <VisualStateGroup x:Name="ProgressStates">
+                <VisualState x:Name="BusyState">
+                    <VisualState.StateTriggers>
+                        <stateTriggers:EqualsStateTrigger Value="{Binding Busy}" EqualTo="True"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="PageRootPanel.Opacity" Value="0.5"/>
+                        <Setter Target="BusyProgress.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -194,5 +230,12 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             HorizontalAlignment="Stretch"
             Command="{Binding SaveCommand}">
         </Button>
+
+        <ProgressRing x:Name="BusyProgress"
+            Grid.Row="0" Grid.RowSpan="3"
+            IsActive="True"
+            Visibility="Collapsed"
+            Width="{StaticResource ProgressSize}" 
+            Height="{StaticResource ProgressSize}"/>
     </Grid>
 </views:MainChildPageBase>

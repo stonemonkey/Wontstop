@@ -10,6 +10,8 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:controls="using:WinRTXamlToolkit.Controls"
     xmlns:behaviours="using:MvvmToolkit.Uwp.Behaviours"
+    xmlns:stateTriggers="using:MvvmToolkit.Uwp.StateTriggers"
+    xmlns:uc="using:Wontstop.Climb.Ui.Uwp.UserControls"
     mc:Ignorable="d"
     DataContext="{Binding ProblemDetailesViewModel, Source={StaticResource ViewModelLocator}}">
 
@@ -21,128 +23,138 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
         <behaviours:ShowBackButtonBehavior/>
     </interactivity:Interaction.Behaviors>
 
-    <controls:WrapPanel x:Name="ProblemItemPanel"
+    <Grid x:Name="PageRootPanel"
         Background="Transparent"
         HorizontalAlignment="Center">
 
-        <Grid x:Name="ProblemHeaderPanel" Background="Green"
-            Width="{StaticResource CellWidth}"
-            Margin="0,0,0,0"
-            VerticalAlignment="Center"
-            HorizontalAlignment="Stretch">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <TextBlock 
-                Grid.Row="0"
-                HorizontalAlignment="Center"
-                Text="{Binding Problem.GradeName}" FontSize="48"/>
-            <TextBlock
-                Grid.Row="1"
-                HorizontalAlignment="Center"
-                Text="{Binding Problem.TagShort}"/>
-        </Grid>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="ScreenStates">
+                <VisualState x:Name="SmallScreens">
+                    <VisualState.StateTriggers>
+                        <stateTriggers:CompositeStateTrigger Operator="Or">
+                            <stateTriggers:CompositeStateTrigger.StateTriggers>
+                                <stateTriggers:DeviceFamilyTrigger DeviceFamily="Windows.Mobile"/>
+                                <stateTriggers:AdaptiveTrigger MinWindowWidth="0" MaxWindowWidth="{StaticResource SmallDeviceMaxWidth}"/>
+                            </stateTriggers:CompositeStateTrigger.StateTriggers>
+                        </stateTriggers:CompositeStateTrigger>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="BigScreens">
+                    <VisualState.StateTriggers>
+                        <stateTriggers:AdaptiveTrigger MinWindowWidth="{StaticResource MediumDeviceMaxWidth}"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+            <VisualStateGroup x:Name="ProgressStates">
+                <VisualState x:Name="BusyState">
+                    <VisualState.StateTriggers>
+                        <stateTriggers:EqualsStateTrigger Value="{Binding Busy}" EqualTo="True"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="PageRootPanel.Opacity" Value="0.5"/>
+                        <Setter Target="BusyProgress.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
 
-        <Grid x:Name="AuthorPanel" Background="Red"
-            Width="{StaticResource CellWidth}"
-            Margin="0,0,0,0"
-            VerticalAlignment="Center"
-            HorizontalAlignment="Stretch">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <StackPanel x:Name="AppreciationPanel"
-                Grid.Row="0"
-                Orientation="Horizontal"
-                HorizontalAlignment="Center">
-                <TextBlock
-                    Text="{Binding Problem.Like}"/>
-                <TextBlock 
-                    Text="&#xE8E1;"
-                    VerticalAlignment="Center"
-                    FontFamily="Segoe MDL2 Assets"/>
-                <TextBlock Text="|"/>
-                <TextBlock 
-                    Text="{Binding Problem.Love}"/>
-                <TextBlock 
-                    Text="&#xEB51;"
-                    VerticalAlignment="Center"
-                    FontFamily="Segoe MDL2 Assets"/>
-                <TextBlock Text="|"/>
-                <TextBlock
-                    Text="{Binding Problem.Dislike}"/>
-                <TextBlock 
-                    Text="&#xE8E0;"
-                    VerticalAlignment="Center"
-                    FontFamily="Segoe MDL2 Assets"/>
-            </StackPanel>
-            <TextBlock 
-                Grid.Row="1"
-                HorizontalAlignment="Center"
-                Text="{Binding Problem.Author}"/>
-            <TextBlock 
-                Grid.Row="2"
-                HorizontalAlignment="Center"
-                Text="{Binding Problem.AddedRelative}"/>
-        </Grid>
+        <controls:WrapPanel x:Name="CardsWrapPanel">
 
-        <Grid x:Name="TriesPanel" Background="Blue"
-            Width="{StaticResource CellWidth}"
-            Margin="0,0,0,0"
-            VerticalAlignment="Center"
-            HorizontalAlignment="Stretch">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Button x:Name="DecrementTriesButton"
-                Grid.Row="0" Grid.Column="1"
-                Content="-"
-                Command="{Binding DecrementCommand}"/>
-            <TextBlock x:Name="TriesCountTextBlock"
-                Grid.Row="0" Grid.Column="2"
-                Margin="8,0,0,0"
-                Text="{Binding TriesCount, Mode=TwoWay}"
+            <Grid x:Name="ProblemHeaderPanel" Background="Green"
+                Width="{StaticResource CellWidth}"
+                Margin="0,0,0,0"
                 VerticalAlignment="Center"
-                HorizontalAlignment="Center"/>
-            <Button x:Name="IncrementTriesButton"
-                Grid.Row="0" Grid.Column="3"
-                Margin="8,0,0,0"
-                Content="+"
-                Command="{Binding IncrementCommand}"/>
-            <TextBlock x:Name="TriesTextBlock"
-                Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5"
-                HorizontalAlignment="Center"
-                Text="TRIES"/>
-        </Grid>
-        
-        <Grid x:Name="AscentPanel" Background="Green"
-            Width="{StaticResource CellWidth}"
-            Margin="0,0,0,0"
-            VerticalAlignment="Center"
-            HorizontalAlignment="Stretch">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <TextBlock 
-                Grid.Row="0"
-                HorizontalAlignment="Center"
-                Text="{Binding Problem.Tick.AscentType, Converter={StaticResource IntToAscentTypeStringConverter}}"/>
-            <TextBlock
-                Grid.Row="1"
-                HorizontalAlignment="Center"
-                Text="ASCENT TYPE"/>
-        </Grid>
-    </controls:WrapPanel>
+                HorizontalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock 
+                    Grid.Row="0"
+                    HorizontalAlignment="Center"
+                    Text="{Binding Problem.GradeName}" FontSize="48"/>
+                <TextBlock
+                    Grid.Row="1"
+                    HorizontalAlignment="Center"
+                    Text="{Binding Problem.TagShort}"/>
+            </Grid>
+
+            <Grid x:Name="AuthorPanel" Background="Red"
+                Width="{StaticResource CellWidth}"
+                Margin="0,0,0,0"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <StackPanel x:Name="AppreciationPanel"
+                    Grid.Row="0"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center">
+                    <TextBlock
+                        Text="{Binding Problem.Like}"/>
+                    <TextBlock 
+                        Text="&#xE8E1;"
+                        VerticalAlignment="Center"
+                        FontFamily="Segoe MDL2 Assets"/>
+                    <TextBlock Text="|"/>
+                    <TextBlock 
+                        Text="{Binding Problem.Love}"/>
+                    <TextBlock 
+                        Text="&#xEB51;"
+                        VerticalAlignment="Center"
+                        FontFamily="Segoe MDL2 Assets"/>
+                    <TextBlock Text="|"/>
+                    <TextBlock
+                        Text="{Binding Problem.Dislike}"/>
+                    <TextBlock 
+                        Text="&#xE8E0;"
+                        VerticalAlignment="Center"
+                        FontFamily="Segoe MDL2 Assets"/>
+                </StackPanel>
+                <TextBlock 
+                    Grid.Row="1"
+                    HorizontalAlignment="Center"
+                    Text="{Binding Problem.Author}"/>
+                <TextBlock 
+                    Grid.Row="2"
+                    HorizontalAlignment="Center"
+                    Text="{Binding Problem.AddedRelative}"/>
+            </Grid>
+
+            <uc:TriesCounterUserControl x:Name="TriesCounterControl" Background="Blue"
+                Count="{Binding TriesCount, Mode=TwoWay}"/>
+
+            <Grid x:Name="AscentPanel" Background="Green"
+                Width="{StaticResource CellWidth}"
+                Margin="0,0,0,0"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock 
+                    Grid.Row="0"
+                    HorizontalAlignment="Center"
+                    Text="{Binding Problem.Tick.AscentType, Converter={StaticResource IntToAscentTypeStringConverter}}"/>
+                <TextBlock
+                    Grid.Row="1"
+                    HorizontalAlignment="Center"
+                    Text="ASCENT TYPE"/>
+            </Grid>
+        </controls:WrapPanel>
+
+        <ProgressRing x:Name="BusyProgress"
+            IsActive="True"
+            Visibility="Collapsed"
+            Width="{StaticResource ProgressSize}" 
+            Height="{StaticResource ProgressSize}"/>
+    </Grid>
 </Page>

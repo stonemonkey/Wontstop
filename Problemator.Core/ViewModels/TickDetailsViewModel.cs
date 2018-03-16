@@ -25,9 +25,10 @@ namespace Problemator.Core.ViewModels
         // Is used by Fody to add NotifyPropertyChanged on properties.
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public Tick Tick { get; private set; }
-
+        public bool Busy { get; private set; }
         public bool IsDirty { get; private set; }
+
+        public Tick Tick { get; private set; }
 
         private int _triesCount;
         public int TriesCount
@@ -135,12 +136,15 @@ namespace Problemator.Core.ViewModels
         {
             _eventAggregator.Subscribe(this);
 
+            Busy = true;
+
             await LoadSessionAsync();
             UpdateFieldsFromTick();
 
-            Problem = await _problem.GetDetailsAsync(Tick.ProblemId);
+            await LoadDetailsAsync();
 
             IsDirty = false;
+            Busy = false;
         }
 
         private async Task LoadSessionAsync()
@@ -160,6 +164,11 @@ namespace Problemator.Core.ViewModels
             SelectedGrade = Grades.GetById(Tick.GradeOpinionId ?? Tick.GradeId);
         }
 
+        private async Task LoadDetailsAsync()
+        {
+            Problem = await _problem.GetDetailsAsync(Tick.ProblemId);
+        }
+
         private RelayCommand _unloadComand;
         public RelayCommand UnloadCommand => _unloadComand ??
             (_unloadComand = new RelayCommand(Unload));
@@ -171,7 +180,7 @@ namespace Problemator.Core.ViewModels
 
         private RelayCommand _saveComand;
         public RelayCommand SaveCommand => _saveComand ??
-            (_saveComand = new RelayCommand(async () => await SaveAsync(), () => IsDirty));
+            (_saveComand = new RelayCommand(async () => await SaveAsync(), () => IsDirty && !Busy));
 
         private async Task SaveAsync()
         {
