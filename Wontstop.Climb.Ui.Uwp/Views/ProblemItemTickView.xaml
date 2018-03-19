@@ -39,35 +39,42 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 VerticalAlignment="Stretch"
                 HorizontalAlignment="Stretch">
 
-                <TextBlock x:Name="LoggedTimeTextBlock"
+                <TextBlock x:Name="LoggedDateTextBlock"
                     Margin="4,0,0,0"
-                    Foreground="Gray"
                     VerticalAlignment="Center"
                     Style="{ThemeResource CaptionTextBlockStyle}"
                     Text="{Binding Tick.Timestamp, Converter={StaticResource DateTimeToDateStringConverter}}"/>
-            
+                
                 <StackPanel x:Name="AscentTypePanel"
                     Orientation="Horizontal"
                     Visibility="{Binding Tick.RouteType, Converter={StaticResource StringEqualToVisibilityConverter}, ConverterParameter=sport}">
+                    
+                    <TextBlock Text="|" 
+                        Margin="4,0,0,0"
+                        VerticalAlignment="Center"
+                        Style="{ThemeResource CaptionTextBlockStyle}"/>
+                    
                     <TextBlock x:Name="AscentTypeTextBlock"
                         Margin="4,0,0,0"
-                        Foreground="Gray"
                         VerticalAlignment="Center"
                         Text="{Binding AscentType}"
                         Style="{ThemeResource CaptionTextBlockStyle}"/>
                 </StackPanel>
-            
+
+                <TextBlock Text="|" 
+                    Margin="4,0,0,0"
+                    VerticalAlignment="Center"
+                    Style="{ThemeResource CaptionTextBlockStyle}"/>
+                
                 <TextBlock x:Name="TriesCountTextBlock"
                     Margin="4,0,0,0"
-                    Foreground="Gray"
                     VerticalAlignment="Center"
                     Text="{Binding Tick.Tries}"
                     Style="{ThemeResource CaptionTextBlockStyle}"/>
-            
+
                 <TextBlock x:Name="OneTryLabelTextBlock"
                     Text="try"
                     Margin="4,0,0,0"
-                    Foreground="Gray"
                     VerticalAlignment="Center"
                     Style="{ThemeResource CaptionTextBlockStyle}"
                     Visibility="{Binding Tick.Tries, Converter={StaticResource IntOneToBoolConverter}, ConverterParameter=False}"/>
@@ -75,7 +82,6 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 <TextBlock x:Name="ManyTriesLabelTextBlock"
                     Text="tries"
                     Margin="4,0,0,0"
-                    Foreground="Gray"
                     VerticalAlignment="Center"
                     Style="{ThemeResource CaptionTextBlockStyle}"
                     Visibility="{Binding Tick.Tries, Converter={StaticResource IntOneToBoolConverter}, ConverterParameter=True}"/>
@@ -88,10 +94,14 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 HorizontalAlignment="Right">
                 
                 <Button x:Name="DeleteButton"
+                    Width="24"
+                    Margin="0"
+                    Padding="0"
                     VerticalAlignment="Stretch"
+                    HorizontalAlignment="Center"
                     Command="{Binding DeleteTickCommand}">
                     <TextBlock 
-                        Text="&#xE74D;"
+                        Text="&#xE711;"
                         VerticalAlignment="Center"
                         FontFamily="Segoe MDL2 Assets"/>
                 </Button>

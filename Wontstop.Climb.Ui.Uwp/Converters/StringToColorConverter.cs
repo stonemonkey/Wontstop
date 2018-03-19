@@ -29,8 +29,10 @@ namespace Wontstop.Climb.Ui.Uwp.Converters
                 _colorNames = GetAllColorsByName();
             }
 
-            Color color;
-            return new SolidColorBrush(_colorNames.TryGetValue(colorName, out color) ? color : DefaultColor);
+            var name = colorName.ToLower().Replace(" ", null);
+
+            return new SolidColorBrush(
+                _colorNames.TryGetValue(name, out Color color) ? color : DefaultColor);
         }
 
         private Dictionary<string, Color> GetAllColorsByName()
@@ -39,8 +41,15 @@ namespace Wontstop.Climb.Ui.Uwp.Converters
 
             foreach (var color in typeof (Colors).GetRuntimeProperties())
             {
-                colorNames[color.Name] = (Color) color.GetValue(null);
+                var name = color.Name.ToLower();
+                colorNames[name] = (Color) color.GetValue(null);
             }
+
+            // add some custom hardcoded colors
+            colorNames["lightpurple"] = Colors.MediumPurple;
+            colorNames["neonyellow"] = Colors.GreenYellow;
+            colorNames["terracotta"] = Colors.DeepPink;
+            colorNames["grey"] = Colors.Gray;
 
             return colorNames;
         }
