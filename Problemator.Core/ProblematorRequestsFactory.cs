@@ -208,7 +208,7 @@ namespace Problemator.Core
         }
 
         /// <summary>
-        /// Creates request for fetching problem ticks for today.
+        /// Creates request for fetching problem ticks for a day.
         /// </summary>
         /// <returns>GET request.</returns>
         public GetRequest CreateDayTicksRequest(DateTime date)
@@ -223,8 +223,25 @@ namespace Problemator.Core
 
             return new GetRequest(config, _responseLogger);
         }
+        
+        /// <summary>
+        /// Creates request for fetching problem ticks for a problem.
+        /// </summary>
+        /// <returns>GET request.</returns>
+        public GetRequest CreateProblemTicksRequest(string problemId)
+        {
+            problemId.ValidateNotNullEmptyWhiteSpace(nameof(problemId));
 
-        public string ProblemIdParamKey => "problemid";
+            var urn = $"{Server}/userticks";
+            var config = new Config(urn, IsSecure);
+            config.AddParam("pid", problemId);
+            AddApiAuthTokenParam(config);
+            AddClientTimestampParam(config);
+            AddUserAgentHeader(config);
+            AddApplicationKindHeader(config);
+
+            return new GetRequest(config, _responseLogger);
+        }
 
         /// <summary>
         /// Creates request for updating a problem tick.
@@ -236,7 +253,7 @@ namespace Problemator.Core
 
             var urn = $"{Server}/savetick";
             var config = new Config(urn, IsSecure);
-            config.AddParam(ProblemIdParamKey, tick.ProblemId);
+            config.AddParam("problemid", tick.ProblemId);
             config.AddParam("grade_opinion", tick.GradeOpinionId);
             config.AddParam("tries", tick.Tries.ToString());
             config.AddParam("ascent_type", tick.AscentTypeId.ToString());

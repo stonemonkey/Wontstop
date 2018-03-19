@@ -76,6 +76,7 @@
     <Compile Include="ViewModels\ProblemDetailesViewModel.cs" />
     <Compile Include="ViewModels\ProblemItemViewModel.cs" />
     <Compile Include="ViewModels\ProblemsChildViewModel.cs" />
+    <Compile Include="ViewModels\ProblemItemTickViewModel.cs" />
     <Compile Include="ViewModels\TagProblemsViewModel.cs" />
     <Compile Include="ViewModels\TickDetailsViewModel.cs" />
     <Compile Include="ViewModels\TickItemViewModel.cs" />

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Costin Morariu. All rights reserved.
+// Copyright (c) Costin Morariu. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.ComponentModel;
@@ -10,11 +10,12 @@ using MvvmToolkit.Services;
 using Problemator.Core.Dtos;
 using Problemator.Core.Messages;
 using Problemator.Core.Models;
-using Problemator.Core.Utils;
 
 namespace Problemator.Core.ViewModels
 {
-    public class TickItemViewModel : IHandle<BusyMessage>, INotifyPropertyChanged
+    public class ProblemItemTickViewModel : 
+        IHandle<BusyMessage>,
+        INotifyPropertyChanged
     {
         #pragma warning disable CS0067
         // Is used by Fody to add NotifyPropertyChanged on properties.
@@ -32,28 +33,23 @@ namespace Problemator.Core.ViewModels
             }
         }
 
-        public string TagShort { get; private set; }
-
         public string AscentType { get; private set; }
 
         private bool _busy;
 
         private readonly Ticks _ticks;
         private readonly Session _session;
-        private readonly Sections _sections;
         private readonly IEventAggregator _eventAggregator;
         private readonly INavigationService _navigationService;
 
-        public TickItemViewModel(
+        public ProblemItemTickViewModel(
             Ticks ticks,
             Session session,
-            Sections sections,
             IEventAggregator eventAggregator,
             INavigationService navigationService)
         {
             _ticks = ticks;
             _session = session;
-            _sections = sections;
             _eventAggregator = eventAggregator;
             _navigationService = navigationService;
         }
@@ -74,7 +70,6 @@ namespace Problemator.Core.ViewModels
         {
             if (Tick != null && _session.IsLoaded())
             {
-                TagShort = Tick.GetTagShort();
                 AscentType = _session.GetSportAscentType(Tick.AscentTypeId);
             }
         }

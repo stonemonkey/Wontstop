@@ -7,18 +7,77 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:attachedProperties="using:MvvmToolkit.WinRT.AttachedProperties"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:views="using:Wontstop.Climb.Ui.Uwp.Views"
     mc:Ignorable="d"
     DataContext="{Binding ProblemItemViewModel, Source={StaticResource ViewModelLocator}}">
 
+    <UserControl.Resources>
+        <Style TargetType="ListViewItem">
+            <Setter Property="Margin" Value="0,0,0,0"/>
+            <Setter Property="Padding" Value="0,0,0,0"/>
+            <Setter Property="TabNavigation" Value="Local"/>
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="IsHoldingEnabled" Value="True"/>
+            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="MinWidth" Value="{ThemeResource ListViewItemMinWidth}"/>
+            <Setter Property="MinHeight" Value="{ThemeResource ListViewItemMinHeight}"/>
+            <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}"/>
+            <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}"/>
+            <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <ListViewItemPresenter
+                            CheckMode="Inline"
+                            SelectionCheckMarkVisualEnabled="True"
+                            ContentMargin="{TemplateBinding Padding}"
+                            ContentTransitions="{TemplateBinding ContentTransitions}"
+                            DragOpacity="{ThemeResource ListViewItemDragThemeOpacity}"
+                            DisabledOpacity="{ThemeResource ListViewItemDisabledThemeOpacity}"
+                            ReorderHintOffset="{ThemeResource ListViewItemReorderHintThemeOffset}"
+                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            CheckBrush="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
+                            CheckBoxBrush="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
+                            DragBackground="{ThemeResource ListViewItemDragBackgroundThemeBrush}"
+                            DragForeground="{ThemeResource ListViewItemDragForegroundThemeBrush}"
+                            FocusBorderBrush="{ThemeResource SystemControlForegroundAltHighBrush}"
+                            FocusSecondaryBorderBrush="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                            PlaceholderBackground="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}"
+                            PointerOverBackground="{ThemeResource SystemControlHighlightListLowBrush}"
+                            PointerOverForeground="{ThemeResource SystemControlHighlightAltBaseHighBrush}"
+                            SelectedForeground="{ThemeResource SystemControlHighlightAltBaseHighBrush}"
+                            SelectedBackground="{ThemeResource SystemControlHighlightListAccentLowBrush}"
+                            PressedBackground="{ThemeResource SystemControlHighlightListMediumBrush}"
+                            SelectedPressedBackground="{ThemeResource SystemControlHighlightListAccentHighBrush}"
+                            SelectedPointerOverBackground="{ThemeResource SystemControlHighlightListAccentMediumBrush}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <DataTemplate x:Key="ProblemItemTickDataTemplate">
+            <Grid x:Name="ProblemItemTickPanel">
+                <views:ProblemItemTickView 
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch"
+                    attachedProperties:ViewModel.Model="{Binding DataContext, ElementName=ProblemItemTickPanel}"/>
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+    
     <Button x:Name="ProblemItemButton"
         HorizontalAlignment="Stretch"
         HorizontalContentAlignment="Stretch"
         Command="{Binding OpenDetailsCommand}">
 
         <Grid x:Name="ProblemItemPanel"
-            Background="Transparent">
+            Grid.Row="0">
 
             <interactivity:Interaction.Behaviors>
                 <core:EventTriggerBehavior EventName="Loaded">
@@ -34,111 +93,123 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             
-            <Grid x:Name="ProblemTitlePanel"
-                Grid.Row="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Ellipse x:Name="ColorElipse"
-                    Grid.Column="1"
-                    Width="16" Height="16"
-                    Fill="{Binding Problem.ColorName, Converter={StaticResource StringToColorConverter}}"/>
-                <TextBlock x:Name="GradeTextBlock"
-                    Grid.Column="2"
-                    Margin="8,0,0,0"
-                    VerticalAlignment="Center"
-                    Text="{Binding Problem.GradeName}"/>
-                <TextBlock x:Name="TagTextBlock"
-                    Grid.Column="3"
-                    Margin="8,0,0,0"
-                    VerticalAlignment="Center"
-                    Text="{Binding Problem.TagShort}"/>
-                <TextBlock x:Name="RemovedTextBlock"
-                    Grid.Column="4"
-                    Margin="8,0,0,0"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Left"
-                    Text="(removed)"
-                    Foreground="Red"
-                    Visibility="{Binding Problem.Visible, Converter={StaticResource IntOneToVisibilityConverter}, ConverterParameter=True}"/>
-            </Grid>
+            <Grid x:Name="ProblemPanel">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
             
-            <StackPanel x:Name="ProblemDetailsPanel"
-                Grid.Row="1"
-                Margin="0,2"
-                Orientation="Horizontal"
-                HorizontalAlignment="Stretch">
-                <TextBlock Text="{Binding Problem.ColorName}" 
-                    Foreground="Gray"
-                    Style="{ThemeResource CaptionTextBlockStyle}"/>
-                <TextBlock Text="|" 
-                    Margin="4,0,0,0"
-                    Foreground="Gray"
-                    Style="{ThemeResource CaptionTextBlockStyle}"/>
-                <TextBlock x:Name="RouteTypeTextBlock"
-                    Margin="4,0,0,0"
-                    Foreground="Gray"
-                    VerticalAlignment="Center"
-                    Text="{Binding Problem.RouteType}"
-                    Style="{ThemeResource CaptionTextBlockStyle}"/>
-                <StackPanel x:Name="TickPanel"
+                <Grid x:Name="ProblemTitlePanel"
+                    Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Ellipse x:Name="ColorElipse"
+                        Grid.Column="1"
+                        Width="16" Height="16"
+                        Fill="{Binding Problem.ColorName, Converter={StaticResource StringToColorConverter}}"/>
+                    <TextBlock x:Name="GradeTextBlock"
+                        Grid.Column="2"
+                        Margin="8,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="{Binding Problem.GradeName}"/>
+                    <TextBlock x:Name="TagTextBlock"
+                        Grid.Column="3"
+                        Margin="8,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="{Binding Problem.TagShort}"/>
+                    <TextBlock x:Name="RemovedTextBlock"
+                        Grid.Column="4"
+                        Margin="8,0,0,0"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Left"
+                        Text="(removed)"
+                        Foreground="Red"
+                        Visibility="{Binding Problem.Visible, Converter={StaticResource IntOneToVisibilityConverter}, ConverterParameter=True}"/>
+                </Grid>
+            
+                <StackPanel x:Name="ProblemDetailsPanel"
+                    Grid.Row="1"
+                    Margin="0,2"
                     Orientation="Horizontal"
-                    Visibility="{Binding HasTick, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=False}">
+                    HorizontalAlignment="Stretch">
+                    <TextBlock Text="{Binding Problem.ColorName}" 
+                        Foreground="Gray"
+                        Style="{ThemeResource CaptionTextBlockStyle}"/>
                     <TextBlock Text="|" 
                         Margin="4,0,0,0"
                         Foreground="Gray"
                         Style="{ThemeResource CaptionTextBlockStyle}"/>
-                    <TextBlock x:Name="TicksCountTextBlock"
+                    <TextBlock x:Name="RouteTypeTextBlock"
                         Margin="4,0,0,0"
                         Foreground="Gray"
                         VerticalAlignment="Center"
-                        Text="{Binding Details.TickCount}"
+                        Text="{Binding Problem.RouteType}"
                         Style="{ThemeResource CaptionTextBlockStyle}"/>
-                    <TextBlock x:Name="OneTickLabelTextBlock"
-                        Text="tick"
-                        Margin="4,0,0,0"
-                        Foreground="Gray"
-                        VerticalAlignment="Center"
-                        Style="{ThemeResource CaptionTextBlockStyle}"
-                        Visibility="{Binding Details.TickCount, Converter={StaticResource IntOneToBoolConverter}, ConverterParameter=False}"/>
-                    <TextBlock x:Name="ManyTicksLabelTextBlock"
-                        Text="ticks"
-                        Margin="4,0,0,0"
-                        Foreground="Gray"
-                        VerticalAlignment="Center"
-                        Style="{ThemeResource CaptionTextBlockStyle}"
-                        Visibility="{Binding Details.TickCount, Converter={StaticResource IntOneToBoolConverter}, ConverterParameter=True}"/>
+                    <StackPanel x:Name="TickPanel"
+                        Orientation="Horizontal"
+                        Visibility="{Binding HasTicks, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=False}">
+                        <TextBlock Text="|" 
+                            Margin="4,0,0,0"
+                            Foreground="Gray"
+                            Style="{ThemeResource CaptionTextBlockStyle}"/>
+                        <TextBlock x:Name="TicksCountTextBlock"
+                            Margin="4,0,0,0"
+                            Foreground="Gray"
+                            VerticalAlignment="Center"
+                            Text="{Binding Details.TickCount}"
+                            Style="{ThemeResource CaptionTextBlockStyle}"/>
+                        <TextBlock x:Name="OneTickLabelTextBlock"
+                            Text="tick"
+                            Margin="4,0,0,0"
+                            Foreground="Gray"
+                            VerticalAlignment="Center"
+                            Style="{ThemeResource CaptionTextBlockStyle}"
+                            Visibility="{Binding Details.TickCount, Converter={StaticResource IntOneToBoolConverter}, ConverterParameter=False}"/>
+                        <TextBlock x:Name="ManyTicksLabelTextBlock"
+                            Text="ticks"
+                            Margin="4,0,0,0"
+                            Foreground="Gray"
+                            VerticalAlignment="Center"
+                            Style="{ThemeResource CaptionTextBlockStyle}"
+                            Visibility="{Binding Details.TickCount, Converter={StaticResource IntOneToBoolConverter}, ConverterParameter=True}"/>
+                    </StackPanel>
                 </StackPanel>
-            </StackPanel>
             
-            <StackPanel x:Name="QuickActionsPanel"
-                Grid.Row="0" Grid.RowSpan="2"
-                Orientation="Horizontal"
-                VerticalAlignment="Stretch"
-                HorizontalAlignment="Right">
-                <!--<Button x:Name="EditButton"
+                <StackPanel x:Name="QuickActionsPanel"
+                    Grid.Row="0" Grid.RowSpan="2"
+                    Orientation="Horizontal"
                     VerticalAlignment="Stretch"
-                    Command="{Binding AddTickCommand}"
-                    Visibility="{Binding HasTick, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}">
-                    <TextBlock 
-                        Text="&#xE70F;"
-                        VerticalAlignment="Center"
-                        FontFamily="Segoe MDL2 Assets"/>
-                </Button>-->
-                <Button x:Name="DeleteButton"
-                    VerticalAlignment="Stretch"
-                    Command="{Binding DeleteTickCommand}"
-                    Visibility="{Binding HasTick, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=False}">
-                    <TextBlock 
-                        Text="&#xE74D;"
-                        VerticalAlignment="Center"
-                        FontFamily="Segoe MDL2 Assets"/>
-                </Button>
-            </StackPanel>
+                    HorizontalAlignment="Right">
+
+                    <ToggleButton x:Name="ManageTicksButton"
+                        VerticalAlignment="Stretch"
+                        Command="{Binding ManageTicksCommand}"
+                        IsChecked="{Binding ShowTicks, Mode=TwoWay}"
+                        Visibility="{Binding HasTicks, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=False}">
+                        <TextBlock 
+                            Text="&#xE70F;"
+                            VerticalAlignment="Center"
+                            FontFamily="Segoe MDL2 Assets"/>
+                    </ToggleButton>
+                </StackPanel>
+            </Grid>
+            
+            <ListView x:Name="TicksList"
+                Grid.Row="1"
+                Margin="0,4,0,0"
+                SelectionMode="None"
+                HorizontalAlignment="Stretch"
+                ItemsSource="{Binding Ticks}"
+                ItemTemplate="{StaticResource ProblemItemTickDataTemplate}"
+                HeaderTemplate="{StaticResource EmptyDataTemplate}"
+                Visibility="{Binding IsChecked, ElementName=ManageTicksButton, Converter={StaticResource BoolToVisibilityConverter}}">
+            </ListView>
         </Grid>
     </Button>
 </UserControl>

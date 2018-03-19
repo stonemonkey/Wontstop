@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Costin Morariu. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using MvvmToolkit.Attributes;
@@ -21,7 +22,9 @@ namespace Problemator.Core.ViewModels
         // Is used by Fody to add NotifyPropertyChanged on properties.
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public bool HasTick { get; private set; }
+        public bool ShowTicks { get; set; }
+
+        public bool HasTicks { get; private set; }
 
         private WallProblem _wallProblem;
         [Model]
@@ -31,9 +34,11 @@ namespace Problemator.Core.ViewModels
             set
             {
                 _wallProblem = value;
-                UpdateHasTick();
+                HasTicks = _wallProblem?.Tick != null;
             }
         }
+
+        public IList<Tick> Ticks { get; set; }
 
         public ProblemDetails Details { get; private set; }
 
@@ -64,15 +69,15 @@ namespace Problemator.Core.ViewModels
         {
             _eventAggregator.Subscribe(this);
 
-            if (HasTick)
+            if (HasTicks)
             {
-                await LoadProblemAsync();
+                await LoadDetailsAsync();
             }
         }
 
-        private async Task LoadProblemAsync()
+        private async Task LoadDetailsAsync()
         {
-            Details = await _problem.GetDetailsAsync(Problem.Id);
+            Details = await _problem.GetDetailsAsync(Problem.ProblemId);
         }
 
         private RelayCommand _unloadComand;
@@ -84,38 +89,34 @@ namespace Problemator.Core.ViewModels
             _eventAggregator.Unsubscribe(this);
         }
 
-        //private RelayCommand _addTickCommand;
-        //public RelayCommand AddTickCommand => _addTickCommand ??
-        //    (_addTickCommand = new RelayCommand(AddTick, () => !_busy));
+        private RelayCommand _manageTicksCommand;
+        public RelayCommand ManageTicksCommand => _manageTicksCommand ??
+            (_manageTicksCommand = new RelayCommand(async () => await ManageTicksAsync(), () => !_busy));
 
-        //private void AddTick()
-        //{
-        //    _eventAggregator.PublishShowBusy();
-
-        //    // TODO: implement
-        //    UpdateHasTick();
-
-        //    _eventAggregator.PublishHideBusy();
-        //}
-
-        private RelayCommand _deleteTickCommand;
-        public RelayCommand DeleteTickCommand => _deleteTickCommand ??
-            (_deleteTickCommand = new RelayCommand(
-                async () => await DeleteTickAsync(), () => !_busy));
-
-        private async Task DeleteTickAsync()
+        private async Task ManageTicksAsync()
         {
             _eventAggregator.PublishShowBusy();
 
-            await _ticks.DeleteTickAsync(Problem.Tick);
-            UpdateHasTick();
+            if (ShowTicks)
+            {
+                await LoadTicksAsync();
+            }
+            else
+            {
+                ClearTicks();
+            }
 
             _eventAggregator.PublishHideBusy();
         }
 
-        private void UpdateHasTick()
+        private void ClearTicks()
         {
-            HasTick = _wallProblem?.Tick != null;
+            Ticks = null;
+        }
+
+        private async Task LoadTicksAsync()
+        {
+            Ticks = await _ticks.GetProblemTicksAsync(Problem.ProblemId);
         }
 
         private RelayCommand _openDetailsComand;

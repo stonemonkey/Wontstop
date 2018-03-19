@@ -120,6 +120,9 @@
     <Compile Include="UserControls\TriesCounterUserControl.xaml.cs">
       <DependentUpon>TriesCounterUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ProblemItemTickView.xaml.cs">
+      <DependentUpon>ProblemItemTickView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\TagProblemsView.xaml.cs">
       <DependentUpon>TagProblemsView.xaml</DependentUpon>
     </Compile>
@@ -174,6 +177,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="UserControls\TriesCounterUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ProblemItemTickView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

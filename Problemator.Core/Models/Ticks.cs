@@ -9,6 +9,7 @@ using Problemator.Core.Messages;
 using Problemator.Core.Utils;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Problemator.Core.Models
@@ -26,7 +27,7 @@ namespace Problemator.Core.Models
             _requestsFactory = requestsFactory;
         }
 
-        public async Task<IList<Tick>> GetTicksAsync(DateTime day)
+        public async Task<IList<Tick>> GetDayTicksAsync(DateTime day)
         {
             DayTicks dayTicks = null;
 
@@ -39,6 +40,21 @@ namespace Problemator.Core.Models
                     .PublishErrorOnAnyFailure(_eventAggregator);
 
             return dayTicks.Ticks;
+        }
+
+        public async Task<IList<Tick>> GetProblemTicksAsync(string problemId)
+        {
+            IDictionary<string, Tick> problemTicks = null;
+
+            (await _requestsFactory.CreateProblemTicksRequest(problemId)
+                .RunAsync<ProblematorJsonParser>())
+                    .OnSuccess(p =>
+                    {
+                        problemTicks = p.To<IDictionary<string, Tick>>();
+                    })
+                    .PublishErrorOnAnyFailure(_eventAggregator);
+
+            return problemTicks.Values.ToList();
         }
 
         public async Task AddTickAsync(Tick tick)

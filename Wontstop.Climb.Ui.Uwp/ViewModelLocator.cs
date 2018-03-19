@@ -91,5 +91,6 @@ namespace Wontstop.Climb.Ui.Uwp
         public static TickItemViewModel TickItemViewModel => Get<TickItemViewModel>();
         public static ProblemItemViewModel ProblemItemViewModel => Get<ProblemItemViewModel>();
         public static ProblemDetailesViewModel ProblemDetailesViewModel => Get<ProblemDetailesViewModel>();
+        public static ProblemItemTickViewModel ProblemItemTickViewModel => Get<ProblemItemTickViewModel>();
     }
 }

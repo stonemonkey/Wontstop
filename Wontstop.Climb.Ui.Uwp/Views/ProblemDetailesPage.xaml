@@ -130,25 +130,6 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
 
             <uc:TriesCounterUserControl x:Name="TriesCounterControl" Background="Blue"
                 Count="{Binding TriesCount, Mode=TwoWay}"/>
-
-            <Grid x:Name="AscentPanel" Background="Green"
-                Width="{StaticResource CellWidth}"
-                Margin="0,0,0,0"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Stretch">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <TextBlock 
-                    Grid.Row="0"
-                    HorizontalAlignment="Center"
-                    Text="{Binding Problem.Tick.AscentType, Converter={StaticResource IntToAscentTypeStringConverter}}"/>
-                <TextBlock
-                    Grid.Row="1"
-                    HorizontalAlignment="Center"
-                    Text="ASCENT TYPE"/>
-            </Grid>
         </controls:WrapPanel>
 
         <ProgressRing x:Name="BusyProgress"

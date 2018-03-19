@@ -99,7 +99,7 @@ namespace Problemator.Core.ViewModels
 
         private async Task LoadTicksAsync(DateTime day)
         {
-            var ticks = await _ticks.GetTicksAsync(day);
+            var ticks = await _ticks.GetDayTicksAsync(day);
 
             Ticks = new ObservableCollection<Tick>(ticks);
             Empty = Ticks == null || !Ticks.Any();
