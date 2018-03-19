@@ -18,6 +18,7 @@ namespace Problemator.Core.ViewModels
     public class TagProblemsViewModel : 
         IHandle<LocationChangedMessage>,
         IHandle<DayChangedMessage>,
+        IHandle<TickRemovedMessage>,
         IHandle<TickAddedMesage>,
         INotifyPropertyChanged
     {
@@ -234,6 +235,13 @@ namespace Problemator.Core.ViewModels
             ClearTaggedProblem();
 
             _selectedDate = message.NewDay.Date;
+        }
+
+        public async void Handle(TickRemovedMessage message)
+        {
+            ClearTaggedProblem();
+
+            await _sections.LoadAsync();
         }
 
         public async void Handle(TickAddedMesage message)

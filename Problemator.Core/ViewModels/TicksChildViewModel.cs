@@ -42,7 +42,7 @@ namespace Problemator.Core.ViewModels
 
         public IList<DateTimeOffset> TickDates { get; private set; }
 
-        public ObservableCollection<Tick> Ticks { get; private set; }
+        public IList<Tick> Ticks { get; private set; }
 
         private readonly Ticks _ticks;
         private readonly Session _session;
@@ -99,9 +99,8 @@ namespace Problemator.Core.ViewModels
 
         private async Task LoadTicksAsync(DateTime day)
         {
-            var ticks = await _ticks.GetDayTicksAsync(day);
+            Ticks = await _ticks.GetDayTicksAsync(day);
 
-            Ticks = new ObservableCollection<Tick>(ticks);
             Empty = Ticks == null || !Ticks.Any();
         }
 
@@ -146,6 +145,7 @@ namespace Problemator.Core.ViewModels
         {
             await _session.SetCurrentLocationAsync(SelectedLocation);
             _eventAggregator.PublishLocationChanged(SelectedLocation);
+
             await RefreshAsync(true);
         }
 
@@ -157,18 +157,19 @@ namespace Problemator.Core.ViewModels
 
         private async Task ChangeDayAsync()
         {
-            await RefreshAsync(true);
             _eventAggregator.PublishDayChanged(SelectedDay);
+
+            await RefreshAsync(true);
         }
 
         public async void Handle(TickRemovedMessage message)
         {
-            await LoadTicksAsync(SelectedDate);
+            await RefreshAsync(true);
         }
 
         public async void Handle(TickAddedMesage message)
         {
-            await LoadTicksAsync(SelectedDate);
+            await RefreshAsync(true);
         }
 
         public void Handle(BusyMessage message)
