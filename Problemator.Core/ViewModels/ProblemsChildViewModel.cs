@@ -13,6 +13,7 @@ using Problemator.Core.Models;
 namespace Problemator.Core.ViewModels
 {
     public class ProblemsChildViewModel :
+        IHandle<TickRemovedMessage>,
         IHandle<BusyMessage>,
         INotifyPropertyChanged
     {
@@ -101,9 +102,14 @@ namespace Problemator.Core.ViewModels
             await RefreshAsync(true);
         }
 
+        public async void Handle(TickRemovedMessage message)
+        {
+            await RefreshAsync(true);
+        }
+
         public void Handle(BusyMessage message)
         {
-            Busy = message.Show;
+            Busy = message.IsBusy;
         }
     }
 }

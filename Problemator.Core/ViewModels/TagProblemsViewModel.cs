@@ -122,6 +122,7 @@ namespace Problemator.Core.ViewModels
         {
             if (!byUser || _busy || string.IsNullOrWhiteSpace(Tag))
             {
+                SuggestedProblems = null;
                 CanTick = false;
                 return;
             }
@@ -244,7 +245,7 @@ namespace Problemator.Core.ViewModels
 
         public void Handle(BusyMessage message)
         {
-            _busy = message.Show;
+            _busy = message.IsBusy;
         }
 
         #endregion

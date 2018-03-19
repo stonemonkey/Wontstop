@@ -8,10 +8,35 @@ namespace MvvmToolkit.Messages
     /// </summary>
     public class BusyMessage
     {
+        private static int _count;
+
         /// <summary>
-        /// Determines wheather show (true) or to hide (false) operation is requested.
+        /// Determines weather there are pending busy operations unfinished.
+        /// Creating 2 BusyMessages for showing (true) busy and 1 BusyMessage (false)
+        /// for hiding will have IsBusy = true but Show = false on the last instance.
         /// </summary>
-        public bool Show { get; private set; }
+        public bool IsBusy => _count > 0;
+
+        private bool _show;
+        /// <summary>
+        /// Determines wheather show (true) or hide (false) operation is requested.
+        /// </summary>
+        public bool Show
+        {
+            get { return _show; }
+            private set
+            {
+                _show = value;
+                if (_show)
+                {
+                    _count++;
+                }
+                else if (IsBusy)
+                {
+                    _count--;
+                }
+            }
+        }
 
         /// <summary>
         /// Text associated with show busy operation.

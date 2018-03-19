@@ -184,7 +184,7 @@ namespace Problemator.Core.ViewModels
 
         private async Task SaveAsync()
         {
-            _eventAggregator.PublishShowBusy();
+            Busy = true;
 
             Tick.Tries = TriesCount;
             Tick.Timestamp = SendTimestamp;
@@ -193,7 +193,7 @@ namespace Problemator.Core.ViewModels
 
             await _ticks.SaveTickAsync(Tick);
 
-            _eventAggregator.PublishHideBusy();
+            Busy = false;
         }
 
         public void Handle(TickAddedMesage message)

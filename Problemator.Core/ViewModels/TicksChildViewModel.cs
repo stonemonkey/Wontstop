@@ -173,7 +173,7 @@ namespace Problemator.Core.ViewModels
 
         public void Handle(BusyMessage message)
         {
-            Busy = message.Show;
+            Busy = message.IsBusy;
         }
     }
 }
