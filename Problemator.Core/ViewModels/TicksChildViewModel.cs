@@ -35,9 +35,8 @@ namespace Problemator.Core.ViewModels
         public string SelectedLocation { get; set; }
         public IList<string> Locations { get; private set; }
 
-        private static bool _isSelectedDaySaved;
-        public static DateTimeOffset SelectedDay { get; set; }
-        private static DateTime SelectedDate => SelectedDay.Date;
+        public DateTimeOffset SelectedDay { get; set; }
+        private DateTime SelectedDate => SelectedDay.Date;
 
         public IList<DateTimeOffset> TickDates { get; private set; }
 
@@ -46,7 +45,6 @@ namespace Problemator.Core.ViewModels
         private readonly Ticks _ticks;
         private readonly Session _session;
         private readonly Sections _sections;
-        private readonly ITimeService _timeService;
         private readonly IStorageService _storageService;
         private readonly IEventAggregator _eventAggregator;
         private readonly ProblematorRequestsFactory _requestsFactory;
@@ -55,7 +53,6 @@ namespace Problemator.Core.ViewModels
             Ticks ticks,
             Session session,
             Sections sections,
-            ITimeService timeService,
             IStorageService storageService,
             IEventAggregator eventAggregator,
             ProblematorRequestsFactory requestsFactory)
@@ -63,16 +60,9 @@ namespace Problemator.Core.ViewModels
             _ticks = ticks;
             _session = session;
             _sections = sections;
-            _timeService = timeService;
             _storageService = storageService;
             _eventAggregator = eventAggregator;
             _requestsFactory = requestsFactory;
-
-            if (!_isSelectedDaySaved)
-            {
-                SelectedDay = _timeService.Now;
-                _isSelectedDaySaved = true;
-            }
         }
 
         private RelayCommand _loadComand;
@@ -118,6 +108,7 @@ namespace Problemator.Core.ViewModels
         {
             await _session.LoadAsync(refresh);
 
+            SelectedDay = _session.GetSelectedDate();
             Locations = await _session.GetLocationNames();
             SelectedLocation = await _session.GetCurrentLocationName();
         }
@@ -156,6 +147,7 @@ namespace Problemator.Core.ViewModels
 
         private async Task ChangeDayAsync()
         {
+            _session.SetSelectedDate(SelectedDate);
             _eventAggregator.PublishDayChanged(SelectedDay);
 
             await RefreshAsync(true);

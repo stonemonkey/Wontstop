@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
-using MvvmToolkit;
 using MvvmToolkit.Commands;
 using MvvmToolkit.Messages;
 using Problemator.Core.Dtos;
@@ -35,28 +34,22 @@ namespace Problemator.Core.ViewModels
         public bool AreProblemsMissing { get; private set; }
 
         private bool _busy;
-        private DateTime _selectedDate;
 
         private readonly Ticks _ticks;
         private readonly Session _session;
         private readonly Sections _sections;
-        private readonly ITimeService _timeService;
         private readonly IEventAggregator _eventAggregator;
 
         public TagProblemsViewModel(
             Ticks ticks,
             Session session,
             Sections sections,
-            ITimeService timeService,
             IEventAggregator eventAggregator)
         {
             _ticks = ticks;
             _session = session;
             _sections = sections;
-            _timeService = timeService;
             _eventAggregator = eventAggregator;
-
-            _selectedDate = _timeService.Now;
         }
 
         #region Load/Unload handlers
@@ -140,7 +133,8 @@ namespace Problemator.Core.ViewModels
                 return;
             }
 
-            SuggestedProblems = _sections.GetAvailableProblems(Tag, _selectedDate);
+            var selectedDate = _session.GetSelectedDate();
+            SuggestedProblems = _sections.GetAvailableProblems(Tag, selectedDate);
         }
 
         private RelayCommand<string> _suggestionChosenComand;
@@ -171,7 +165,7 @@ namespace Problemator.Core.ViewModels
                 return;
             }
 
-            _taggedProblem = _sections.GetFirstAvailableProblem(tag, _selectedDate);
+            _taggedProblem = _sections.GetFirstAvailableProblem(tag, _session.GetSelectedDate());
             SelectedGrade = Grades.GetById(_taggedProblem.GradeId);
             RouteType = _taggedProblem.RouteType;
         }
@@ -204,6 +198,7 @@ namespace Problemator.Core.ViewModels
 
         private Tick CreateTick()
         {
+            var selectedDate = _session.GetSelectedDate();
             var problemId = _taggedProblem.ProblemId;
             var ascentTypeId = _session.GetSportAscentTypeId(SelectedAscentType);
             var gradeOpinionId = SelectedGrade.Id;
@@ -212,7 +207,7 @@ namespace Problemator.Core.ViewModels
             {
                 Tag = Tag,
                 Tries = TriesCount,
-                Timestamp = _selectedDate,
+                Timestamp = selectedDate,
                 ProblemId = problemId,
                 AscentTypeId = ascentTypeId,
                 GradeOpinionId = gradeOpinionId,
@@ -233,8 +228,6 @@ namespace Problemator.Core.ViewModels
         public void Handle(DayChangedMessage message)
         {
             ClearTaggedProblem();
-
-            _selectedDate = message.NewDay.Date;
         }
 
         public async void Handle(TickRemovedMessage message)

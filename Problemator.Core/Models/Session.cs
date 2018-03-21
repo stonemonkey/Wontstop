@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using HttpApiClient;
+using MvvmToolkit;
 using MvvmToolkit.Messages;
 using MvvmToolkit.Utils;
 using Problemator.Core.Dtos;
@@ -16,15 +17,21 @@ namespace Problemator.Core.Models
     public class Session
     {
         private readonly UserContext _userContext;
+        private readonly ITimeService _timeService;
+        private readonly IStorageService _storageService;
         private readonly IEventAggregator _eventAggregator;
         private readonly ProblematorRequestsFactory _requestsFactory;
 
         public Session(
             UserContext userContext,
+            ITimeService timeService,
+            IStorageService storageService,
             IEventAggregator eventAggregator,
             ProblematorRequestsFactory requestsFactory)
         {
             _userContext = userContext;
+            _timeService = timeService;
+            _storageService = storageService;
             _eventAggregator = eventAggregator;
             _requestsFactory = requestsFactory;
         }
@@ -48,12 +55,31 @@ namespace Problemator.Core.Models
             }
         }
 
+        public DateTime GetSelectedDate()
+        {
+            if (_storageService.LocalExists(Settings.SelectedDateKey))
+            {
+                return _storageService.ReadLocal<DateTime>(Settings.SelectedDateKey);
+            }
+
+            return _timeService.Now;
+        }
+
+        #region SelectedDate
+
+        public void SetSelectedDate(DateTime date)
+        {
+            _storageService.SaveLocal(Settings.SelectedDateKey, date);
+        }
+
         public async Task<IList<Grade>> GetGradesAsync()
         {
             await ValidateDashboardLoaded();
 
             return _dashboard.Grades.Values.ToList();
         }
+
+        #endregion
 
         #region AscentType
 
@@ -106,7 +132,6 @@ namespace Problemator.Core.Models
             return type.Name;
         }
 
-
         public async Task<string> GetUserSportAscentType()
         {
             await ValidateDashboardLoaded();
@@ -121,15 +146,6 @@ namespace Problemator.Core.Models
         #endregion
 
         #region Location
-
-        public async Task<IList<string>> GetLocationNames()
-        {
-            await ValidateDashboardLoaded();
-
-            return _dashboard.Locations
-                .Select(x => x.Name)
-                .ToList();
-        }
 
         public async Task<string> GetCurrentLocationName()
         {
@@ -167,6 +183,15 @@ namespace Problemator.Core.Models
             }
 
             await ChangeGymAsync(location.Id);
+        }
+
+        public async Task<IList<string>> GetLocationNames()
+        {
+            await ValidateDashboardLoaded();
+
+            return _dashboard.Locations
+                .Select(x => x.Name)
+                .ToList();
         }
 
         private Location GetLocation(string name)
