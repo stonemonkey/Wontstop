@@ -45,6 +45,7 @@
     <Compile Include="Dtos\GradeDist.cs" />
     <Compile Include="Dtos\GradeOpinion.cs" />
     <Compile Include="Dtos\WallProblem.cs" />
+    <Compile Include="HttpResponseLogger.cs" />
     <Compile Include="Messages\MessageExtensions.cs" />
     <Compile Include="Models\Problem.cs" />
     <Compile Include="Models\Ticks.cs" />

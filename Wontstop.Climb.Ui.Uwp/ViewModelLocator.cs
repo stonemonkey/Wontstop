@@ -79,7 +79,7 @@ namespace Wontstop.Climb.Ui.Uwp
             Container.RegisterSingleton<ProblematorRequestsFactory>();
             Container.RegisterSingleton<ITimeService, TimeService>();
             Container.RegisterSingleton<IStorageService, StorageService>();
-            Container.RegisterSingleton<IResponseLogger, ConsoleResponseLogger>();
+            Container.RegisterSingleton<IResponseLogger, HttpResponseLogger>();
         }
 
         public static LoginViewModel LoginViewModel => Get<LoginViewModel>();
