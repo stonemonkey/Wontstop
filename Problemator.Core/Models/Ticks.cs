@@ -27,6 +27,21 @@ namespace Problemator.Core.Models
             _requestsFactory = requestsFactory;
         }
 
+        public async Task<IList<DateTimeOffset>> GetTickDatesAsync()
+        {
+            IList<DateTimeOffset> dates = null;
+
+            (await _requestsFactory.CreateTickDatesRequest()
+                .RunAsync<ProblematorJsonParser>())
+                    .OnSuccess(p =>
+                    {
+                        dates = p.To<IList<DateTimeOffset>>();
+                    })
+                    .PublishErrorOnAnyFailure(_eventAggregator);
+
+            return dates;
+        }
+
         public async Task<IList<Tick>> GetDayTicksAsync(DateTime day)
         {
             DayTicks dayTicks = null;

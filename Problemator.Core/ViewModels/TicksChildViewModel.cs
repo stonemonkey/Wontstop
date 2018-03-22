@@ -47,22 +47,19 @@ namespace Problemator.Core.ViewModels
         private readonly Sections _sections;
         private readonly IStorageService _storageService;
         private readonly IEventAggregator _eventAggregator;
-        private readonly ProblematorRequestsFactory _requestsFactory;
 
         public TicksChildViewModel(
             Ticks ticks,
             Session session,
             Sections sections,
             IStorageService storageService,
-            IEventAggregator eventAggregator,
-            ProblematorRequestsFactory requestsFactory)
+            IEventAggregator eventAggregator)
         {
             _ticks = ticks;
             _session = session;
             _sections = sections;
             _storageService = storageService;
             _eventAggregator = eventAggregator;
-            _requestsFactory = requestsFactory;
         }
 
         private RelayCommand _loadComand;
@@ -95,13 +92,7 @@ namespace Problemator.Core.ViewModels
 
         private async Task LoadTickDatesAsync()
         {
-            (await _requestsFactory.CreateTickDatesRequest()
-                .RunAsync<ProblematorJsonParser>())
-                    .OnSuccess(p =>
-                    {
-                        TickDates = p.To<IList<DateTimeOffset>>();
-                    })
-                    .PublishErrorOnAnyFailure(_eventAggregator);
+            TickDates = await _ticks.GetTickDatesAsync();
         }
 
         private async Task LoadSessionAsync(bool refresh)
