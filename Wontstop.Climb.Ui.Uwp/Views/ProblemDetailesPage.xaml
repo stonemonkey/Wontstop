@@ -8,10 +8,9 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
-    xmlns:controls="using:WinRTXamlToolkit.Controls"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:behaviours="using:MvvmToolkit.Uwp.Behaviours"
     xmlns:stateTriggers="using:MvvmToolkit.Uwp.StateTriggers"
-    xmlns:uc="using:Wontstop.Climb.Ui.Uwp.UserControls"
     mc:Ignorable="d"
     DataContext="{Binding ProblemDetailesViewModel, Source={StaticResource ViewModelLocator}}">
 
@@ -21,10 +20,16 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     
     <interactivity:Interaction.Behaviors>
         <behaviours:ShowBackButtonBehavior/>
+        <core:EventTriggerBehavior EventName="Loaded">
+            <core:InvokeCommandAction Command="{Binding LoadCommand}"/>
+        </core:EventTriggerBehavior>
+        <core:EventTriggerBehavior EventName="Unloaded">
+            <core:InvokeCommandAction Command="{Binding UnloadCommand}"/>
+        </core:EventTriggerBehavior>
     </interactivity:Interaction.Behaviors>
 
     <Grid x:Name="PageRootPanel"
-        Background="Transparent"
+        VerticalAlignment="Center"
         HorizontalAlignment="Center">
 
         <VisualStateManager.VisualStateGroups>
@@ -62,77 +67,158 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <controls:WrapPanel x:Name="CardsWrapPanel">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
-            <Grid x:Name="ProblemHeaderPanel" Background="Green"
-                Width="{StaticResource CellWidth}"
-                Margin="0,0,0,0"
+        <Grid x:Name="ProblemTitlePanel"
+            Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Ellipse x:Name="ColorElipse"
+                Grid.Column="0"
+                Width="16" Height="16"
+                Fill="{Binding Problem.ColorName, Converter={StaticResource StringToColorConverter}}"/>
+            <TextBlock x:Name="GradeTextBlock"
+                Grid.Column="1"
+                Margin="8,0,0,0"
                 VerticalAlignment="Center"
+                Text="{Binding Problem.GradeName}"/>
+            <TextBlock x:Name="TagTextBlock"
+                Grid.Column="2"
+                Margin="8,0,0,0"
+                VerticalAlignment="Center"
+                Text="{Binding Problem.TagShort}"/>
+            <TextBlock x:Name="WallTextBlock"
+                Grid.Column="3"
+                Margin="8,0,0,0"
+                VerticalAlignment="Center"
+                Text="{Binding Problem.WallDescription}"/>
+        </Grid>
+
+        <StackPanel x:Name="ProblemInfoPanel"
+            Grid.Row="1"
+            Margin="0,2,0,0"
+            Orientation="Horizontal">
+            <TextBlock x:Name="ColorNameTextBlock"
+                Text="{Binding Problem.ColorName}" 
+                Foreground="Gray"
+                Style="{ThemeResource CaptionTextBlockStyle}"/>
+            <TextBlock Text="|" 
+                Margin="4,0,0,0"
+                Foreground="Gray"
+                Style="{ThemeResource CaptionTextBlockStyle}"/>
+            <TextBlock x:Name="RouteTypeTextBlock"
+                Margin="4,0,0,0"
+                Foreground="Gray"
+                VerticalAlignment="Center"
+                Text="{Binding Problem.RouteType}"
+                Style="{ThemeResource CaptionTextBlockStyle}"/>
+            <TextBlock Text="|" 
+                Margin="4,0,0,0"
+                Foreground="Gray"
+                Style="{ThemeResource CaptionTextBlockStyle}"/>
+            <TextBlock x:Name="AuthorTextBlock"
+                Margin="4,0,0,0"
+                Foreground="Gray"
+                VerticalAlignment="Center"
+                Text="{Binding Problem.Author}"
+                Style="{ThemeResource CaptionTextBlockStyle}"/>
+            <TextBlock Text="|" 
+                Margin="4,0,0,0"
+                Foreground="Gray"
+                Style="{ThemeResource CaptionTextBlockStyle}"/>
+            <TextBlock x:Name="AddedRelativeTextBlock"
+                Margin="4,0,0,0"
+                Foreground="Gray"
+                VerticalAlignment="Center"
+                Text="{Binding Problem.AddedRelative}"
+                Style="{ThemeResource CaptionTextBlockStyle}"/>
+        </StackPanel>
+
+        <Grid x:Name="ProblemDetailsPanel"
+            Grid.Row="2"
+            Margin="0,20"
+            HorizontalAlignment="Stretch">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width=".5*"/>
+                <ColumnDefinition Width=".5*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel x:Name="StartDefinitionPanel"
+                Grid.Row="0" Grid.Column="0"
+                Margin="0,8,0,8"
                 HorizontalAlignment="Stretch">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <TextBlock 
-                    Grid.Row="0"
-                    HorizontalAlignment="Center"
-                    Text="{Binding Problem.GradeName}" FontSize="48"/>
+                <TextBlock x:Name="StartDefinitionLabelTextBlock"
+                    Margin="0,2"
+                    Foreground="Gray"
+                    VerticalAlignment="Center"
+                    Text="Starts:"
+                    Style="{ThemeResource CaptionTextBlockStyle}"/>
+                <TextBlock x:Name="StartDefinitionTextBlock"
+                    HorizontalAlignment="Stretch"
+                    Text="{Binding Problem.StartDefinition}"/>
+            </StackPanel>
+            
+            <StackPanel x:Name="EndDefinitionPanel"
+                Grid.Row="0" Grid.Column="1"
+                Margin="0,8,0,8"
+                HorizontalAlignment="Stretch">
+                <TextBlock x:Name="EndDefinitionLabelTextBlock"
+                    Margin="0,2"
+                    Foreground="Gray"
+                    VerticalAlignment="Center"
+                    Text="Ends:"
+                    Style="{ThemeResource CaptionTextBlockStyle}"/>
+                <TextBlock x:Name="EndDefinitionTextBlock"
+                    HorizontalAlignment="Stretch"
+                    Text="{Binding Problem.EndDefinition}"/>
+            </StackPanel>
+
+            <StackPanel x:Name="AppreciationPanel"
+                Grid.Row="1" Grid.Column="0"
+                Orientation="Horizontal"
+                HorizontalAlignment="Stretch">
                 <TextBlock
-                    Grid.Row="1"
-                    HorizontalAlignment="Center"
-                    Text="{Binding Problem.TagShort}"/>
-            </Grid>
-
-            <Grid x:Name="AuthorPanel" Background="Red"
-                Width="{StaticResource CellWidth}"
-                Margin="0,0,0,0"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Stretch">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <StackPanel x:Name="AppreciationPanel"
-                    Grid.Row="0"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Center">
-                    <TextBlock
-                        Text="{Binding Problem.Like}"/>
-                    <TextBlock 
-                        Text="&#xE8E1;"
-                        VerticalAlignment="Center"
-                        FontFamily="Segoe MDL2 Assets"/>
-                    <TextBlock Text="|"/>
-                    <TextBlock 
-                        Text="{Binding Problem.Love}"/>
-                    <TextBlock 
-                        Text="&#xEB51;"
-                        VerticalAlignment="Center"
-                        FontFamily="Segoe MDL2 Assets"/>
-                    <TextBlock Text="|"/>
-                    <TextBlock
-                        Text="{Binding Problem.Dislike}"/>
-                    <TextBlock 
-                        Text="&#xE8E0;"
-                        VerticalAlignment="Center"
-                        FontFamily="Segoe MDL2 Assets"/>
-                </StackPanel>
+                    Text="{Binding Problem.Like}"/>
                 <TextBlock 
-                    Grid.Row="1"
-                    HorizontalAlignment="Center"
-                    Text="{Binding Problem.Author}"/>
+                    Text="&#xE8E1;"
+                    VerticalAlignment="Center"
+                    FontFamily="Segoe MDL2 Assets"/>
+                <TextBlock Text="|"/>
                 <TextBlock 
-                    Grid.Row="2"
-                    HorizontalAlignment="Center"
-                    Text="{Binding Problem.AddedRelative}"/>
-            </Grid>
-
-            <uc:TriesCounterUserControl x:Name="TriesCounterControl" Background="Blue"
-                Count="{Binding TriesCount, Mode=TwoWay}"/>
-        </controls:WrapPanel>
+                    Text="{Binding Problem.Love}"/>
+                <TextBlock 
+                    Text="&#xEB51;"
+                    VerticalAlignment="Center"
+                    FontFamily="Segoe MDL2 Assets"/>
+                <TextBlock Text="|"/>
+                <TextBlock
+                    Text="{Binding Problem.Dislike}"/>
+                <TextBlock 
+                    Text="&#xE8E0;"
+                    VerticalAlignment="Center"
+                    FontFamily="Segoe MDL2 Assets"/>
+            </StackPanel>
+        </Grid>
 
         <ProgressRing x:Name="BusyProgress"
+            Grid.Row="0" Grid.RowSpan="3"
             IsActive="True"
             Visibility="Collapsed"
             Width="{StaticResource ProgressSize}" 

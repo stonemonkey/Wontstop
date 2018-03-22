@@ -176,7 +176,8 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                                 Grid.Row="0"
                                 IsChecked="False"
                                 Content="{Binding FullName}"
-                                HorizontalAlignment="Stretch">
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Left">
                             </ToggleButton>
                             <ListView x:Name="ProblemsList"
                                 Grid.Row="1"

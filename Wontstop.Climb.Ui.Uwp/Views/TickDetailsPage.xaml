@@ -80,7 +80,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Grid x:Name="ProblemInfoPanel"
+        <Grid x:Name="ProblemTitlePanel"
             Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -111,7 +111,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 Text="{Binding Problem.WallDescription}"/>
         </Grid>
 
-        <StackPanel x:Name="ProblemDetailsPanel"
+        <StackPanel x:Name="ProblemInfoPanel"
             Grid.Row="1"
             Margin="0,2,0,0"
             Orientation="Horizontal">
