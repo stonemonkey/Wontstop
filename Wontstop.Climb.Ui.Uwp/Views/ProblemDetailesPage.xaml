@@ -14,10 +14,6 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     mc:Ignorable="d"
     DataContext="{Binding ProblemDetailesViewModel, Source={StaticResource ViewModelLocator}}">
 
-    <Page.Resources>
-        <x:Double x:Key="CellWidth">320</x:Double>
-    </Page.Resources>
-    
     <interactivity:Interaction.Behaviors>
         <behaviours:ShowBackButtonBehavior/>
         <core:EventTriggerBehavior EventName="Loaded">

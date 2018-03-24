@@ -70,7 +70,7 @@ namespace Wontstop.Climb.Ui.Uwp
                 typeof(INavigationService),
                 () => new NavigationService(
                     (Frame) Window.Current.Content,
-                    new [] { Assembly.GetAssembly(GetType()) },
+                    new [] { GetType().GetTypeInfo().Assembly },
                     Container.GetInstance<IEventAggregator>()));
 
             Container.RegisterSingleton<Session>();
