@@ -55,6 +55,8 @@ namespace Problemator.Core.Models
             }
         }
 
+        #region SelectedDate
+
         public DateTime GetSelectedDate()
         {
             if (_storageService.LocalExists(Settings.SelectedDateKey))
@@ -64,8 +66,6 @@ namespace Problemator.Core.Models
 
             return _timeService.Now;
         }
-
-        #region SelectedDate
 
         public void SetSelectedDate(DateTime date)
         {

@@ -60,6 +60,8 @@ namespace Problemator.Core.ViewModels
             _sections = sections;
             _storageService = storageService;
             _eventAggregator = eventAggregator;
+
+            SelectedDay = _session.GetSelectedDate();
         }
 
         private RelayCommand _loadComand;
