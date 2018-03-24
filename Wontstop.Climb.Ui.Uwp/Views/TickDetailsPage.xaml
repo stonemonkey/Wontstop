@@ -11,7 +11,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:uc="using:Wontstop.Climb.Ui.Uwp.UserControls"
-    xmlns:behaviours="using:MvvmToolkit.Uwp.Behaviours"
+    xmlns:behaviors="using:MvvmToolkit.Uwp.Behaviors"
     xmlns:stateTriggers="using:MvvmToolkit.Uwp.StateTriggers"
     mc:Ignorable="d"
     DataContext="{Binding TickDetailsViewModel, Source={StaticResource ViewModelLocator}}">
@@ -25,7 +25,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     </Page.Resources>
 
     <interactivity:Interaction.Behaviors>
-        <behaviours:ShowBackButtonBehavior/>
+        <behaviors:ShowBackButtonBehavior/>
         <core:EventTriggerBehavior EventName="Loaded">
             <core:InvokeCommandAction Command="{Binding LoadCommand}"/>
         </core:EventTriggerBehavior>

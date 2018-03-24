@@ -107,9 +107,10 @@
     <Compile Include="AttachedProperties\ContextMenu.cs" />
     <Compile Include="AttachedProperties\KeyPresedToCommand.cs" />
     <Compile Include="AttachedProperties\ViewModel.cs" />
-    <Compile Include="Behaviours\HighlightDaysBehavior.cs" />
-    <Compile Include="Behaviours\ScrollToItemBehavior.cs" />
-    <Compile Include="Behaviours\ShowBackButtonBehavior.cs" />
+    <Compile Include="Behaviors\HighlightDaysBehavior.cs" />
+    <Compile Include="Behaviors\KeepAboveInputPaneBehavior.cs" />
+    <Compile Include="Behaviors\ScrollToItemBehavior.cs" />
+    <Compile Include="Behaviors\ShowBackButtonBehavior.cs" />
     <Compile Include="NavigationService.cs" />
     <Compile Include="Services\CacheFile.cs" />
     <Compile Include="Services\CacheObject.cs" />

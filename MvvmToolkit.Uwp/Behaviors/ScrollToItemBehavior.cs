@@ -7,7 +7,7 @@ using Microsoft.Xaml.Interactivity;
 using MvvmToolkit.Messages;
 using MvvmToolkit.WinRT.Utils;
 
-namespace MvvmToolkit.Uwp.Behaviours
+namespace MvvmToolkit.Uwp.Behaviors
 {
     /// <summary>
     /// Attaches handler for ScrollMessage so that the ListViewBase will try to scroll to the item 

@@ -12,7 +12,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:local="using:RunKeeper.WinRT.HealthGraph.Activities"
     xmlns:stateTriggers="using:MvvmToolkit.Uwp.StateTriggers"
     xmlns:controls="using:MvvmToolkit.Uwp.Controls"
-    xmlns:behaviours="using:MvvmToolkit.Uwp.Behaviours"
+    xmlns:behaviors="using:MvvmToolkit.Uwp.Behaviors"
     mc:Ignorable="d"
     DataContext="{Binding HistoryViewModel, Source={StaticResource ViewModelLocator}}">
     
@@ -210,7 +210,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                             </GroupStyle>
                         </ListView.GroupStyle>
                         <interactivity:Interaction.Behaviors>
-                            <behaviours:ScrollToItemBehavior/>
+                            <behaviors:ScrollToItemBehavior/>
                             <core:EventTriggerBehavior EventName="ItemClickOnSingleSelection">
                                 <core:InvokeCommandAction 
                                     Command="{Binding ItemClickCommand}"

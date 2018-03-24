@@ -6,7 +6,7 @@ using Windows.UI.Xaml.Controls;
 using Microsoft.Xaml.Interactivity;
 using MvvmToolkit.Uwp.Utils;
 
-namespace MvvmToolkit.Uwp.Behaviours
+namespace MvvmToolkit.Uwp.Behaviors
 {
     /// <summary>
     /// Attaches back navigation showing back button on the application title bar while loading 

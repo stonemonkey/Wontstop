@@ -8,7 +8,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:attachedProperties="using:MvvmToolkit.WinRT.AttachedProperties"
-    xmlns:behaviours="using:MvvmToolkit.Uwp.Behaviours"
+    xmlns:behaviors="using:MvvmToolkit.Uwp.Behaviors"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:stateTriggers="using:MvvmToolkit.Uwp.StateTriggers"
@@ -144,7 +144,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 Grid.Column="1"
                 Margin="8,0,12,0" Date="{Binding SelectedDay, Mode=TwoWay}">
                 <interactivity:Interaction.Behaviors>
-                    <behaviours:HighlightDaysBehavior 
+                    <behaviors:HighlightDaysBehavior 
                         HighlightedDays="{Binding TickDates}" HighlightedDayBackground="Red"/>
                     <core:EventTriggerBehavior EventName="DateChanged">
                         <core:InvokeCommandAction Command="{Binding ChangeDateCommand}"/>

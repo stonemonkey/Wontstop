@@ -8,6 +8,8 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:attachedProperties="using:MvvmToolkit.WinRT.AttachedProperties"
+    xmlns:behaviors="using:MvvmToolkit.Uwp.Behaviors"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:stateTriggers="using:MvvmToolkit.Uwp.StateTriggers"
     mc:Ignorable="d"
     DataContext="{Binding LoginViewModel, Source={StaticResource ViewModelLocator}}">
@@ -35,6 +37,10 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
+
+        <interactivity:Interaction.Behaviors>
+            <behaviors:KeepAboveInputPaneBehavior/>
+        </interactivity:Interaction.Behaviors>
 
         <Grid x:Name="ProblematorLoginPanel"
             Margin="16"

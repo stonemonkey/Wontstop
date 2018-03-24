@@ -9,7 +9,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Microsoft.Xaml.Interactivity;
 
-namespace MvvmToolkit.Uwp.Behaviours
+namespace MvvmToolkit.Uwp.Behaviors
 {
     /// <summary>
     /// Attaches 'highlighted' background color to specified items.

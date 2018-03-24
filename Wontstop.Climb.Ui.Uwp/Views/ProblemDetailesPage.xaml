@@ -9,13 +9,13 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
-    xmlns:behaviours="using:MvvmToolkit.Uwp.Behaviours"
+    xmlns:behaviors="using:MvvmToolkit.Uwp.Behaviors"
     xmlns:stateTriggers="using:MvvmToolkit.Uwp.StateTriggers"
     mc:Ignorable="d"
     DataContext="{Binding ProblemDetailesViewModel, Source={StaticResource ViewModelLocator}}">
 
     <interactivity:Interaction.Behaviors>
-        <behaviours:ShowBackButtonBehavior/>
+        <behaviors:ShowBackButtonBehavior/>
         <core:EventTriggerBehavior EventName="Loaded">
             <core:InvokeCommandAction Command="{Binding LoadCommand}"/>
         </core:EventTriggerBehavior>
