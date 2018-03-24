@@ -39,6 +39,37 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             <localConverters:AutoSuggestBoxQuerySubmittedEventArgsToStringConverter x:Key="AutoSuggestBoxQuerySubmittedEventArgsToStringConverter"/>
             <localConverters:AutoSuggestBoxSuggestionChosenEventArgsToStringConverter x:Key="AutoSuggestBoxSuggestionChosenEventArgsToStringConverter"/>
 
+            <Style x:Key="GymComboBoxStyle" TargetType="ComboBox">
+                <Setter Property="Margin" Value="12,6,12,6" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                <Setter Property="PlaceholderText" Value="select gym" />
+            </Style>
+
+            <Style x:Key="BusyProgressRingStyle" TargetType="ProgressRing">
+                <Setter Property="IsActive" Value="True" />
+                <Setter Property="Visibility" Value="Collapsed" />
+                <Setter Property="Width" Value="{StaticResource ProgressSize}" />
+                <Setter Property="Height" Value="{StaticResource ProgressSize}" />
+            </Style>
+
+            <Style x:Key="EmptyStateTextBlockStyle" TargetType="TextBlock">
+                <Setter Property="TextAlignment" Value="Center" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="Style" Value="{ThemeResource SubtitleTextBlockStyle}" />
+            </Style>
+            
+            <Style x:Key="ChildPageTitlePanelStyle" TargetType="Grid">
+                <Setter Property="VerticalAlignment" Value="Top" />
+                <Setter Property="Height" Value="{StaticResource TopBarHeight}" />
+                <Setter Property="Background" Value="{ThemeResource SystemControlPageBackgroundChromeLowBrush}" />
+            </Style>
+            
+            <Style x:Key="ChildPageTitleTextBlockStyle" TargetType="TextBlock">
+                <Setter Property="Padding" Value="16,0,0,0" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="Style" Value="{ThemeResource SubheaderTextBlockStyle}" />
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

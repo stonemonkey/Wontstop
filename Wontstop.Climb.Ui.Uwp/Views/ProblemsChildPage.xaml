@@ -126,25 +126,22 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
         </Grid.RowDefinitions>
 
         <Grid x:Name="TitleBarPanel"
-            VerticalAlignment="Top"
-            Height="{StaticResource TopBarHeight}"
-            Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+            Grid.Row="0"
+            Style="{StaticResource ChildPageTitlePanelStyle}">
             <TextBlock x:Name="TitleTextBlock"
-                Grid.Column="0"
-                Padding="16,0,0,0"
-                VerticalAlignment="Center"
                 Text="{Binding Title}"
-                Style="{ThemeResource SubheaderTextBlockStyle}"/>
+                Style="{StaticResource ChildPageTitleTextBlockStyle}"/>
+        </Grid>
+
+        <Grid x:Name="ContentPanel"
+            Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
             <ComboBox x:Name="GymComboBox"
-                Margin="12,6,12,6"
-                Grid.Column="1"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Stretch"
-                PlaceholderText="select gym"
+                Grid.Row="0"
+                Style="{StaticResource GymComboBoxStyle}"
                 ItemsSource="{Binding Locations}"
                 SelectedItem="{Binding SelectedLocation, Mode=TwoWay}">
                 <interactivity:Interaction.Behaviors>
@@ -153,12 +150,8 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                     </core:EventTriggerBehavior>
                 </interactivity:Interaction.Behaviors>
             </ComboBox>
-        </Grid>
-
-        <Grid x:Name="ContentPanel"
-            Grid.Row="1"
-            HorizontalAlignment="Stretch">
             <ListView x:Name="SectionsList"
+                Grid.Row="1"
                 Margin="0,4,0,0"
                 SelectionMode="None"
                 HorizontalAlignment="Stretch"
@@ -193,20 +186,16 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 </ListView.ItemTemplate>
             </ListView>
             <Grid x:Name="EmptyStatePanel"
+                Grid.Row="0" Grid.RowSpan="2"
                 Visibility="{Binding Empty, Converter={StaticResource BoolToVisibilityConverter}}">
-                <TextBlock x:Name="EmptyState"
-                    TextAlignment="Center"
-                    VerticalAlignment="Center"
-                    Style="{ThemeResource SubtitleTextBlockStyle}"
+                <TextBlock x:Name="EmptyStateTextBlock"
+                    Style="{StaticResource EmptyStateTextBlockStyle}"
                     Text="We couldn't find any problem for the selected gym."/>
             </Grid>
         </Grid>
         
         <ProgressRing x:Name="BusyProgress"
             Grid.Row="0" Grid.RowSpan="2"
-            IsActive="True"
-            Visibility="Collapsed"
-            Width="{StaticResource ProgressSize}" 
-            Height="{StaticResource ProgressSize}"/>
+            Style="{StaticResource BusyProgressRingStyle}"/>
     </Grid>
 </views:MainChildPageBase>
