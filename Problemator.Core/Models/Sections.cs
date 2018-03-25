@@ -25,6 +25,29 @@ namespace Problemator.Core.Models
             _requestsFactory = requestsFactory;
         }
 
+        private static IList<string> _openedSections = new List<string>();
+
+        public void OpenSection(string id)
+        {
+            if (!IsSectionOpen(id))
+            {
+                _openedSections.Add(id);
+            }
+        }
+
+        public void CloseSection(string id)
+        {
+            if (IsSectionOpen(id))
+            {
+                _openedSections.Remove(id);
+            }
+        }
+
+        public bool IsSectionOpen(string id)
+        {
+            return _openedSections.Any(x => string.Equals(x, id, StringComparison.Ordinal));
+        }
+
         private List<string> _tags;
         private List<WallProblem> _problems;
         private IDictionary<string, WallSection> _sections;

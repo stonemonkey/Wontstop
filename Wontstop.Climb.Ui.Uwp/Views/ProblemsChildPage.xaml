@@ -12,13 +12,12 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:views="using:Wontstop.Climb.Ui.Uwp.Views"
     xmlns:attachedProperties="using:MvvmToolkit.WinRT.AttachedProperties"
     xmlns:stateTriggers="using:MvvmToolkit.Uwp.StateTriggers"
-    xmlns:dtos="using:Problemator.Core.Dtos"
     mc:Ignorable="d" 
     DataContext="{Binding ProblemsViewModel, Source={StaticResource ViewModelLocator}}">
 
     <Page.Resources>
         <Style TargetType="ListViewItem">
-            <Setter Property="Margin" Value="0,0,0,2"/>
+            <Setter Property="Margin" Value="0,0,0,0"/>
             <Setter Property="Padding" Value="12,0,12,0"/>
             <Setter Property="TabNavigation" Value="Local"/>
             <Setter Property="IsTabStop" Value="False"/>
@@ -62,11 +61,11 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 </Setter.Value>
             </Setter>
         </Style>
-
-        <DataTemplate x:Key="ProblemItemDataTemplate">
-            <Grid x:Name="ProblemItemPanel">
-                <views:ProblemItemView 
-                    attachedProperties:ViewModel.Model="{Binding DataContext, ElementName=ProblemItemPanel}"/>
+        
+        <DataTemplate x:Key="SectionItemDataTemplate">
+            <Grid x:Name="SectionItemPanel">
+                <views:WallSectionItemView 
+                    attachedProperties:ViewModel.Model="{Binding DataContext, ElementName=SectionItemPanel}"/>
             </Grid>
         </DataTemplate>
     </Page.Resources>
@@ -156,34 +155,8 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 SelectionMode="None"
                 HorizontalAlignment="Stretch"
                 ItemsSource="{Binding Sections}"
-                HeaderTemplate="{StaticResource EmptyDataTemplate}">
-                <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="dtos:WallSection">
-                        <Grid x:Name="SectionItemPanel"
-                            Margin="0,4">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <ToggleButton x:Name="SectionName"
-                                Grid.Row="0"
-                                IsChecked="False"
-                                Content="{Binding FullName}"
-                                HorizontalAlignment="Stretch"
-                                HorizontalContentAlignment="Left">
-                            </ToggleButton>
-                            <ListView x:Name="ProblemsList"
-                                Grid.Row="1"
-                                Margin="0,4,0,0"
-                                SelectionMode="None"
-                                ItemsSource="{Binding Problems}"
-                                ItemTemplate="{StaticResource ProblemItemDataTemplate}"
-                                HeaderTemplate="{StaticResource EmptyDataTemplate}"
-                                Visibility="{Binding IsChecked, ElementName=SectionName, Converter={StaticResource BoolToVisibilityConverter}}">
-                            </ListView>
-                        </Grid>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
+                HeaderTemplate="{StaticResource EmptyDataTemplate}"
+                ItemTemplate="{StaticResource SectionItemDataTemplate}">
             </ListView>
             <Grid x:Name="EmptyStatePanel"
                 Grid.Row="0" Grid.RowSpan="2"

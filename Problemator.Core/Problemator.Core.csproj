@@ -75,6 +75,7 @@
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\ProblemDetailesViewModel.cs" />
+    <Compile Include="ViewModels\WallSectionItemViewModel.cs" />
     <Compile Include="ViewModels\ProblemItemViewModel.cs" />
     <Compile Include="ViewModels\ProblemsChildViewModel.cs" />
     <Compile Include="ViewModels\ProblemItemTickViewModel.cs" />

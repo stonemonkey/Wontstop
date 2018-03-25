@@ -1,0 +1,108 @@
+﻿<!--Copyright (c) Costin Morariu. All rights reserved.
+Licensed under the MIT license. See LICENSE file in the project root for full license information.-->
+
+<UserControl
+    x:Class="Wontstop.Climb.Ui.Uwp.Views.WallSectionItemView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:attachedProperties="using:MvvmToolkit.WinRT.AttachedProperties"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:views="using:Wontstop.Climb.Ui.Uwp.Views"
+    mc:Ignorable="d"
+    DataContext="{Binding WallSectionItemViewModel, Source={StaticResource ViewModelLocator}}">
+
+    <UserControl.Resources>
+        <Style TargetType="ListViewItem">
+            <Setter Property="Margin" Value="0,0,0,2"/>
+            <Setter Property="Padding" Value="0,0,0,0"/>
+            <Setter Property="TabNavigation" Value="Local"/>
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="IsHoldingEnabled" Value="True"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="MinWidth" Value="{ThemeResource ListViewItemMinWidth}"/>
+            <Setter Property="MinHeight" Value="{ThemeResource ListViewItemMinHeight}"/>
+            <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}"/>
+            <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}"/>
+            <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <ListViewItemPresenter
+                            CheckMode="Inline"
+                            SelectionCheckMarkVisualEnabled="True"
+                            ContentMargin="{TemplateBinding Padding}"
+                            ContentTransitions="{TemplateBinding ContentTransitions}"
+                            DragOpacity="{ThemeResource ListViewItemDragThemeOpacity}"
+                            DisabledOpacity="{ThemeResource ListViewItemDisabledThemeOpacity}"
+                            ReorderHintOffset="{ThemeResource ListViewItemReorderHintThemeOffset}"
+                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            CheckBrush="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
+                            CheckBoxBrush="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
+                            DragBackground="{ThemeResource ListViewItemDragBackgroundThemeBrush}"
+                            DragForeground="{ThemeResource ListViewItemDragForegroundThemeBrush}"
+                            FocusBorderBrush="{ThemeResource SystemControlForegroundAltHighBrush}"
+                            FocusSecondaryBorderBrush="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                            PlaceholderBackground="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}"
+                            PointerOverBackground="{ThemeResource SystemControlHighlightListLowBrush}"
+                            PointerOverForeground="{ThemeResource SystemControlHighlightAltBaseHighBrush}"
+                            SelectedForeground="{ThemeResource SystemControlHighlightAltBaseHighBrush}"
+                            SelectedBackground="{ThemeResource SystemControlHighlightListAccentLowBrush}"
+                            PressedBackground="{ThemeResource SystemControlHighlightListMediumBrush}"
+                            SelectedPressedBackground="{ThemeResource SystemControlHighlightListAccentHighBrush}"
+                            SelectedPointerOverBackground="{ThemeResource SystemControlHighlightListAccentMediumBrush}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <DataTemplate x:Key="ProblemItemDataTemplate">
+            <Grid x:Name="ProblemItemPanel">
+                <views:ProblemItemView 
+                    attachedProperties:ViewModel.Model="{Binding DataContext, ElementName=ProblemItemPanel}"/>
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid x:Name="WallSectionItemPanel"
+        Margin="0,4">
+
+        <interactivity:Interaction.Behaviors>
+            <core:EventTriggerBehavior EventName="Loaded">
+                <core:InvokeCommandAction Command="{Binding LoadCommand}"/>
+            </core:EventTriggerBehavior>
+            <core:EventTriggerBehavior EventName="Unloaded">
+                <core:InvokeCommandAction Command="{Binding UnloadCommand}"/>
+            </core:EventTriggerBehavior>
+        </interactivity:Interaction.Behaviors>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <ToggleButton x:Name="SectionNameToggleButton"
+            Grid.Row="0"
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Left"
+            Content="{Binding Section.FullName}"
+            Command="{Binding ToggleSectionCommand}"
+            IsChecked="{Binding ShowProblems, Mode=TwoWay}">
+        </ToggleButton>
+        
+        <ListView x:Name="ProblemsList"
+            Grid.Row="1"
+            Margin="0,4,0,0"
+            SelectionMode="None"
+            ItemsSource="{Binding Section.Problems}"
+            ItemTemplate="{StaticResource ProblemItemDataTemplate}"
+            HeaderTemplate="{StaticResource EmptyDataTemplate}"
+            Visibility="{Binding IsChecked, ElementName=SectionNameToggleButton, Converter={StaticResource BoolToVisibilityConverter}}">
+        </ListView>
+    </Grid>
+</UserControl>

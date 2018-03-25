@@ -114,6 +114,9 @@
     <Compile Include="Views\ProblemDetailesPage.xaml.cs">
       <DependentUpon>ProblemDetailesPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\WallSectionItemView.xaml.cs">
+      <DependentUpon>WallSectionItemView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ProblemItemView.xaml.cs">
       <DependentUpon>ProblemItemView.xaml</DependentUpon>
     </Compile>
@@ -169,6 +172,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="Views\ProblemDetailesPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\WallSectionItemView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
