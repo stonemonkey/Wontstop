@@ -10,6 +10,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:attachedProperties="using:MvvmToolkit.WinRT.AttachedProperties"
     xmlns:behaviors="using:MvvmToolkit.Uwp.Behaviors"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:dtos="using:Problemator.Core.Dtos"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:stateTriggers="using:MvvmToolkit.Uwp.StateTriggers"
     xmlns:views="using:Wontstop.Climb.Ui.Uwp.Views"
@@ -63,7 +64,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
             </Setter>
         </Style>
 
-        <DataTemplate x:Key="TickItemDataTemplate">
+        <DataTemplate x:Key="TickItemDataTemplate" x:DataType="dtos:Tick">
             <Grid x:Name="TickItemPanel">
                 <views:TickItemView 
                     attachedProperties:ViewModel.Model="{Binding DataContext, ElementName=TickItemPanel}"/>

@@ -9,6 +9,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:dtos="using:Problemator.Core.Dtos"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:uc="using:Wontstop.Climb.Ui.Uwp.UserControls"
     xmlns:behaviors="using:MvvmToolkit.Uwp.Behaviors"
@@ -17,9 +18,9 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     DataContext="{Binding TickDetailsViewModel, Source={StaticResource ViewModelLocator}}">
 
     <Page.Resources>
-        <DataTemplate x:Key="GradeItemDataTemplate">
+        <DataTemplate x:Key="GradeItemDataTemplate" x:DataType="dtos:Grade">
             <Grid x:Name="TickItemPanel">
-                <TextBlock Text="{Binding Name}"/>
+                <TextBlock Text="{x:Bind Name}"/>
             </Grid>
         </DataTemplate>
     </Page.Resources>

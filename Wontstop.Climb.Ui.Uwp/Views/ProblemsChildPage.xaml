@@ -9,6 +9,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:dtos="using:Problemator.Core.Dtos"
     xmlns:views="using:Wontstop.Climb.Ui.Uwp.Views"
     xmlns:attachedProperties="using:MvvmToolkit.WinRT.AttachedProperties"
     xmlns:stateTriggers="using:MvvmToolkit.Uwp.StateTriggers"
@@ -61,8 +62,8 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                 </Setter.Value>
             </Setter>
         </Style>
-        
-        <DataTemplate x:Key="SectionItemDataTemplate">
+
+        <DataTemplate x:Key="SectionItemDataTemplate" x:DataType="dtos:WallSection">
             <Grid x:Name="SectionItemPanel">
                 <views:WallSectionItemView 
                     attachedProperties:ViewModel.Model="{Binding DataContext, ElementName=SectionItemPanel}"/>

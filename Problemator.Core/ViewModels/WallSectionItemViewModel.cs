@@ -79,9 +79,9 @@ namespace Problemator.Core.ViewModels
 
         private RelayCommand _toggleSectionCommand;
         public RelayCommand ToggleSectionCommand => _toggleSectionCommand ??
-            (_toggleSectionCommand = new RelayCommand(ManageTicks, () => !_busy));
+            (_toggleSectionCommand = new RelayCommand(ToggleSection, () => !_busy));
 
-        private void ManageTicks()
+        private void ToggleSection()
         {
             _eventAggregator.PublishShowBusy();
 

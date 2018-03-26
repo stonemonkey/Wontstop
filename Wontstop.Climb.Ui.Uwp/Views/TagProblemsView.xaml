@@ -8,19 +8,20 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:dtos="using:Problemator.Core.Dtos"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:uc="using:Wontstop.Climb.Ui.Uwp.UserControls"
     mc:Ignorable="d"
     DataContext="{Binding TagProblemsViewModel, Source={StaticResource ViewModelLocator}}">
 
     <UserControl.Resources>
-        <DataTemplate x:Key="GradeItemDataTemplate">
+        <DataTemplate x:Key="GradeItemDataTemplate" x:DataType="dtos:Grade">
             <Grid x:Name="TickItemPanel">
-                <TextBlock Text="{Binding Name}"/>
+                <TextBlock Text="{x:Bind Name}"/>
             </Grid>
         </DataTemplate>
 
-        <DataTemplate x:Key="SuggestedProblemDataTemplate">
+        <DataTemplate x:Key="SuggestedProblemDataTemplate" x:DataType="dtos:WallProblem">
             <Grid x:Name="SuggestedProblemItemPanel"
                 Background="Transparent">
                 <Grid.RowDefinitions>
@@ -41,21 +42,21 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         Margin="0,0,8,0"
                         VerticalAlignment="Center"
                         Symbol="Accept"
-                        Visibility="{Binding Tick, Converter={StaticResource ObjectToVisibilityConverter}}"/>
+                        Visibility="{x:Bind Tick, Converter={StaticResource ObjectToVisibilityConverter}}"/>
                     <Ellipse x:Name="ColorElipse"
                         Grid.Column="1"
                         Width="16" Height="16"
-                        Fill="{Binding ColorName, Converter={StaticResource StringToColorConverter}}"/>
+                        Fill="{x:Bind ColorName, Converter={StaticResource StringToColorConverter}}"/>
                     <TextBlock x:Name="GradeTextBlock"
                         Grid.Column="2"
                         Margin="8,0,0,0"
                         VerticalAlignment="Center"
-                        Text="{Binding GradeName}"/>
+                        Text="{x:Bind GradeName}"/>
                     <TextBlock x:Name="TagTextBlock"
                         Grid.Column="3"
                         Margin="8,0,0,0"
                         VerticalAlignment="Center"
-                        Text="{Binding TagShort}"/>
+                        Text="{x:Bind TagShort}"/>
                     <TextBlock x:Name="RemovedTextBlock"
                         Grid.Column="4"
                         Margin="8,0,0,0"
@@ -63,13 +64,13 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         HorizontalAlignment="Right"
                         Text="removed"
                         Foreground="Red"
-                        Visibility="{Binding Visible, Converter={StaticResource IntOneToVisibilityConverter}, ConverterParameter=True}"/>
+                        Visibility="{x:Bind Visible, Converter={StaticResource IntOneToVisibilityConverter}, ConverterParameter=True}"/>
                 </Grid>
                 <StackPanel x:Name="TickPanel"
                     Grid.Row="1"
                     Margin="0,2"
                     Orientation="Horizontal"
-                    Visibility="{Binding Tick, Converter={StaticResource ObjectToVisibilityConverter}}">
+                    Visibility="{x:Bind Tick, Converter={StaticResource ObjectToVisibilityConverter}}">
                     <TextBlock Text="Ticked" 
                         Foreground="Gray"
                         Style="{ThemeResource CaptionTextBlockStyle}"/>
@@ -78,7 +79,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         Foreground="Gray"
                         VerticalAlignment="Center"
                         Style="{ThemeResource CaptionTextBlockStyle}"
-                        Text="{Binding Tick.Timestamp, Converter={StaticResource DateTimeToDateStringConverter}}"/>
+                        Text="{x:Bind Tick.Timestamp, Converter={StaticResource DateTimeToDateStringConverter}}"/>
                     <TextBlock Text="|" 
                         Margin="4,0,0,0"
                         Foreground="Gray"
@@ -87,7 +88,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         Margin="4,0,0,0"
                         Foreground="Gray"
                         VerticalAlignment="Center"
-                        Text="{Binding Tick.Tries}"
+                        Text="{x:Bind Tick.Tries}"
                         Style="{ThemeResource CaptionTextBlockStyle}"/>
                     <TextBlock x:Name="OneTryLabelTextBlock"
                         Text="try"
@@ -95,14 +96,14 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
                         Foreground="Gray"
                         VerticalAlignment="Center"
                         Style="{ThemeResource CaptionTextBlockStyle}"
-                        Visibility="{Binding Tick.Tries, Converter={StaticResource IntOneToBoolConverter}, ConverterParameter=False}"/>
+                        Visibility="{x:Bind Tick.Tries, Converter={StaticResource IntOneToVisibilityConverter}, ConverterParameter=False}"/>
                     <TextBlock x:Name="ManyTriesLabelTextBlock"
                         Text="tries"
                         Margin="4,0,0,0"
                         Foreground="Gray"
                         VerticalAlignment="Center"
                         Style="{ThemeResource CaptionTextBlockStyle}"
-                        Visibility="{Binding Tick.Tries, Converter={StaticResource IntOneToBoolConverter}, ConverterParameter=True}"/>
+                        Visibility="{x:Bind Tick.Tries, Converter={StaticResource IntOneToVisibilityConverter}, ConverterParameter=True}"/>
                 </StackPanel>
             </Grid>
         </DataTemplate>
